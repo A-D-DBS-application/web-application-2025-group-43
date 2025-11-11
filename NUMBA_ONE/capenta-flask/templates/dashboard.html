@@ -1,0 +1,27 @@
+<!doctype html><html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capenta Dashboard</title>
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head><body>
+<header class="topbar"><div class="title">🌱 Capenta</div><div>Hi, {{ username }}</div><a href="{{ url_for('logout') }}">Logout</a></header>
+<main class="container">
+<section class="card"><h2>Garden</h2><div class="plot-wrapper">{{ garden_fig|safe }}</div></section>
+<section class="card"><h2>Sensors</h2>
+{% if sensor_fig %}<div class="plot-wrapper">{{ sensor_fig|safe }}</div>{% else %}<div class="info">No sensor data yet. Use the seed button.</div>{% endif %}
+<form onsubmit="seed(); return false;"><button class="btn" type="submit">Insert demo data</button></form>
+</section>
+<section class="card"><h2>Alerts</h2>
+{% if alerts and alerts|length>0 %}<ul class="alerts">{% for a in alerts %}<li class="alert">{{ a }}</li>{% endfor %}</ul>
+{% else %}<div class="ok">✅ All parameters optimal.</div>{% endif %}
+</section>
+</main>
+<script>
+async function seed(){
+  try{
+    const r=await fetch("{{ url_for('api_mock_seed') }}",{method:"POST"});
+    const d=await r.json(); alert(d.message||"seeded"); location.reload();
+  }catch(e){ alert("failed"); }
+}
+</script>
+</body></html>

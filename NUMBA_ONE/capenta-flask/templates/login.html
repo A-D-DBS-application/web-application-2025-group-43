@@ -1,0 +1,17 @@
+<!doctype html><html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capenta Login</title>
+<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head><body class="login-body">
+<div class="login-card">
+  <h1 class="login-title">Welcome to Capenta</h1>
+  {% with messages = get_flashed_messages(category_filter=["error"]) %}
+    {% if messages %}<div class="flash-error">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="post">
+    <input class="login-input" type="text" name="username" placeholder="Enter any username">
+    <input class="login-input" type="password" name="password" placeholder="Enter password">
+    <button class="login-button" type="submit">Login</button>
+  </form>
+</div>
+</body></html>
