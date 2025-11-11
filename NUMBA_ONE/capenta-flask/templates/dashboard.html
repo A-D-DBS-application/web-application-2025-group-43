@@ -1,27 +1,78 @@
-<!doctype html><html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Capenta Dashboard</title>
-<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head><body>
-<header class="topbar"><div class="title">🌱 Capenta</div><div>Hi, {{ username }}</div><a href="{{ url_for('logout') }}">Logout</a></header>
-<main class="container">
-<section class="card"><h2>Garden</h2><div class="plot-wrapper">{{ garden_fig|safe }}</div></section>
-<section class="card"><h2>Sensors</h2>
-{% if sensor_fig %}<div class="plot-wrapper">{{ sensor_fig|safe }}</div>{% else %}<div class="info">No sensor data yet. Use the seed button.</div>{% endif %}
-<form onsubmit="seed(); return false;"><button class="btn" type="submit">Insert demo data</button></form>
+{% extends "base.html" %}
+{% block title %}Capenta — Dashboard{% endblock %}
+{% block head_extra %}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="grid grid-2">
+  <div class="card">
+    <h2 class="h2">Garden Bed (1m × 1m)</h2>
+    <div class="plot">{{ garden_fig|safe }}</div>
+    <p class="muted">Tip: hover markers voor details.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Historical Sensor Data</h2>
+    {% if sensor_fig %}
+      <div class="plot">{{ sensor_fig|safe }}</div>
+    {% else %}
+      <div class="alert info">No data yet. Use the seed button.</div>
+    {% endif %}
+    <button id="seedBtn" class="btn btn-primary" type="button">Insert demo data</button>
+  </div>
 </section>
-<section class="card"><h2>Alerts</h2>
-{% if alerts and alerts|length>0 %}<ul class="alerts">{% for a in alerts %}<li class="alert">{{ a }}</li>{% endfor %}</ul>
-{% else %}<div class="ok">✅ All parameters optimal.</div>{% endif %}
+
+<section class="grid grid-2">
+  <div class="card">
+    <h2 class="h2">Alerts</h2>
+    {% if alerts and alerts|length > 0 %}
+      <ul class="list">
+        {% for a in alerts %}<li class="alert warn">{{ a }}</li>{% endfor %}
+      </ul>
+    {% else %}
+      <div class="alert ok">All parameters look good 🌿</div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2 class="h2">Weed Detection (last 5)</h2>
+    {% if weeds and weeds|length > 0 %}
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Timestamp</th><th>X (mm)</th><th>Y (mm)</th><th>Area (px²)</th></tr>
+          </thead>
+          <tbody>
+            {% for w in weeds %}
+              <tr>
+                <td>{{ w.timestamp }}</td>
+                <td>{{ "%.0f"|format(w.x) }}</td>
+                <td>{{ "%.0f"|format(w.y) }}</td>
+                <td>{{ w.area }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert info">No weeds detected yet.</div>
+    {% endif %}
+  </div>
 </section>
-</main>
+{% endblock %}
+
+{% block body_extra %}
 <script>
-async function seed(){
-  try{
-    const r=await fetch("{{ url_for('api_mock_seed') }}",{method:"POST"});
-    const d=await r.json(); alert(d.message||"seeded"); location.reload();
-  }catch(e){ alert("failed"); }
-}
+document.getElementById('seedBtn')?.addEventListener('click', async () => {
+  try {
+    const res = await fetch("{{ url_for('api_mock_seed') }}", { method: "POST" });
+    const data = await res.json();
+    alert(data.message || "Seeded");
+    window.location.reload();
+  } catch (e) {
+    alert("Seeding failed");
+  }
+});
 </script>
-</body></html>
+{% endblock %}

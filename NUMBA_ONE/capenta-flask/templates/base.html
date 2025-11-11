@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" class="{{ 'dark' if theme=='dark' else '' }}">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Capenta{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🌱</span>
+      <span class="brand-title">Capenta Gardening Robot</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="topbar-actions">
+      {% if session.get('logged_in') %}
+        <span class="username">Hi, {{ session.get('username','Guest') }}</span>
+        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">
+          {{ '🌙' if theme=='dark' else '☀️' }}
+        </button>
+        <a class="btn btn-outline" href="{{ url_for('logout') }}">Logout</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block body_extra %}{% endblock %}
+</body>
+</html>
