@@ -64,6 +64,47 @@
         <p>Beheer je robot en instellingen. Veilig inloggen om verder te gaan.</p>
       </div>
 
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Login — Garden Robot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  </head>
+  <body>
+    <div class="page-bg">
+      <div class="login-wrap">
+        <aside class="illustration">
+          <img src="{{ url_for('static', filename='img/robot-plant.svg') }}" alt="Garden Robot">
+        </aside>
+
+        <form class="login-card" method="post" action="/login">
+          <div class="brand">
+            <h1>Garden Robot</h1>
+            <p class="subtitle">Controlepaneel — Dark Mode</p>
+          </div>
+
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" placeholder="jouw@voorbeeld.nl" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Wachtwoord</label>
+            <input id="password" name="password" type="password" placeholder="Wachtwoord" required>
+          </div>
+
+          <button class="btn primary" type="submit">Inloggen</button>
+
+          <div class="meta">
+            <a href="#">Wachtwoord vergeten?</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
       <div class="form-side">
         <div class="title">Inloggen</div>
         <div class="subtitle">Voer je accountgegevens in</div>
