@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Selecteer je tuin — Capenta{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#020817] text-slate-100 px-6 py-8">
+  <!-- Top bar -->
+  <header class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-[#34C759]/10 flex items-center justify-center border border-[#34C759]/40">
+        <span class="text-[#34C759] text-xl">🌿</span>
+      </div>
+      <div>
+        <div class="text-sm text-gray-400 uppercase tracking-[0.2em]">Capenta</div>
+        <div class="text-xs text-gray-500">Autonomous Garden Robot</div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-gray-400">Logged in as</span>
+      <div class="h-9 px-3 rounded-full bg-white/5 border border-white/10 flex items-center gap-2">
+        <div class="w-6 h-6 rounded-full bg-[#34C759]/20 flex items-center justify-center text-xs">F</div>
+        <span class="text-sm">fries.braet@example.com</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-semibold leading-tight">Selecteer een tuin</h1>
+        <p class="text-sm text-gray-400">
+          Kies een community garden of speelveld om de sensoren en health score te bekijken.
+        </p>
+      </div>
+      <a href="{{ url_for('dashboard', playfield_id='demo') }}"
+         class="text-xs text-gray-400 hover:text-[#34C759] underline">
+        Snel naar demo dashboard
+      </a>
+    </div>
+
+    <!-- Garden cards -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Voorbeeldtuin 1 -->
+      <a href="{{ url_for('playfield_selection', garden_id='hof-tuin-oost') }}"
+         class="group rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-[#34C759]/60 hover:bg-white/10 transition-all cursor-pointer flex flex-col">
+        <div class="h-28 bg-gradient-to-br from-[#34C759]/40 via-emerald-500/20 to-sky-500/10 relative overflow-hidden">
+          <div class="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top,_#34C759,_transparent_60%)]"></div>
+        </div>
+        <div class="p-4 flex-1 flex flex-col justify-between">
+          <div class="space-y-1">
+            <h2 class="text-sm font-semibold">Hof tuin Oost</h2>
+            <p class="text-xs text-gray-400">Bed 1 – Tomaten, Bed 2 – Sla, Bed 3 – Kruiden</p>
+          </div>
+          <div class="mt-4 flex items-center justify-between text-xs">
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/40">
+              Online
+            </span>
+            <span class="text-gray-500">3 playfields</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Voorbeeldtuin 2 -->
+      <a href="{{ url_for('playfield_selection', garden_id='stadsboerderij-zuid') }}"
+         class="group rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-[#34C759]/60 hover:bg-white/10 transition-all cursor-pointer flex flex-col">
+        <div class="h-28 bg-gradient-to-br from-sky-500/40 via-[#34C759]/10 to-emerald-500/10 relative overflow-hidden"></div>
+        <div class="p-4 flex-1 flex flex-col justify-between">
+          <div class="space-y-1">
+            <h2 class="text-sm font-semibold">Stadsboerderij Zuid</h2>
+            <p class="text-xs text-gray-400">Bed 1 – Paprika, Bed 2 – Courgette, Bed 3 – Aardappel</p>
+          </div>
+          <div class="mt-4 flex items-center justify-between text-xs">
+            <span class="px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/40">
+              Limited
+            </span>
+            <span class="text-gray-500">3 playfields</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Extra kaarten kun je zelf kopiëren/plakken -->
+    </div>
+  </main>
+</div>
+{% endblock %}
