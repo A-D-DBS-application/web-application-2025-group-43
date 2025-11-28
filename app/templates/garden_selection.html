@@ -5,234 +5,34 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Select Your Garden — Capenta</title>
 
-  <style>
-    :root{
-      --bg-1:#05060a;
-      --bg-2:#0b1115;
-      --card:#111418;
-      --accent:#34C759;
-      --muted:#9aa4b2;
-    }
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    *{box-sizing:border-box;margin:0;padding:0}
-
-    body{
-      font-family:Inter,system-ui,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
-      color:white;
-      min-height:100vh;
-      padding:28px;
-    }
-
-    /* TOP BAR */
-    .topbar{
-      max-width:1100px;
-      margin:0 auto 40px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-
-    .brand{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      text-decoration:none;
-      color:white;
-    }
-
-    .brand-img{
-      height:36px;
-      width:auto;
-      filter:drop-shadow(0 0 6px rgba(52,199,89,0.25));
-    }
-
-    .brand span{
-      font-size:24px;
-      font-weight:700;
-    }
-
-    .logout-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 20px;
-      border-radius:999px;
-      background:#1E1E1E;
-      border:1px solid #2a2a2a;
-      color:#e5e7eb;
-      text-decoration:none;
-      cursor:pointer;
-      transition:.2s;
-      font-size:14px;
-    }
-
-    .logout-btn:hover{
-      border-color:var(--accent);
-      background:#0a0f12;
-      transform:translateY(-1px);
-    }
-
-    /* CONTENT WRAP */
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-    }
-
-    .slogan{
-      color:#b8b8b8;
-      margin-bottom:10px;
-      font-size:18px;
-      text-align:center;
-    }
-
-    /* Titel + Add Garden row */
-    .header-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:40px;
-    }
-
-    .title-main{
-      font-size:36px;
-      font-weight:700;
-      color:white;
-      text-align:center;
-      flex:1;
-    }
-
-    .header-spacer{
-      width:120px; /* breedte ~ Add-knop zodat titel centreert */
-    }
-
-    .add-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding:10px 20px;
-      border-radius:14px;
-      border:none;
-      background:#1F3C26;
-      color:#ffffff;
-      font-size:14px;
-      cursor:pointer;
-      transition:filter .2s,transform .1s;
-      white-space:nowrap;
-      text-decoration:none;
-    }
-
-    .add-btn:hover{
-      filter:brightness(1.08);
-      transform:translateY(-1px);
-    }
-
-    .add-btn-icon{
-      width:18px;
-      height:18px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.5);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:16px;
-      line-height:1;
-    }
-
-    /* GARDEN GRID */
-    .gardens-grid{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:24px;
-      margin-top:10px;
-    }
-
-    .garden-card{
-      position:relative;
-      width:260px;
-      height:260px;
-      border-radius:24px;
-      overflow:hidden;
-      cursor:pointer;
-      border:1px solid var(--accent);
-      background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
-      transition:transform .2s, box-shadow .2s;
-      text-decoration:none;
-      color:white;
-    }
-
-    .garden-card:hover{
-      transform:scale(1.03);
-      box-shadow:0 0 25px rgba(52,199,89,0.2);
-    }
-
-    .garden-content{
-      height:100%;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      padding:24px;
-      padding-bottom:70px; /* ruimte voor bar onderaan */
-      text-align:center;
-    }
-
-    .garden-name{
-      font-size:24px;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-
-    .garden-address{
-      font-size:13px;
-      color:#d1d5db;
-    }
-
-    .garden-bottom-bar{
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      padding:12px 20px;
-      border-top:1px solid rgba(255,255,255,0.1);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-size:12px;
-      color:#e5e7eb;
-    }
-
-    .empty-state{
-      margin-top:40px;
-      text-align:center;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    @media (max-width:768px){
-      body{padding:20px;}
-      .topbar{flex-direction:row;}
-      .title-main{font-size:28px;}
-    }
-  </style>
+  <!-- Externe CSS voor garden selection -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/garden_selection.css') }}">
 </head>
 
 <body>
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <a href="{{ url_for('garden.garden_selection') }}" class="brand">
+    <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
       <img class="brand-img"
            src="{{ url_for('static', filename='img/logo.png') }}"
            alt="Capenta logo">
-      <span>Capenta</span>
     </a>
+    <div class="topbar-right">
+      <a class="add-btn" href="{{ url_for('garden.add_garden') }}">
+        <span class="add-btn-icon">+</span>
+        Add Garden
+      </a>
 
-    <a class="logout-btn" href="{{ url_for('auth.logout') }}">
-      Logout
-    </a>
+      <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+        Logout
+      </a>
+    </div>
   </div>
 
   <!-- CONTENT -->
@@ -240,14 +40,7 @@
     <p class="slogan">Grow more, worry less.</p>
 
     <div class="header-row">
-      <div class="header-spacer"></div>
-
       <h1 class="title-main">Select Your Garden</h1>
-
-      <a class="add-btn" href="{{ url_for('garden.add_garden') }}">
-        <span class="add-btn-icon">+</span>
-        Add Garden
-      </a>
     </div>
 
     {% if gardens %}
