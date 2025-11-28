@@ -103,7 +103,7 @@
     }
 
     .header-spacer{
-      width:120px; /* ongeveer breedte van Add-knop zodat titel mooi centreert */
+      width:120px; /* breedte van Add-knop voor centreren titel */
     }
 
     .add-btn{
@@ -120,6 +120,7 @@
       cursor:pointer;
       transition:filter .2s,transform .1s;
       white-space:nowrap;
+      text-decoration:none;
     }
 
     .add-btn:hover{
@@ -153,6 +154,8 @@
       transition:.25s;
       border:1px solid var(--accent);
       background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
+      text-decoration:none;
+      color:inherit;
     }
 
     .main-card:hover{
@@ -165,13 +168,6 @@
       inset:0;
       background:linear-gradient(to bottom right,#1E1E1E,#181818,#121212);
       opacity:0.15;
-    }
-
-    .card-leaf{
-      position:absolute;
-      top:32px;
-      left:32px;
-      opacity:0.1;
     }
 
     .main-content{
@@ -238,6 +234,8 @@
       transition:.2s;
       border:1px solid var(--accent);
       background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
+      text-decoration:none;
+      color:inherit;
     }
 
     .small-card:hover{
@@ -281,6 +279,15 @@
       font-size:12px;
       color:#e5e7eb;
     }
+
+    /* Geen gardens */
+    .no-gardens{
+      margin-top:40px;
+      text-align:center;
+      color:#b8b8b8;
+      font-size:14px;
+    }
+
   </style>
 </head>
 
@@ -288,14 +295,16 @@
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <a href="{{ url_for('main.garden_selection') }}" class="brand">
+    <!-- Klik op logo → terug naar garden selection (zelfde pagina) -->
+    <a href="{{ url_for('garden.garden_selection') }}" class="brand">
       <img class="brand-img"
            src="{{ url_for('static', filename='img/logo.png') }}"
            alt="Capenta logo">
       <span>Capenta</span>
     </a>
 
-    <a class="logout-btn" href="{{ url_for('main.logout') }}">
+    <!-- Logout knop -->
+    <a class="logout-btn" href="{{ url_for('auth.logout') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
            stroke="#e5e7eb" fill="none" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round">
@@ -306,3 +315,60 @@
       Logout
     </a>
   </div>
+
+  <div class="wrap">
+    <p class="slogan">Grow more, worry less.</p>
+
+    <div class="header-row">
+      <div class="header-spacer"></div>
+
+      <h1 class="title-main">Select Your Garden</h1>
+
+      <!-- Add Garden knop → /garden/add -->
+      <a href="{{ url_for('garden.add_garden') }}" class="add-btn">
+        <span class="add-btn-icon">+</span>
+        Add Garden
+      </a>
+    </div>
+
+    {% if gardens and gardens|length > 0 %}
+      {# MAIN GARDEN = eerste uit de lijst #}
+      {% set main = gardens[0] %}
+      <a href="{{ url_for('garden.enter_garden', garden_id=main.garden_id) }}" class="main-card">
+        <div class="card-bg"></div>
+        <div class="main-content">
+          <div class="g-name">{{ main.garden_name }}</div>
+          <div class="g-address">{{ main.adress_garden }}</div>
+        </div>
+        <div class="main-bottom-bar">
+          <span>{{ main.robot_zones|length }} playfields</span>
+        </div>
+      </a>
+
+      {# OTHER GARDENS #}
+      {% if gardens|length > 1 %}
+        <h3 class="other-title">Other Gardens</h3>
+        <div class="scroll-row">
+          {% for g in gardens[1:] %}
+            <a href="{{ url_for('garden.enter_garden', garden_id=g.garden_id) }}" class="small-card">
+              <div class="small-content">
+                <div class="small-name">{{ g.garden_name }}</div>
+                <div class="small-address">{{ g.adress_garden }}</div>
+              </div>
+              <div class="small-bottom-bar">
+                <span>{{ g.robot_zones|length }} playfields</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="no-gardens">
+        You don't have any gardens yet.<br>
+        Click <strong>Add Garden</strong> to create your first one.
+      </p>
+    {% endif %}
+  </div>
+
+</body>
+</html>
