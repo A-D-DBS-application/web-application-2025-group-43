@@ -95,6 +95,9 @@ def enter_garden(garden_id):
     if not garden:
         flash("Garden not found.", "error")
         return redirect(url_for("garden.garden_selection"))
+    
+    #stuur door naar playfield voor deze garden
+    return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
 
     # Voor nu: placeholder – later playfields pagina
     # bv. redirect naar playfield blueprint
