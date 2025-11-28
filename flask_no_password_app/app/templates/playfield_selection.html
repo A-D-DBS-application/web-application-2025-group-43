@@ -3,47 +3,240 @@
 {% block title %}Selecteer speelveld — Capenta{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#020817] text-slate-100 px-6 py-8">
-  <main class="max-w-4xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <p class="text-xs text-gray-500 uppercase tracking-[0.25em] mb-1">Step 2</p>
-        <h1 class="text-2xl font-semibold leading-tight">Selecteer een speelveld</h1>
-        <p class="text-sm text-gray-400">
-          Kies het bed of de kas waarvoor je de sensorwaarden en health score wil zien.
-        </p>
+<style>
+  :root{
+    --bg-1:#020817;
+    --accent:#34C759;
+    --muted:#9aa4b2;
+  }
+
+  .wrap{
+    min-height:100vh;
+    background:var(--bg-1);
+    color:#e6eef6;
+    padding:32px 24px 48px;
+    font-family:Inter,system-ui,Roboto,Arial;
+  }
+
+  .topbar{
+    max-width:1100px;
+    margin:0 auto 36px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  .back-btn{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:#1E1E1E;
+    border:1px solid #2a2a2a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .back-btn:hover{border-color:var(--accent)}
+
+  .brand{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .brand span{
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-0.5px;
+  }
+
+  /* Content */
+  .heading-box{
+    text-align:center;
+    margin:0 auto 48px;
+    max-width:600px;
+  }
+  .heading-box .slogan{
+    font-size:18px;
+    color:#b5b5b5;
+    margin-bottom:16px;
+  }
+  .heading-box h1{
+    font-size:36px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .heading-box .sub{
+    color:#9aa4b2;
+  }
+
+  /* GRID */
+  .grid{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:28px;
+  }
+
+  /* Cards */
+  .pf-card{
+    position:relative;
+    aspect-ratio:4/3;
+    border-radius:18px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:.25s;
+  }
+  .pf-card:hover{
+    transform:scale(1.03);
+    box-shadow:0 0 35px rgba(52,199,89,0.20);
+  }
+  .pf-bg{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom right,#1E1E1E,#181818,#121212);
+  }
+
+  .pf-icon{
+    position:absolute;
+    top:24px;
+    left:24px;
+    opacity:0.06;
+  }
+
+  .pf-content{
+    position:absolute;
+    inset:0;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .health-badge{
+    display:flex;
+    justify-content:flex-end;
+  }
+
+  .health-box{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    padding:6px 10px;
+    background:rgba(0,0,0,0.28);
+    backdrop-filter:blur(6px);
+    border-radius:10px;
+    border:1px solid rgba(128,128,128,0.35);
+  }
+
+  .pf-name{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:4px;
+  }
+
+  .pf-meta{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    color:#d1d1d1;
+    font-size:14px;
+  }
+</style>
+
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <!-- Back icon -->
+      <button onclick="location.href='{{ url_for('garden_selection') }}'" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="white" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <!-- Leaf + Capenta -->
+      <div class="brand" style="margin-left:14px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" stroke="var(--accent)" fill="none" stroke-width="2">
+          <path d="M11 21c-7.333-1.333-10-6.333-10-8 0-4 6-8 12-8s11 4 11 8c0 1.667-2.667 6.667-10 8v-6"></path>
+        </svg>
+        <span>Capenta</span>
       </div>
-      <a href="{{ url_for('garden_selection') }}"
-         class="text-xs text-gray-400 hover:text-[#34C759] underline">
-        ← Terug naar tuinen
-      </a>
     </div>
+  </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <a href="{{ url_for('dashboard', playfield_id='bed-1') }}"
-         class="rounded-2xl bg-white/5 border border-white/10 px-4 py-4 hover:border-[#34C759]/60 hover:bg-white/10 transition-all flex items-center justify-between">
-        <div>
-          <div class="text-sm font-semibold">Bed 1 — Tomaten</div>
-          <div class="text-xs text-gray-400">Volledige sensor set • Irrigatie actief</div>
+  <!-- HEADING -->
+  <div class="heading-box">
+    <p class="slogan">Grow more, worry less.</p>
+    <h1>Playfields – {{ garden.name }}</h1>
+    <p class="sub">{{ garden.address }}</p>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid">
+    {% for pf in playfields %}
+    <button class="pf-card" onclick="location.href='/dashboard/{{ pf.id }}'">
+
+      <!-- Gradient background -->
+      <div class="pf-bg"></div>
+
+      <!-- Background image -->
+      <img src="{{ pf.image }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.85; mix-blend-mode:overlay"/>
+
+      <!-- Decorative icon (simplified leaf since no logic here) -->
+      <div class="pf-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" stroke="var(--accent)" fill="none" stroke-width="1.5">
+          <path d="M11 21c-7.333-1.333-10-6.333-10-8 0-4 6-8 12-8s11 4 11 8c0 1.667-2.667 6.667-10 8v-6"></path>
+        </svg>
+      </div>
+
+      <!-- Content -->
+      <div class="pf-content">
+        <!-- HEALTH -->
+        <div class="health-badge">
+          <div class="health-box">
+            <div class="dot"
+                 style="width:10px;height:10px;border-radius:50%;background:
+                    {% if pf.healthScore >= 90 %}#34C759
+                    {% elif pf.healthScore >= 70 %}#FF9500
+                    {% else %}#FF3B30
+                    {% endif %}
+                 ">
+            </div>
+            <span style="font-size:14px;color:
+                  {% if pf.healthScore >= 90 %}#34C759
+                  {% elif pf.healthScore >= 70 %}#FF9500
+                  {% else %}#FF3B30
+                  {% endif %}
+            ">
+              {{ pf.healthScore }}%
+            </span>
+          </div>
         </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/40">
-          Online
-        </span>
-      </a>
 
-      <a href="{{ url_for('dashboard', playfield_id='bed-2') }}"
-         class="rounded-2xl bg-white/5 border border-white/10 px-4 py-4 hover:border-[#34C759]/60 hover:bg-white/10 transition-all flex items-center justify-between">
+        <!-- TEXT -->
         <div>
-          <div class="text-sm font-semibold">Bed 2 — Sla</div>
-          <div class="text-xs text-gray-400">Minder licht • Vochtmonitoring</div>
-        </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/40">
-          Let op
-        </span>
-      </a>
+          <div class="pf-name">{{ pf.name }}</div>
 
-      <!-- Kopieer voor meer bedden -->
-    </div>
-  </main>
+          <div class="pf-meta">
+            <span>{{ pf.area }}</span>
+            <span>•</span>
+            <span>{{ pf.plantCount }} planten</span>
+            <span>•</span>
+            <span>{{ pf.healthScore }}% gezondheid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hover Border -->
+      <div style="position:absolute; inset:0; border:2px solid transparent; border-radius:18px;"
+           class="hover:border-[#34C759]/50 transition-all"></div>
+    </button>
+    {% endfor %}
+  </div>
+
 </div>
 {% endblock %}

@@ -2,22 +2,23 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 
-# SQLAlchemy object
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)  # Laad configuratie
+    app.config.from_object(Config)
 
-    # Initialiseer SQLAlchemy
+    # Database initialisatie
     db.init_app(app)
 
-    # Maak tabellen automatisch aan in de database (handig voor MVP)
+    # Tabellen aanmaken (alleen voor MVP)
     with app.app_context():
         db.create_all()
 
-    # Hier kan je later je routes registreren
-    # from .routes.user_routes import user_bp
-    # app.register_blueprint(user_bp)
+    # -----------------------------
+    # 📌 Belangrijk: registreer routes
+    # -----------------------------
+    from .routes import main        # <-- import jouw blueprint
+    app.register_blueprint(main)    # <-- blueprint activeren
 
     return app
