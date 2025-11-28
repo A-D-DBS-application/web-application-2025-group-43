@@ -17,7 +17,7 @@
     *{box-sizing:border-box;margin:0;padding:0}
 
     body{
-      font-family:Inter,system-ui,Roboto,Arial;
+      font-family:Inter,system-ui,Roboto,Arial,sans-serif;
       background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
       color:white;
       min-height:100vh;
@@ -75,7 +75,7 @@
 
     /* CONTENT WRAP */
     .wrap{
-      max-width:850px;
+      max-width:1100px;
       margin:0 auto;
     }
 
@@ -103,7 +103,7 @@
     }
 
     .header-spacer{
-      width:120px; /* breedte van Add-knop voor centreren titel */
+      width:120px; /* breedte ~ Add-knop zodat titel centreert */
     }
 
     .add-btn{
@@ -128,7 +128,6 @@
       transform:translateY(-1px);
     }
 
-    /* PLUS icon */
     .add-btn-icon{
       width:18px;
       height:18px;
@@ -141,132 +140,57 @@
       line-height:1;
     }
 
-    /* MAIN GARDEN CARD */
-    .main-card{
+    /* GARDEN GRID */
+    .gardens-grid{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:24px;
+      margin-top:10px;
+    }
+
+    .garden-card{
       position:relative;
-      width:100%;
-      max-width:480px;
-      margin:0 auto 40px;
-      aspect-ratio:1/1;
-      border-radius:26px;
+      width:260px;
+      height:260px;
+      border-radius:24px;
       overflow:hidden;
       cursor:pointer;
-      transition:.25s;
       border:1px solid var(--accent);
       background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
+      transition:transform .2s, box-shadow .2s;
       text-decoration:none;
-      color:inherit;
+      color:white;
     }
 
-    .main-card:hover{
-      transform:scale(1.02);
-      box-shadow:0 0 40px rgba(52,199,89,0.25);
+    .garden-card:hover{
+      transform:scale(1.03);
+      box-shadow:0 0 25px rgba(52,199,89,0.2);
     }
 
-    .card-bg{
-      position:absolute;
-      inset:0;
-      background:linear-gradient(to bottom right,#1E1E1E,#181818,#121212);
-      opacity:0.15;
-    }
-
-    .main-content{
-      position:absolute;
-      inset:0;
+    .garden-content{
+      height:100%;
       display:flex;
       flex-direction:column;
-      align-items:center;
       justify-content:center;
-      padding:32px;
-      padding-bottom:80px; /* ruimte voor bar onderaan */
+      align-items:center;
+      padding:24px;
+      padding-bottom:70px; /* ruimte voor bar onderaan */
       text-align:center;
     }
 
-    .g-name{
-      font-size:40px;
+    .garden-name{
+      font-size:24px;
       font-weight:700;
       margin-bottom:8px;
     }
 
-    .g-address{
-      font-size:14px;
-      color:#cfcfcf;
+    .garden-address{
+      font-size:13px;
+      color:#d1d5db;
     }
 
-    .main-bottom-bar{
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      padding:16px 24px;
-      border-top:1px solid rgba(255,255,255,0.1);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-size:14px;
-      color:#e5e7eb;
-    }
-
-    /* OTHER GARDENS */
-    .other-title{
-      color:#929292;
-      margin-bottom:12px;
-      text-align:left;
-    }
-
-    .scroll-row{
-      display:flex;
-      gap:18px;
-      overflow-x:auto;
-      padding-bottom:12px;
-    }
-
-    .scroll-row::-webkit-scrollbar{display:none}
-
-    .small-card{
-      position:relative;
-      flex-shrink:0;
-      width:250px;
-      height:250px;
-      border-radius:20px;
-      overflow:hidden;
-      cursor:pointer;
-      transition:.2s;
-      border:1px solid var(--accent);
-      background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
-      text-decoration:none;
-      color:inherit;
-    }
-
-    .small-card:hover{
-      transform:scale(1.05);
-      box-shadow:0 0 25px rgba(52,199,89,0.15);
-    }
-
-    .small-content{
-      position:absolute;
-      inset:0;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-      padding-bottom:70px;
-      text-align:center;
-    }
-
-    .small-name{
-      font-size:24px;
-      font-weight:700;
-      margin-bottom:4px;
-    }
-
-    .small-address{
-      font-size:12px;
-      color:#b6b6b6;
-    }
-
-    .small-bottom-bar{
+    .garden-bottom-bar{
       position:absolute;
       left:0;
       right:0;
@@ -280,14 +204,18 @@
       color:#e5e7eb;
     }
 
-    /* Geen gardens */
-    .no-gardens{
+    .empty-state{
       margin-top:40px;
       text-align:center;
-      color:#b8b8b8;
+      color:var(--muted);
       font-size:14px;
     }
 
+    @media (max-width:768px){
+      body{padding:20px;}
+      .topbar{flex-direction:row;}
+      .title-main{font-size:28px;}
+    }
   </style>
 </head>
 
@@ -295,7 +223,6 @@
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <!-- Klik op logo → terug naar garden selection (zelfde pagina) -->
     <a href="{{ url_for('garden.garden_selection') }}" class="brand">
       <img class="brand-img"
            src="{{ url_for('static', filename='img/logo.png') }}"
@@ -303,19 +230,12 @@
       <span>Capenta</span>
     </a>
 
-    <!-- Logout knop -->
     <a class="logout-btn" href="{{ url_for('auth.logout') }}">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-           stroke="#e5e7eb" fill="none" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 12v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/>
-        <path d="M10 12l3-3-3-3"/>
-        <path d="M13 9H3"/>
-      </svg>
       Logout
     </a>
   </div>
 
+  <!-- CONTENT -->
   <div class="wrap">
     <p class="slogan">Grow more, worry less.</p>
 
@@ -324,48 +244,30 @@
 
       <h1 class="title-main">Select Your Garden</h1>
 
-      <!-- Add Garden knop → /garden/add -->
-      <a href="{{ url_for('garden.add_garden') }}" class="add-btn">
+      <a class="add-btn" href="{{ url_for('garden.add_garden') }}">
         <span class="add-btn-icon">+</span>
         Add Garden
       </a>
     </div>
 
-    {% if gardens and gardens|length > 0 %}
-      {# MAIN GARDEN = eerste uit de lijst #}
-      {% set main = gardens[0] %}
-      <a href="{{ url_for('garden.enter_garden', garden_id=main.garden_id) }}" class="main-card">
-        <div class="card-bg"></div>
-        <div class="main-content">
-          <div class="g-name">{{ main.garden_name }}</div>
-          <div class="g-address">{{ main.adress_garden }}</div>
-        </div>
-        <div class="main-bottom-bar">
-          <span>{{ main.robot_zones|length }} playfields</span>
-        </div>
-      </a>
-
-      {# OTHER GARDENS #}
-      {% if gardens|length > 1 %}
-        <h3 class="other-title">Other Gardens</h3>
-        <div class="scroll-row">
-          {% for g in gardens[1:] %}
-            <a href="{{ url_for('garden.enter_garden', garden_id=g.garden_id) }}" class="small-card">
-              <div class="small-content">
-                <div class="small-name">{{ g.garden_name }}</div>
-                <div class="small-address">{{ g.adress_garden }}</div>
-              </div>
-              <div class="small-bottom-bar">
-                <span>{{ g.robot_zones|length }} playfields</span>
-              </div>
-            </a>
-          {% endfor %}
-        </div>
-      {% endif %}
+    {% if gardens %}
+      <div class="gardens-grid">
+        {% for garden in gardens %}
+          <a class="garden-card"
+             href="{{ url_for('garden.enter_garden', garden_id=garden.garden_id) }}">
+            <div class="garden-content">
+              <div class="garden-name">{{ garden.garden_name }}</div>
+              <div class="garden-address">{{ garden.adress_garden }}</div>
+            </div>
+            <div class="garden-bottom-bar">
+              <span>{{ garden.robot_zones|length }} playfields</span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
     {% else %}
-      <p class="no-gardens">
-        You don't have any gardens yet.<br>
-        Click <strong>Add Garden</strong> to create your first one.
+      <p class="empty-state">
+        Je hebt nog geen tuinen. Klik op <strong>Add Garden</strong> om je eerste tuin toe te voegen.
       </p>
     {% endif %}
   </div>
