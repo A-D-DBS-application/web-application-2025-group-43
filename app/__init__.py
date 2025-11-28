@@ -1,8 +1,10 @@
+# app/__init__.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 
 db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__)
@@ -10,21 +12,16 @@ def create_app():
 
     db.init_app(app)
 
+    # Blueprints registreren
+    from .routes.auth_routes import auth_bp
+    from .routes.garden_routes import garden_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(garden_bp)
+
+    print("=============== ROUTES DIE FLASK ZIET ===============")
     with app.app_context():
-        # Maak tabellen aan (MVP)
-        db.create_all()
-
-        # ---- Registreer Blueprints ----
-        from .routes.auth_routes import auth_bp
-        app.register_blueprint(auth_bp)
-
-        from .routes.garden_routes import garden_bp
-        app.register_blueprint(garden_bp)
-
-        # ---- Debug: print ALLE routes ----
-        print("\n=============== ROUTES DIE FLASK ZIET ===============")
         print(app.url_map)
-        print("====================================================\n")
+    print("====================================================")
 
     return app
-
