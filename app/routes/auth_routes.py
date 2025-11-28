@@ -1,3 +1,5 @@
+# app/routes/auth_routes.py
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from ..models import User
 from .. import db
@@ -25,7 +27,7 @@ def login():
             flash("Vul een geldig e-mailadres in.", "error")
             return render_template("login.html")
 
-        # User zoeken
+        # User zoeken in DB
         user = User.query.filter_by(uemail=email).first()
 
         if not user:
@@ -37,8 +39,7 @@ def login():
         session["user_name"] = user.uname
 
         # Doorsturen naar garden selection (volgende pagina)
-        # LET OP: dit werkt alleen als je een blueprint 'garden'
-        # met endpoint 'garden_selection' hebt geregistreerd.
+        # Zorg dat je een garden blueprint hebt met endpoint 'garden_selection'
         return redirect(url_for("garden.garden_selection"))
 
     # GET: loginpagina tonen
@@ -52,14 +53,14 @@ def login():
 def register():
     if request.method == "POST":
         email = request.form.get("email")
-        username = request.form.get("username")
+        name = request.form.get("name")
         phone = request.form.get("phone")
         adress = request.form.get("adress")
         password = request.form.get("password")
 
         # Basisvalidatie
-        if not email or not username or not password:
-            flash("Email, username en password zijn verplicht.", "error")
+        if not email or not name or not password:
+            flash("Email, name en password zijn verplicht.", "error")
             return render_template("register.html")
 
         # Bestaat user al?
@@ -71,10 +72,10 @@ def register():
         # Nieuwe gebruiker opslaan
         new_user = User(
             uemail=email,
-            uname=username,
+            uname=name,
             phone=phone,
             adress=adress,
-            password=password   # Voor MVP oké → later hashing toevoegen
+            password=password   # Voor MVP oké – later kan je hashing toevoegen
         )
 
         db.session.add(new_user)
@@ -82,7 +83,7 @@ def register():
 
         flash("Account succesvol aangemaakt! Log nu in.", "success")
 
-        # 🔥 TERUG NAAR LOGIN NA REGISTRATIE
+        # 🔥 Na 'Create Account' DIRECT terug naar login
         return redirect(url_for("auth.login"))
 
     # GET: registerpagina tonen
@@ -96,4 +97,3 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for("auth.login"))
-

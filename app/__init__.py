@@ -11,15 +11,20 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
+        # Maak tabellen aan (MVP)
         db.create_all()
 
-        # ---- Registreer alle Blueprints ----
+        # ---- Registreer Blueprints ----
         from .routes.auth_routes import auth_bp
         app.register_blueprint(auth_bp)
 
-        # Debug: laat alle routes zien
-        print("ROUTES DIE FLASK ZIET:")
+        from .routes.garden_routes import garden_bp
+        app.register_blueprint(garden_bp)
+
+        # ---- Debug: print ALLE routes ----
+        print("\n=============== ROUTES DIE FLASK ZIET ===============")
         print(app.url_map)
+        print("====================================================\n")
 
     return app
 

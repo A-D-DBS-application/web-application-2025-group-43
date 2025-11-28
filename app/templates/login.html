@@ -35,6 +35,7 @@
         radial-gradient(900px 900px at 50% 40%, rgba(0,0,0,0.70), transparent 70%),
         linear-gradient(135deg,var(--bg-1),var(--bg-2));
       color:var(--text);
+      -webkit-font-smoothing:antialiased;
     }
 
     .page{
@@ -52,7 +53,8 @@
       position:absolute;
       border:1.5px solid rgba(75,212,99,0.15);
       border-radius:999px;
-      width:34px;height:22px;
+      width:34px;
+      height:22px;
       transform:rotate(-18deg);
       opacity:0.35;
     }
@@ -65,14 +67,13 @@
     }
     .leaf.l1{left:10%; top:22%;}
     .leaf.l2{left:26%; bottom:28%; transform:rotate(18deg);}
-    .leaf.l3{right:12%; bottom:20%;}
+    .leaf.l3{right:12%; bottom:20%; transform:rotate(-18deg);}
 
     .brand{text-align:center;margin-bottom:40px;}
     .brand-logo{display:inline-flex;align-items:center;gap:10px;}
     .logo-icon{
       width:28px;height:28px;border-radius:999px;border:2px solid var(--accent);
-      display:flex;align-items:center;justify-content:center;
-      position:relative;
+      display:flex;align-items:center;justify-content:center;position:relative;
     }
     .logo-icon::before{
       content:"";width:14px;height:10px;border-radius:999px;
@@ -80,35 +81,59 @@
       border-right-color:transparent;border-bottom-color:transparent;
       transform:rotate(-30deg);
     }
-    .brand-title{font-size:40px;font-weight:700;}
-    .brand-subtitle{font-size:18px;color:var(--muted);margin-top:10px;}
+    .brand-title{font-size:40px;font-weight:700;letter-spacing:0.03em;}
+    .brand-subtitle{margin-top:10px;font-size:18px;color:var(--muted);}
 
     .card{
-      width:100%;max-width:420px;padding:34px 32px 26px;
-      border-radius:22px;background:var(--card);
+      background:radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 55%),
+                 var(--card);
+      border-radius:var(--radius);
+      max-width:var(--max-width);
+      width:100%;
+      padding:34px 32px 26px;
       box-shadow:var(--shadow-card);
       border:1px solid rgba(255,255,255,0.02);
       position:relative;
     }
 
-    .field{margin-bottom:26px;}
-    label{display:block;margin-bottom:8px;color:var(--muted);font-size:14px;}
-    input{
-      width:100%;padding:14px 18px;border-radius:999px;
-      background:rgba(8,14,22,0.9);
+    .field{margin-bottom:26px;font-size:14px;}
+    .field label{display:block;margin-bottom:8px;color:var(--muted);font-weight:500;}
+    .input input{
+      width:100%;
+      padding:14px 18px;
+      border-radius:999px;
       border:1px solid rgba(148,163,184,0.45);
-      color:white;
+      background:rgba(8,14,22,0.9);
+      color:var(--text);
+      font-size:14px;
+      outline:none;
     }
+    .input input::placeholder{color:#6c7380;}
 
     .btn{
-      width:100%;padding:14px 20px;border-radius:999px;border:none;
+      display:block;
+      width:100%;
+      border-radius:999px;
+      border:none;
+      padding:14px 20px;
+      font-size:15px;
+      font-weight:600;
       background:linear-gradient(135deg,#55de68,var(--accent));
-      color:#041006;font-size:15px;font-weight:600;
-      box-shadow:var(--shadow-btn);cursor:pointer;
+      color:#041006;
+      box-shadow:var(--shadow-btn);
+      cursor:pointer;
     }
 
     .helper{
-      margin-top:16px;text-align:center;font-size:12px;color:var(--muted);
+      margin-top:16px;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .helper a{
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:500;
     }
   </style>
 </head>
@@ -129,7 +154,6 @@
 
     <div class="card">
       <form action="{{ url_for('auth.login') }}" method="post">
-
         <div class="field">
           <label for="email">Email</label>
           <div class="input">
@@ -137,29 +161,16 @@
           </div>
         </div>
 
-        <div class="field">
-          <label for="password">Password</label>
-          <div class="input">
-            <input type="password" id="password" name="password" placeholder="••••••••" required>
-          </div>
-        </div>
-
         <button type="submit" class="btn">Log in</button>
 
         <p class="helper">You'll be logged in on this device.</p>
 
-        <!-- REGISTER LINK CORRECT -->
         <p class="helper">
           Don't have an account yet?
-          <a href="{{ url_for('auth.register') }}" 
-             style="color: var(--accent); text-decoration:none; font-weight:500;">
-            Create an account
-          </a>
+          <a href="{{ url_for('auth.register') }}">Create an account</a>
         </p>
-
       </form>
     </div>
   </div>
 </body>
 </html>
-
