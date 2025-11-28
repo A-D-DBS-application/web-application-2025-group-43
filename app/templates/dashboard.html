@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Playfield Dashboard — Capenta</title>
 
-  <!-- Chart.js voor de mini-grafiekjes -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     :root{
       --bg-1:#05060a;
@@ -141,14 +138,11 @@
       margin-top:4px;
     }
 
-    .playfield-form{
-      margin:0;
-    }
-
     .playfield-btn{
       width:100%;
       border:0;
       background:none;
+      text-decoration:none;
       text-align:left;
       padding:6px 10px;
       font-size:13px;
@@ -259,6 +253,7 @@
       color:var(--muted);
       cursor:pointer;
       transition:background .12s ease,color .12s ease;
+      text-decoration:none;
     }
 
     .logout-btn:hover{
@@ -590,16 +585,21 @@
     .sensor-chart{
       height:90px;
       border-radius:10px;
-      background:#05070b;
+      background:radial-gradient(circle at 0 80%,rgba(52,199,89,0.3),transparent),
+                 radial-gradient(circle at 100% 0,rgba(52,199,89,0.16),transparent),
+                 #05070b;
       margin:4px 0 10px;
       position:relative;
       overflow:hidden;
-      padding:4px 6px;
     }
 
-    .sensor-chart canvas{
-      width:100%;
-      height:100%;
+    .sensor-chart::before{
+      content:"";
+      position:absolute;
+      inset:10px 10px 14px;
+      border-radius:8px;
+      border:1px solid rgba(52,199,89,0.25);
+      opacity:.7;
     }
 
     .sensor-footer{
@@ -693,57 +693,43 @@
           {% for item in sidebar_gardens %}
             {% set g = item.garden %}
             {% set zones = item.zones %}
-            {% set is_current_garden = (garden.garden_id == g.garden_id) %}
             <button
-              class="garden-item {% if is_current_garden %}current{% endif %}"
+              class="garden-item {% if g.garden_id == garden.garden_id %}current{% endif %}"
               type="button"
               data-garden-id="{{ g.garden_id }}"
             >
-              <span class="garden-chevron">
-                {% if is_current_garden %}▼{% else %}▶{% endif %}
-              </span>
+              <span class="garden-chevron">▼</span>
               <span>{{ g.garden_name }}</span>
             </button>
-
-            <div
-              class="playfield-list"
-              data-list-for="{{ g.garden_id }}"
-              {% if not is_current_garden %}style="display:none"{% endif %}
-            >
-              {% for zone in zones %}
-                <form
-                  method="get"
-                  action="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}"
-                  class="playfield-form"
+            <div class="playfield-list" data-list-for="{{ g.garden_id }}">
+              {% for z in zones %}
+                <a
+                  href="{{ url_for('dashboard.dashboard', serial_number=z.serial_number) }}"
+                  class="playfield-btn {% if z.serial_number == robot.serial_number %}active{% endif %}"
                 >
-                  <button
-                    class="playfield-btn {% if zone.serial_number == robot.serial_number %}active{% endif %}"
-                    type="submit"
-                  >
-                    <span>{{ zone.robot_name }}</span>
-                    {% if zone.serial_number == robot.serial_number %}
-                      <span class="playfield-dot"></span>
-                    {% endif %}
-                  </button>
-                </form>
+                  <span>{{ z.robot_name or z.serial_number }}</span>
+                  {% if z.serial_number == robot.serial_number %}
+                    <span class="playfield-dot"></span>
+                  {% endif %}
+                </a>
               {% endfor %}
             </div>
           {% endfor %}
         </section>
 
-        <!-- Data variables -->
+        <!-- Data variabelen -->
         <section class="sidebar-section">
           <button class="data-toggle" type="button" id="dataToggleBtn">
             <span class="garden-chevron" id="dataToggleIcon">▼</span>
             <span>Data variabelen</span>
           </button>
           <div class="data-list" id="dataList">
-            <button class="data-btn active" type="button" data-target="sensor-moisture">Bodemvochtigheid</button>
-            <button class="data-btn" type="button" data-target="sensor-temp">Temperatuur</button>
-            <button class="data-btn" type="button" data-target="sensor-humidity">Luchtvochtigheid</button>
-            <button class="data-btn" type="button" data-target="sensor-rain">Regenval (Waterbehoefte)</button>
-            <button class="data-btn" type="button" data-target="sensor-light">Licht</button>
-            <button class="data-btn" type="button" data-target="sensor-co2">CO₂ Niveau</button>
+            <button class="data-btn active" type="button" data-target="#sensor-moisture">Bodemvochtigheid</button>
+            <button class="data-btn" type="button" data-target="#sensor-temperature">Temperatuur</button>
+            <button class="data-btn" type="button" data-target="#sensor-humidity">Luchtvochtigheid</button>
+            <button class="data-btn" type="button" data-target="#sensor-rain">Regenval (Waterbehoefte)</button>
+            <button class="data-btn" type="button" data-target="#sensor-light">Licht</button>
+            <button class="data-btn" type="button" data-target="#sensor-co2">CO₂ Niveau</button>
           </div>
         </section>
       </div>
@@ -752,19 +738,17 @@
       <div class="sidebar-bottom">
         <div class="profile-row">
           <div class="profile-avatar">
-            {{ (user_name or 'J')[0] }}
+            {{ user_name[0]|upper if user_name else "U" }}
           </div>
           <div>
-            <div class="profile-text-main">{{ user_name or 'Jan Modaal' }}</div>
+            <div class="profile-text-main">{{ user_name }}</div>
             <div class="profile-text-sub">Profiel &amp; Instellingen</div>
           </div>
         </div>
-        <form method="get" action="{{ url_for('auth.logout') }}">
-          <button class="logout-btn" type="submit">
-            <span>⟵</span>
-            <span>Logout</span>
-          </button>
-        </form>
+        <a class="logout-btn" href="{{ url_for('auth.logout') }}">
+          <span>⟵</span>
+          <span>Logout</span>
+        </a>
       </div>
     </aside>
 
@@ -777,7 +761,9 @@
             ←
           </button>
         </form>
-        <h1 class="topbar-title">{{ robot.robot_name }}</h1>
+        <h1 class="topbar-title">
+          {{ robot.robot_name or 'Playfield' }}
+        </h1>
         <div class="status-pill">
           <span class="status-dot"></span>
           <span>Online – Actief</span>
@@ -793,36 +779,49 @@
             <div class="health-left">
               <div class="score-circle-wrap">
                 <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
+                  <!-- achtergrond -->
                   <circle
                     cx="70" cy="70" r="52"
                     stroke="#252934"
                     stroke-width="12"
                     fill="none"
                   />
+                  <!-- progress -->
                   <circle
                     cx="70" cy="70" r="52"
                     stroke="#34C759"
                     stroke-width="12"
                     fill="none"
                     stroke-linecap="round"
-                    stroke-dasharray="326.7"
-                    stroke-dashoffset="{{ 326.7 - (health_score / 100) * 326.7 }}"
+                    stroke-dasharray="{{ score_dasharray }}"
+                    stroke-dashoffset="{{ score_dashoffset }}"
                   />
                 </svg>
                 <div class="score-circle-text">{{ health_score }}</div>
               </div>
 
-              <!-- factoren -->
+              <!-- factoren: voor nu nog dummy percentages,
+                   later kan je hier ook met sensordata werken -->
               <div class="factor-list">
+                {% set m_moist = sensor_data['moisture']['measurement'] %}
+                {% set m_temp  = sensor_data['temperature']['measurement'] %}
+                {% set m_hum   = sensor_data['humidity']['measurement'] %}
+                {% set m_rain  = sensor_data['rain']['measurement'] %}
+                {% set m_light = sensor_data['light']['measurement'] %}
+                {% set m_co2   = sensor_data['co2']['measurement'] %}
+
                 <div>
                   <div class="factor-row-top">
                     <div class="factor-name">
                       <span>💧</span><span>Bodemvochtigheid</span>
                     </div>
-                    <div>88% <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_moist.value|round(1) if m_moist else '–' }}%
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:88%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ m_moist.value if m_moist else 80 }}%;"></div>
                   </div>
                 </div>
 
@@ -831,10 +830,13 @@
                     <div class="factor-name">
                       <span>🌡️</span><span>Temperatuur</span>
                     </div>
-                    <div>24°C <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_temp.value|round(1) if m_temp else '–' }}°C
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:80%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ 80 }}%;"></div>
                   </div>
                 </div>
 
@@ -843,10 +845,13 @@
                     <div class="factor-name">
                       <span>💨</span><span>Luchtvochtigheid</span>
                     </div>
-                    <div>72% <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_hum.value|round(1) if m_hum else '–' }}%
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:72%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ m_hum.value if m_hum else 70 }}%;"></div>
                   </div>
                 </div>
 
@@ -855,10 +860,13 @@
                     <div class="factor-name">
                       <span>🌧️</span><span>Regenval</span>
                     </div>
-                    <div>45&nbsp;mm/week <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:75%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ 75 }}%;"></div>
                   </div>
                 </div>
 
@@ -867,10 +875,13 @@
                     <div class="factor-name">
                       <span>☀️</span><span>Licht</span>
                     </div>
-                    <div>8u/dag <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_light.value|round(1) if m_light else '–' }} µmol/m²/s
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:80%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ 80 }}%;"></div>
                   </div>
                 </div>
 
@@ -879,10 +890,13 @@
                     <div class="factor-name">
                       <span>🪴</span><span>CO₂</span>
                     </div>
-                    <div>950&nbsp;ppm <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span></div>
+                    <div>
+                      {{ m_co2.value|round(1) if m_co2 else '–' }} ppm
+                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:82%;"></div>
+                    <div class="factor-bar-fill" style="width:{{ 82 }}%;"></div>
                   </div>
                 </div>
               </div>
@@ -892,7 +906,7 @@
             <div class="health-right">
               <div class="health-right-header">
                 <div class="health-right-title">Algemene Playfield Gezondheid</div>
-                <p class="health-right-sub">Uitstekende groeiomstandigheden</p>
+                <p class="health-right-sub">{{ health_label }}</p>
               </div>
 
               <div class="trend-card">
@@ -931,43 +945,72 @@
 
         <!-- Sensor cards -->
         <section class="sensor-grid">
+          {% set s_moist = sensor_data['moisture']['sensor'] %}
+          {% set m_moist = sensor_data['moisture']['measurement'] %}
+          {% set s_temp  = sensor_data['temperature']['sensor'] %}
+          {% set m_temp  = sensor_data['temperature']['measurement'] %}
+          {% set s_hum   = sensor_data['humidity']['sensor'] %}
+          {% set m_hum   = sensor_data['humidity']['measurement'] %}
+          {% set s_rain  = sensor_data['rain']['sensor'] %}
+          {% set m_rain  = sensor_data['rain']['measurement'] %}
+          {% set s_light = sensor_data['light']['sensor'] %}
+          {% set m_light = sensor_data['light']['measurement'] %}
+          {% set s_co2   = sensor_data['co2']['sensor'] %}
+          {% set m_co2   = sensor_data['co2']['measurement'] %}
+
           <!-- Bodemvochtigheid -->
           <article class="sensor-card" id="sensor-moisture">
             <div class="sensor-header">
               <div>
                 <div class="sensor-name">Bodemvochtigheid</div>
                 <div>
-                  <span class="sensor-value-main">68</span>
-                  <span class="sensor-value-unit">%</span>
+                  <span class="sensor-value-main">
+                    {{ m_moist.value|round(1) if m_moist else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_moist.unit if s_moist and s_moist.unit else '%' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-moisture"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideale range: 65–85% veldcapaciteit</span>
-              <span>2 min geleden</span>
+              <span>
+                {% if m_moist %}
+                  {{ m_moist.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
 
           <!-- Temperatuur -->
-          <article class="sensor-card" id="sensor-temp">
+          <article class="sensor-card" id="sensor-temperature">
             <div class="sensor-header">
               <div>
                 <div class="sensor-name">Temperatuur</div>
                 <div>
-                  <span class="sensor-value-main">24.2</span>
-                  <span class="sensor-value-unit">°C</span>
+                  <span class="sensor-value-main">
+                    {{ m_temp.value|round(1) if m_temp else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_temp.unit if s_temp and s_temp.unit else '°C' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-temp"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideale range: 21–29°C</span>
-              <span>1 min geleden</span>
+              <span>
+                {% if m_temp %}
+                  {{ m_temp.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
 
@@ -977,17 +1020,25 @@
               <div>
                 <div class="sensor-name">Luchtvochtigheid</div>
                 <div>
-                  <span class="sensor-value-main">72</span>
-                  <span class="sensor-value-unit">%</span>
+                  <span class="sensor-value-main">
+                    {{ m_hum.value|round(1) if m_hum else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_hum.unit if s_hum and s_hum.unit else '%' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-humidity"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideale range: 40–70%</span>
-              <span>3 min geleden</span>
+              <span>
+                {% if m_hum %}
+                  {{ m_hum.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
 
@@ -997,17 +1048,25 @@
               <div>
                 <div class="sensor-name">Regenval (Waterbehoefte)</div>
                 <div>
-                  <span class="sensor-value-main">45</span>
-                  <span class="sensor-value-unit">mm/week</span>
+                  <span class="sensor-value-main">
+                    {{ m_rain.value|round(1) if m_rain else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_rain.unit if s_rain and s_rain.unit else 'mm/week' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-rain"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideaal: 40–60 mm/week</span>
-              <span>1 uur geleden</span>
+              <span>
+                {% if m_rain %}
+                  {{ m_rain.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
 
@@ -1017,17 +1076,25 @@
               <div>
                 <div class="sensor-name">Licht</div>
                 <div>
-                  <span class="sensor-value-main">450</span>
-                  <span class="sensor-value-unit">µmol/m²/s</span>
+                  <span class="sensor-value-main">
+                    {{ m_light.value|round(1) if m_light else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_light.unit if s_light and s_light.unit else 'µmol/m²/s' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-light"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideaal: 8–10 uur zon</span>
-              <span>1 min geleden</span>
+              <span>
+                {% if m_light %}
+                  {{ m_light.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
 
@@ -1037,17 +1104,25 @@
               <div>
                 <div class="sensor-name">CO₂</div>
                 <div>
-                  <span class="sensor-value-main">950</span>
-                  <span class="sensor-value-unit">ppm</span>
+                  <span class="sensor-value-main">
+                    {{ m_co2.value|round(1) if m_co2 else '–' }}
+                  </span>
+                  <span class="sensor-value-unit">
+                    {{ s_co2.unit if s_co2 and s_co2.unit else 'ppm' }}
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="sensor-chart">
-              <canvas id="chart-co2"></canvas>
-            </div>
+            <div class="sensor-chart"></div>
             <div class="sensor-footer">
               <span>Ideale range: 800–1200 ppm</span>
-              <span>3 min geleden</span>
+              <span>
+                {% if m_co2 %}
+                  {{ m_co2.time_m.strftime('%H:%M') }}
+                {% else %}
+                  geen data
+                {% endif %}
+              </span>
             </div>
           </article>
         </section>
@@ -1082,14 +1157,14 @@
       dataToggleIcon.textContent = isHidden ? '▼' : '▶';
     });
 
-    // active state + scrollen naar juiste sensor-kaart
+    // scroll naar juiste sensor-kaart
     document.querySelectorAll('.data-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.data-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        const targetId = btn.getAttribute('data-target');
-        const target = document.getElementById(targetId);
+        const targetSelector = btn.getAttribute('data-target');
+        const target = document.querySelector(targetSelector);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -1099,22 +1174,14 @@
     // toggle gardens open/dicht
     document.querySelectorAll('.garden-item').forEach(btn => {
       btn.addEventListener('click', () => {
-        const gardenId = btn.getAttribute('data-garden-id');
-        const list = document.querySelector('[data-list-for="'+gardenId+'"]');
+        const id = btn.getAttribute('data-garden-id');
+        const list = document.querySelector('[data-list-for="'+id+'"]');
         const open = list && list.style.display !== 'none';
 
         const icon = btn.querySelector('.garden-chevron');
         if (icon) icon.textContent = open ? '▶' : '▼';
 
         if (list) list.style.display = open ? 'none' : 'block';
-      });
-    });
-
-    // active playfield (alleen styling, echte navigatie via form submit)
-    document.querySelectorAll('.playfield-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.playfield-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
       });
     });
 
@@ -1130,46 +1197,6 @@
         fabActions.classList.remove('show');
       }
     });
-
-    // ====== Kleine sensor-grafiekjes met Chart.js ======
-    function createLineChart(id, data, color){
-      const ctx = document.getElementById(id);
-      if (!ctx || typeof Chart === 'undefined') return;
-
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.map((_, i) => i + 1),
-          datasets: [{
-            data: data,
-            borderColor: color,
-            backgroundColor: 'rgba(52,199,89,0.15)',
-            tension: 0.35,
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false }
-          },
-          scales: {
-            x: { display: false },
-            y: { display: false }
-          }
-        }
-      });
-    }
-
-    // Dummy data voor nu – later kan je hier echte sensorwaarden in stoppen
-    createLineChart('chart-moisture', [63,65,67,70,72,69,68,71,70,69,68,67], '#34C759');
-    createLineChart('chart-temp',     [22,23,23.5,24,24.5,24,24.2,24.1,24.3,24.0,23.8,24.1], '#34C759');
-    createLineChart('chart-humidity', [68,69,70,71,72,73,72,71,70,69,70,72], '#34C759');
-    createLineChart('chart-rain',     [40,42,45,48,50,47,46,45,44,46,47,45], '#34C759');
-    createLineChart('chart-light',    [380,420,450,480,460,440,430,450,470,460,445,455], '#34C759');
-    createLineChart('chart-co2',      [880,900,920,940,960,980,950,930,920,940,960,950], '#34C759');
   </script>
 </body>
 </html>
