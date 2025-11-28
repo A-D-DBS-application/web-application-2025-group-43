@@ -1,14 +1,21 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Open login.html",
-            "file": "/Users/macfree/Documents/GitHub/web-application-2025-group-43/app/templates/login.html"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Flask app",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/run.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "FLASK_ENV": "development"
+      },
+      "serverReadyAction": {
+        "pattern": "Running on http://127\\.0\\.0\\.1:(\\d+)",
+        "uriFormat": "http://127.0.0.1:%s",
+        "action": "openExternally"
+      }
+    }
+  ]
 }
