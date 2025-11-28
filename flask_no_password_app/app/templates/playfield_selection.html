@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Selecteer speelveld — Capenta{% endblock %}
+{% block title %}Playfields — Capenta{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
 <style>
   :root{
     --bg-1:#020817;
@@ -165,9 +166,34 @@
         </svg>
         <span>Capenta</span>
       </div>
+=======
+<div class="container">
+  <div class="header">
+    <button class="back-btn" onclick="history.back()">←</button>
+    <div class="brand-header">
+      <img src="{{ url_for('static', filename='img/logo-dark.svg') }}" alt="Capenta" class="logo-small">
+      <h2>Capenta</h2>
     </div>
   </div>
 
+  <div class="subtitle">Grow more, worry less.</div>
+
+  <h1>Playfields – Hoftuin Oost</h1>
+  <p class="location">Kerkstraat 42, 9000 Gent, België</p>
+
+  <div class="playfields-grid">
+    <div class="playfield-card">
+      <div class="playfield-image">
+        <img src="{{ url_for('static', filename='img/bed-1.jpg') }}" alt="Bed 1">
+        <span class="health-badge green">● 92%</span>
+      </div>
+      <h3>Bed 1 – Tomaten</h3>
+      <p>12 m² • 24 planten • 92% gezondheid</p>
+>>>>>>> a55ff2930b95e24d76c5c8b7ee7fb010bfec9971
+    </div>
+  </div>
+
+<<<<<<< HEAD
   <!-- HEADING -->
   <div class="heading-box">
     <p class="slogan">Grow more, worry less.</p>
@@ -238,5 +264,37 @@
     {% endfor %}
   </div>
 
+=======
+    <div class="playfield-card">
+      <div class="playfield-image">
+        <img src="{{ url_for('static', filename='img/bed-2.jpg') }}" alt="Bed 2">
+        <span class="health-badge orange">● 88%</span>
+      </div>
+      <h3>Bed 2 – Sla</h3>
+      <p>8 m² • 36 planten • 88% gezondheid</p>
+    </div>
+  </div>
+>>>>>>> a55ff2930b95e24d76c5c8b7ee7fb010bfec9971
 </div>
+
+<style>
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+  .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .back-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 18px; }
+  .brand-header { display: flex; align-items: center; gap: 8px; }
+  .logo-small { width: 32px; }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 24px; }
+  h1 { text-align: center; font-size: 42px; margin: 0 0 8px; }
+  .location { text-align: center; color: var(--muted); margin: 0 0 32px; }
+  .playfields-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .playfield-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+  .playfield-card:hover { transform: translateY(-4px); }
+  .playfield-image { position: relative; height: 240px; background: var(--bg-secondary); }
+  .playfield-image img { width: 100%; height: 100%; object-fit: cover; }
+  .health-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; }
+  .health-badge.green { color: #44d25f; }
+  .health-badge.orange { color: #ff9500; }
+  .playfield-card h3 { margin: 16px 16px 8px; font-size: 18px; }
+  .playfield-card p { margin: 0 16px 16px; color: var(--muted); font-size: 13px; }
+</style>
 {% endblock %}
