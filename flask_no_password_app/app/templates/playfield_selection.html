@@ -1,49 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}Selecteer speelveld — Capenta{% endblock %}
+{% block title %}Playfields — Capenta{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#020817] text-slate-100 px-6 py-8">
-  <main class="max-w-4xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <p class="text-xs text-gray-500 uppercase tracking-[0.25em] mb-1">Step 2</p>
-        <h1 class="text-2xl font-semibold leading-tight">Selecteer een speelveld</h1>
-        <p class="text-sm text-gray-400">
-          Kies het bed of de kas waarvoor je de sensorwaarden en health score wil zien.
-        </p>
+<div class="container">
+  <div class="header">
+    <button class="back-btn" onclick="history.back()">←</button>
+    <div class="brand-header">
+      <img src="{{ url_for('static', filename='img/logo-dark.svg') }}" alt="Capenta" class="logo-small">
+      <h2>Capenta</h2>
+    </div>
+  </div>
+
+  <div class="subtitle">Grow more, worry less.</div>
+
+  <h1>Playfields – Hoftuin Oost</h1>
+  <p class="location">Kerkstraat 42, 9000 Gent, België</p>
+
+  <div class="playfields-grid">
+    <div class="playfield-card">
+      <div class="playfield-image">
+        <img src="{{ url_for('static', filename='img/bed-1.jpg') }}" alt="Bed 1">
+        <span class="health-badge green">● 92%</span>
       </div>
-      <a href="{{ url_for('garden_selection') }}"
-         class="text-xs text-gray-400 hover:text-[#34C759] underline">
-        ← Terug naar tuinen
-      </a>
+      <h3>Bed 1 – Tomaten</h3>
+      <p>12 m² • 24 planten • 92% gezondheid</p>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <a href="{{ url_for('dashboard', playfield_id='bed-1') }}"
-         class="rounded-2xl bg-white/5 border border-white/10 px-4 py-4 hover:border-[#34C759]/60 hover:bg-white/10 transition-all flex items-center justify-between">
-        <div>
-          <div class="text-sm font-semibold">Bed 1 — Tomaten</div>
-          <div class="text-xs text-gray-400">Volledige sensor set • Irrigatie actief</div>
-        </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/40">
-          Online
-        </span>
-      </a>
-
-      <a href="{{ url_for('dashboard', playfield_id='bed-2') }}"
-         class="rounded-2xl bg-white/5 border border-white/10 px-4 py-4 hover:border-[#34C759]/60 hover:bg-white/10 transition-all flex items-center justify-between">
-        <div>
-          <div class="text-sm font-semibold">Bed 2 — Sla</div>
-          <div class="text-xs text-gray-400">Minder licht • Vochtmonitoring</div>
-        </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/40">
-          Let op
-        </span>
-      </a>
-
-      <!-- Kopieer voor meer bedden -->
+    <div class="playfield-card">
+      <div class="playfield-image">
+        <img src="{{ url_for('static', filename='img/bed-2.jpg') }}" alt="Bed 2">
+        <span class="health-badge orange">● 88%</span>
+      </div>
+      <h3>Bed 2 – Sla</h3>
+      <p>8 m² • 36 planten • 88% gezondheid</p>
     </div>
-  </main>
+  </div>
 </div>
+
+<style>
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+  .header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .back-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 18px; }
+  .brand-header { display: flex; align-items: center; gap: 8px; }
+  .logo-small { width: 32px; }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 24px; }
+  h1 { text-align: center; font-size: 42px; margin: 0 0 8px; }
+  .location { text-align: center; color: var(--muted); margin: 0 0 32px; }
+  .playfields-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .playfield-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+  .playfield-card:hover { transform: translateY(-4px); }
+  .playfield-image { position: relative; height: 240px; background: var(--bg-secondary); }
+  .playfield-image img { width: 100%; height: 100%; object-fit: cover; }
+  .health-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; }
+  .health-badge.green { color: #44d25f; }
+  .health-badge.orange { color: #ff9500; }
+  .playfield-card h3 { margin: 16px 16px 8px; font-size: 18px; }
+  .playfield-card p { margin: 0 16px 16px; color: var(--muted); font-size: 13px; }
+</style>
 {% endblock %}
