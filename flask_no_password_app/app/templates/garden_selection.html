@@ -1,73 +1,286 @@
 <!doctype html>
-<html lang="nl" data-theme="dark">
+<html lang="nl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Select Your Garden — Capenta</title>
+
+  <!-- IMPORT ICONS (Lucide SVG inline) -->
   <style>
+    /* GLOBAL */
     :root{
-      --bg-1:#05060a; --bg-2:#0b1115; --card:#0f1417;
-      --muted:#9aa4b2; --accent:#44d25f; --card-radius:14px;
-      --gap:18px;
+      --bg-1:#05060a;
+      --bg-2:#0b1115;
+      --card:#111418;
+      --accent:#34C759;
+      --muted:#9aa4b2;
     }
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
-    .wrap{width:100%;max-width:1100px}
-    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .title{display:flex;flex-direction:column}
-    h1{margin:0;color:var(--accent);font-size:28px}
-    p{margin:0;color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:12px}
-    .btn{background:linear-gradient(180deg,var(--accent),#28b454);border:0;color:#062018;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--gap)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 30px rgba(2,6,23,0.6);cursor:pointer;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
-    .card:hover{transform:translateY(-4px);transition:transform .14s}
-    .thumb{width:100%;height:120px;border-radius:8px;background:#071018;display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden}
-    .meta{display:flex;align-items:center;justify-content:space-between;width:100%}
-    .name{font-weight:700}
-    .small{font-size:13px;color:var(--muted)}
-    .empty{padding:28px;border-radius:12px;border:1px dashed rgba(255,255,255,0.03);text-align:center;color:var(--muted)}
-    @media (max-width:520px){ .thumb{height:100px} .header{flex-direction:column;align-items:flex-start;gap:12px} }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,Roboto,Arial;
+      background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:white;
+      min-height:100vh;
+      padding:28px;
+    }
+
+    /* TOP BAR */
+    .topbar{
+      max-width:1100px;
+      margin:0 auto 40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .brand{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .brand span{
+      font-size:24px;
+      font-weight:700;
+    }
+    .user-btn{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#1E1E1E;
+      border:1px solid #2a2a2a;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:.2s;
+    }
+    .user-btn:hover{
+      border-color:var(--accent);
+    }
+
+    /* CONTENT WRAPPER */
+    .wrap{
+      max-width:850px;
+      margin:0 auto;
+      text-align:center;
+    }
+    .slogan{
+      color:#b8b8b8;
+      margin-bottom:10px;
+      font-size:18px;
+    }
+    .title-main{
+      font-size:36px;
+      font-weight:700;
+      margin-bottom:40px;
+    }
+
+    /* MAIN GARDEN CARD */
+    .main-card{
+      position:relative;
+      width:100%;
+      max-width:420px;
+      margin:0 auto 40px;
+      aspect-ratio:1/1;
+      border-radius:26px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:.25s;
+    }
+    .main-card:hover{
+      transform:scale(1.02);
+      box-shadow:0 0 40px rgba(52,199,89,0.25);
+    }
+    .card-bg{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to bottom right,#1E1E1E,#181818,#121212);
+    }
+    .card-leaf{
+      position:absolute;
+      top:32px;
+      left:32px;
+      opacity:0.1;
+    }
+    .main-content{
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      padding:28px;
+      text-align:left;
+    }
+    .status-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:6px;
+    }
+    .dot-online{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--accent);
+      animation:pulse 1.6s infinite;
+    }
+    .dot-offline{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:gray;
+    }
+    @keyframes pulse{
+      0%{opacity:.4}
+      50%{opacity:1}
+      100%{opacity:.4}
+    }
+    .g-name{
+      font-size:30px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .g-address{
+      font-size:14px;
+      color:#cfcfcf;
+    }
+
+    /* OTHER GARDENS */
+    .other-title{
+      color:#929292;
+      margin-bottom:12px;
+      text-align:left;
+    }
+    .scroll-row{
+      display:flex;
+      gap:18px;
+      overflow-x:auto;
+      padding-bottom:12px;
+    }
+    .scroll-row::-webkit-scrollbar{display:none}
+
+    .small-card{
+      position:relative;
+      flex-shrink:0;
+      width:250px;
+      height:250px;
+      border-radius:20px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:.2s;
+    }
+    .small-card:hover{
+      transform:scale(1.05);
+      box-shadow:0 0 25px rgba(52,199,89,0.15);
+    }
+    .small-content{
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      padding:18px;
+      text-align:left;
+    }
+    .small-name{
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:2px;
+    }
+    .small-address{
+      font-size:12px;
+      color:#b6b6b6;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="header">
-      <div class="title">
-        <h1>Select your garden</h1>
-        <p>Choose which garden you want to manage</p>
-      </div>
-      <div class="actions">
-        <button class="btn" id="createBtn">Create garden</button>
-      </div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <!-- Leaf icon (Lucide SVG) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" stroke="var(--accent)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 21c-7.333-1.333-10-6.333-10-8 0-4 6-8 12-8s11 4 11 8c0 1.667-2.667 6.667-10 8v-6"></path>
+      </svg>
+      <span>Capenta</span>
     </div>
 
-    <div class="grid" id="gardenGrid">
-      <!-- example cards; replace or render server-side -->
-      <div class="card" data-id="1" onclick="openGarden(1)">
-        <div class="thumb"><img src="{{ url_for('static', filename='img/garden-1.jpg') }}" alt="garden" style="width:100%;height:100%;object-fit:cover" /></div>
-        <div class="meta"><div class="name">Front Yard</div><div class="small">2 devices</div></div>
-        <div class="small">Last seen: 2 hours ago</div>
-      </div>
-
-      <div class="card" data-id="2" onclick="openGarden(2)">
-        <div class="thumb"><img src="{{ url_for('static', filename='img/garden-2.jpg') }}" alt="garden" style="width:100%;height:100%;object-fit:cover" /></div>
-        <div class="meta"><div class="name">Back Garden</div><div class="small">1 device</div></div>
-        <div class="small">Last seen: online</div>
-      </div>
-
-      <!-- fallback / empty state -->
-      <div class="card empty" onclick="location.href='/gardens/new'">
-        No gardens yet — click to create your first garden
-      </div>
+    <div class="user-btn">
+      <!-- User icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="#b5b5b5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
     </div>
   </div>
 
-  <script>
-    function openGarden(id){
-      // navigate to dashboard for garden id (adjust route as needed)
-      location.href = '/dashboard/' + id;
-    }
-    document.getElementById('createBtn')?.addEventListener('click',()=> location.href='/gardens/new');
-  </script>
+  <!-- MAIN CONTENT -->
+  <div class="wrap">
+
+    <p class="slogan">Grow more, worry less.</p>
+    <h1 class="title-main">Select Your Garden</h1>
+
+    <!-- MAIN GARDEN (passed via Flask) -->
+    <button class="main-card" onclick="location.href='/dashboard/{{ main_garden.id }}'">
+      <div class="card-bg"></div>
+
+      <!-- Background image -->
+      <img src="{{ main_garden.image }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; mix-blend-mode:overlay; opacity:0.9"/>
+
+      <!-- Decorative sprout icon -->
+      <div class="card-leaf">
+        <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" stroke="var(--accent)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10v10H7zM21 20h10v10H21z"/>
+        </svg>
+      </div>
+
+      <!-- Text content -->
+      <div class="main-content">
+        <div class="status-row">
+          <span style="color:#ccc;font-size:14px">{{ main_garden.playfields }} playfields</span>
+          <span style="color:#555">•</span>
+
+          {% if main_garden.status == "Online" %}
+            <div class="dot-online"></div>
+            <span style="color:var(--accent);font-size:14px">Online</span>
+          {% else %}
+            <div class="dot-offline"></div>
+            <span style="color:gray;font-size:14px">Offline</span>
+          {% endif %}
+        </div>
+
+        <div class="g-name">{{ main_garden.name }}</div>
+        <div class="g-address">{{ main_garden.address }}</div>
+      </div>
+    </button>
+
+    <!-- OTHER GARDENS -->
+    <h3 class="other-title">Other Gardens</h3>
+
+    <div class="scroll-row">
+      {% for g in other_gardens %}
+      <button class="small-card" onclick="location.href='/dashboard/{{ g.id }}'">
+        <div class="card-bg"></div>
+        <img src="{{ g.image }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.85; mix-blend-mode:overlay"/>
+
+        <div class="small-content">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#ccc;margin-bottom:4px;">
+            {{ g.playfields }} playfields
+            <span style="color:#666">•</span>
+            {% if g.status == "Online" %}
+              <div class="dot-online" style="width:6px;height:6px"></div>
+              <span style="color:var(--accent)">Online</span>
+            {% else %}
+              <div class="dot-offline" style="width:6px;height:6px"></div>
+              <span style="color:gray">Offline</span>
+            {% endif %}
+          </div>
+
+          <div class="small-name">{{ g.name }}</div>
+          <div class="small-address">{{ g.address }}</div>
+        </div>
+      </button>
+      {% endfor %}
+    </div>
+
+  </div>
 </body>
 </html>
