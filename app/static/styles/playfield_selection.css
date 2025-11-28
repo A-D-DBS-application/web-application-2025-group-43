@@ -1,0 +1,174 @@
+/* ============================
+   VARIABLES & RESET
+============================ */
+
+:root{
+  --bg-1:#05060a;
+  --bg-2:#0b1115;
+  --card:#111418;
+  --accent:#34C759;
+  --muted:#9aa4b2;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+/* ============================
+   BASIC PAGE STYLING
+============================ */
+
+body{
+  font-family:Inter,system-ui,Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color:white;
+  min-height:100vh;
+  padding:24px;
+}
+
+/* ============================
+   TOP BAR (logo + right buttons)
+============================ */
+
+.topbar{
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* LOGO LINKS */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:white;
+}
+
+.brand-img{
+  height:150px;       /* zelfde als Garden */
+  width:auto;
+  filter:drop-shadow(0 0 12px rgba(52,199,89,0.4));
+}
+
+/* BUTTON CONTAINER RECHTS */
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn{
+  display:inline-flex;
+  align-items:center;
+  padding:10px 22px;
+  border-radius:999px;
+  background:#272727;
+  border:1px solid #404040;
+  color:#e5e7eb;
+  font-size:14px;
+  text-decoration:none;
+  transition:0.25s ease;
+}
+
+.logout-btn:hover{
+  background:#0a0f12;
+  border-color:var(--accent);
+}
+
+/* ADD PLAYFIELD BUTTON (zelfde look als Add Garden) */
+.add-playfield-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 20px;
+  border-radius:14px;
+  background:#1F3C26;
+  color:white;
+  font-size:14px;
+  text-decoration:none;
+  cursor:pointer;
+  transition:.2s ease;
+  box-shadow:0 12px 30px rgba(52,199,89,0.25);
+}
+
+.add-playfield-btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.08);
+}
+
+/* ============================
+   HEADER TEXT (CENTER)
+============================ */
+
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+  margin-top:-20px; /* tilt volledige sectie omhoog */
+  text-align:center;
+}
+
+.slogan{
+  margin-top:-20px; /* even hoog als knoppen */
+  margin-bottom:8px;
+  font-size:20px;
+  color:#b8b8b8;
+}
+
+.page-title{
+  font-size:42px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.garden-address{
+  color:#6b7280;
+}
+
+/* ============================
+   PLAYFIELD CARDS
+============================ */
+
+.playfield-card{
+  width:260px;                      /* vierkant zoals Garden */
+  height:260px;
+  border-radius:24px;
+  border:1px solid var(--accent);
+  background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.playfield-icon{
+  font-size:44px;
+  width:72px;
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 8px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.02);
+  line-height:1;
+}
+
+.playfield-title{
+  font-size:24px;
+  font-weight:700;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media(max-width:768px){
+  .brand-img{height:110px;}
+}

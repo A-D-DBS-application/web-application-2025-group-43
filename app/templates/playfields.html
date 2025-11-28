@@ -13,20 +13,17 @@
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-      body{
-        background:#05060a;
-        font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      }
-    </style>
+    <!-- Eigen CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/playfield_selection.css') }}">
   </head>
 
   <body class="min-h-screen p-6 text-white">
     <div class="max-w-7xl mx-auto">
 
-      <!-- Top bar -->
+      <!-- TOP BAR -->
       <header class="mb-8">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between topbar">
+          <!-- Links: back + logo -->
           <div class="flex items-center gap-4">
             <!-- Back button -->
             <a
@@ -36,22 +33,22 @@
               <span class="text-white text-xl">&lsaquo;</span>
             </a>
 
-            <!-- Logo + naam -->
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-[#34C759]/20 flex items-center justify-center">
-                <span class="text-[#34C759] text-xl">🌱</span>
-              </div>
-              <span class="text-white tracking-tight" style="font-size:24px;font-weight:700;">
-                Capenta
-              </span>
-            </div>
+            <!-- Logo links, net als bij Garden -->
+            <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
+              <img
+                class="brand-img"
+                src="{{ url_for('static', filename='img/logo.png') }}"
+                alt="Capenta logo"
+              >
+            </a>
           </div>
 
-          <div class="flex items-center gap-3">
+          <!-- Rechts: Add Playfield + Logout -->
+          <div class="flex items-center gap-3 topbar-right">
             <!-- Add playfield -->
             <a
               href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}"
-              class="bg-[#1F3C26] hover:brightness-110 text-white px-6 h-11 rounded-xl flex items-center transition-all"
+              class="add-playfield-btn bg-[#1F3C26] hover:brightness-110 text-white px-6 h-11 rounded-xl flex items-center transition-all"
             >
               <span class="w-5 h-5 mr-2 text-xl">+</span>
               <span>Add Playfield</span>
@@ -60,7 +57,7 @@
             <!-- Logout (GET) -->
             <a
               href="{{ url_for('auth.logout') }}"
-              class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 hover:border-[#34C759] transition-all group"
+              class="logout-btn flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 hover:border-[#34C759] transition-all group"
             >
               <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
               <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
@@ -71,48 +68,42 @@
         </div>
       </header>
 
-      <!-- Slogan + titel -->
-      <section class="text-center mb-12">
-        <p class="text-gray-400 mb-6 text-lg tracking-wide">
+      <!-- SLOGAN + TITEL (zelfde vibe als Garden) -->
+      <section class="text-center mb-12 wrap">
+        <p class="slogan">
           Grow more, worry less.
         </p>
-        <h1 class="text-white mb-2" style="font-size:36px;font-weight:700;">
+        <h1 class="page-title">
           Playfields – {{ garden.garden_name }}
         </h1>
-        <p class="text-gray-500">
+        <p class="garden-address">
           {{ garden.adress_garden }}
         </p>
       </section>
 
-      <!-- Playfields grid -->
-      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- PLAYFIELDS GRID -->
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
         {% for zone in robot_zones %}
-          <!-- HELE KAART IS NU EEN LINK NAAR DE DASHBOARD -->
+          <!-- HELE KAART = LINK NAAR DASHBOARD -->
           <a
             href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}"
-            class="group relative block aspect-[4/3] rounded-2xl overflow-hidden transition-all border border-[#34C759]
+            class="playfield-card group relative block rounded-2xl overflow-hidden transition-all border
                    hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(52,199,89,0.25)]"
-            style="background:linear-gradient(180deg,#1F3C26 0%,#16301E 100%);"
           >
-            <div class="absolute top-6 left-6 opacity-5 text-[#34C759] text-6xl select-none">
-              🍃
-            </div>
-
             <div class="absolute inset-0 p-6 flex flex-col justify-between">
-              <div class="flex justify-end">
-                <div class="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-700/50">
-                  <div class="w-2.5 h-2.5 rounded-full bg-[#34C759] animate-pulse"></div>
-                  <span class="text-sm text-[#34C759]">
-                    Active
-                  </span>
-                </div>
-              </div>
+              <!-- Status badge rechtsboven (removed) -->
 
-              <div>
-                <h3 class="text-white mb-2" style="font-size:24px;font-weight:700;">
+              <!-- Inhoud card (icoon + naam + info) -->
+              <div class="flex flex-col items-center text-center space-y-3">
+                <div class="playfield-icon">
+                  🍃
+                </div>
+
+                <h3 class="playfield-title">
                   {{ zone.robot_name }}
                 </h3>
-                <div class="flex flex-wrap items-center gap-2 text-sm text-gray-300">
+
+                <div class="flex flex-wrap justify-center items-center gap-2 text-sm text-gray-300">
                   <span>
                     {% if zone.area_playfield %}
                       {{ zone.area_playfield }} m²
@@ -126,6 +117,7 @@
               </div>
             </div>
 
+            <!-- Hover border highlight -->
             <div class="absolute inset-0 border-2 border-transparent group-hover:border-[#34C759] group-hover:brightness-110 rounded-2xl transition-all pointer-events-none"></div>
           </a>
         {% endfor %}

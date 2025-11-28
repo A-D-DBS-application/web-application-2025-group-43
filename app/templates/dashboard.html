@@ -241,6 +241,22 @@
       color:var(--muted);
     }
 
+    /* 🔹 Nieuwe wrapper voor klikbare profielknop */
+    .profile-row-button{
+      width:100%;
+      border:0;
+      padding:0;
+      margin:0;
+      background:none;
+      text-align:left;
+      cursor:pointer;
+      display:block;
+    }
+
+    .profile-row-button:hover .profile-row{
+      background:#191e24;
+    }
+
     .logout-btn{
       width:100%;
       border:0;
@@ -736,15 +752,22 @@
 
       <!-- onderaan profiel + logout -->
       <div class="sidebar-bottom">
-        <div class="profile-row">
-          <div class="profile-avatar">
-            {{ user_name[0]|upper if user_name else "U" }}
-          </div>
-          <div>
-            <div class="profile-text-main">{{ user_name }}</div>
-            <div class="profile-text-sub">Profiel &amp; Instellingen</div>
-          </div>
-        </div>
+        <!-- PROFIEL: klikbaar naar profielpagina -->
+        <form method="get" action="{{ url_for('profile.profile') }}">
+          <button type="submit" class="profile-row-button">
+            <div class="profile-row">
+              <div class="profile-avatar">
+                {{ (user_name or 'J')[0] }}
+              </div>
+              <div>
+                <div class="profile-text-main">{{ user_name or 'Jan Modaal' }}</div>
+                <div class="profile-text-sub">Profiel &amp; Instellingen</div>
+              </div>
+            </div>
+          </button>
+        </form>
+
+        <!-- Logout -->
         <a class="logout-btn" href="{{ url_for('auth.logout') }}">
           <span>⟵</span>
           <span>Logout</span>
@@ -800,8 +823,7 @@
                 <div class="score-circle-text">{{ health_score }}</div>
               </div>
 
-              <!-- factoren: voor nu nog dummy percentages,
-                   later kan je hier ook met sensordata werken -->
+              <!-- factoren (sensorgegevens) -->
               <div class="factor-list">
                 {% set m_moist = sensor_data['moisture']['measurement'] %}
                 {% set m_temp  = sensor_data['temperature']['measurement'] %}
@@ -836,7 +858,7 @@
                     </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:{{ 80 }}%;"></div>
+                    <div class="factor-bar-fill" style="width:80%;"></div>
                   </div>
                 </div>
 
@@ -866,7 +888,7 @@
                     </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:{{ 75 }}%;"></div>
+                    <div class="factor-bar-fill" style="width:75%;"></div>
                   </div>
                 </div>
 
@@ -881,7 +903,7 @@
                     </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:{{ 80 }}%;"></div>
+                    <div class="factor-bar-fill" style="width:80%;"></div>
                   </div>
                 </div>
 
@@ -896,7 +918,7 @@
                     </div>
                   </div>
                   <div class="factor-bar">
-                    <div class="factor-bar-fill" style="width:{{ 82 }}%;"></div>
+                    <div class="factor-bar-fill" style="width:82%;"></div>
                   </div>
                 </div>
               </div>

@@ -17,12 +17,14 @@ def create_app():
     from .routes.garden_routes import garden_bp
     from .routes.playfield_routes import playfield_bp
     from .routes.dashboard_routes import dashboard_bp
+    from .routes.profile_routes import profile_bp
 
     # ✅ Blueprints registreren
     app.register_blueprint(auth_bp)
     app.register_blueprint(garden_bp)
     app.register_blueprint(playfield_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(profile_bp)
 
     # Debug: routes tonen
     print("============== ROUTES DIE FLASK ZIET ===============")
