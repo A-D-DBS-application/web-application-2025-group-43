@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Edit Garden – Capenta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body{
+      background:#05060a;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-white">
+  <div class="max-w-7xl mx-auto px-6 py-6">
+
+    <!-- Top bar -->
+    <header class="flex items-center justify-between mb-8">
+      <!-- Back -->
+      <a href="{{ url_for('garden.garden_selection') }}"
+         class="w-10 h-10 rounded-full bg-[#1E1E1E] border border-gray-700
+                flex items-center justify-center hover:border-[#34C759] transition-all">
+        <span class="text-gray-400 text-xl">&lsaquo;</span>
+      </a>
+
+      <h1 class="text-white text-2xl font-semibold">
+        Edit Garden
+      </h1>
+
+      <!-- Logout -->
+      <a href="{{ url_for('auth.logout') }}"
+         class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E]
+                border border-gray-700 hover:border-[#34C759] transition-all group">
+        <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
+        <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
+          Logout
+        </span>
+      </a>
+    </header>
+
+    <!-- Card -->
+    <main class="max-w-xl mx-auto">
+      <div class="bg-[#1E1E1E] rounded-2xl p-8 border border-gray-800">
+
+        <h2 class="text-white text-2xl font-bold mb-2">Update Garden</h2>
+        <p class="text-gray-400 mb-8">Change the details and save.</p>
+
+        <form method="post" class="space-y-6">
+
+          <!-- Garden Name -->
+          <div>
+            <label class="block text-gray-300 mb-2">Garden name</label>
+            <input type="text" name="garden_name" required
+                   value="{{ garden.garden_name }}"
+                   class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700
+                          rounded-xl text-white placeholder-gray-500
+                          focus:outline-none focus:border-[#34C759]
+                          focus:ring-2 focus:ring-[#34C759]/20 transition-all"/>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label class="block text-gray-300 mb-2">Address</label>
+            <input type="text" name="address"
+                   value="{{ garden.adress_garden }}"
+                   class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700
+                          rounded-xl text-white placeholder-gray-500
+                          focus:outline-none focus:border-[#34C759]
+                          focus:ring-2 focus:ring-[#34C759]/20 transition-all"/>
+          </div>
+
+          <!-- Size -->
+          <div>
+            <label class="block text-gray-300 mb-2">Size of garden</label>
+            <div class="relative">
+              <input type="number" step="0.1" min="0" name="size"
+                     value="{{ garden.size }}"
+                     class="w-full px-4 py-3 pr-12 bg-[#0F1116] border border-gray-700
+                            rounded-xl text-white placeholder-gray-500
+                            focus:outline-none focus:border-[#34C759]
+                            focus:ring-2 focus:ring-[#34C759]/20 transition-all"/>
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">m²</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-4 mt-8">
+            <a href="{{ url_for('garden.garden_selection') }}"
+               class="flex-1 text-center bg-transparent border border-gray-700 text-gray-300
+                      hover:border-gray-600 hover:bg-gray-800/50 px-6 h-11 rounded-xl
+                      flex items-center justify-center text-sm transition-all">
+              Cancel
+            </a>
+
+            <button type="submit"
+              class="flex-1 bg-[#34C759] hover:brightness-110 text-white px-6 h-11
+                     rounded-xl text-sm font-semibold transition-all">
+              Save Garden
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>

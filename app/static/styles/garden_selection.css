@@ -199,8 +199,83 @@ body{
   margin-top:20px;
   color:var(--muted);
 }
+/* ============================
+   REMOVE GARDEN BUTTON
+============================ */
 
+.garden-card-container{
+  position:relative;
+}
+
+.delete-btn{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:1px solid #ff4b4b;
+  background:rgba(255,50,50,0.12);
+  color:#ff4b4b;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.15s ease;
+  z-index:10;
+}
+
+.delete-btn:hover{
+  background:rgba(255,50,50,0.22);
+  transform:scale(1.08);
+  border-color:#ff6b6b;
+}
 /* responsive */
 @media(max-width:768px){
   .brand-img{height:110px;}
+}
+
+.brand-subtitle {
+  margin-top:-60px;   /* trek de tekst 40px omhoog */
+}
+
+.wrap{
+  margin-top:-70px;
+}
+
+.slogan{
+  margin-top:-35px;
+}
+
+/* ============================
+   EDIT GARDEN BUTTON
+============================ */
+
+.edit-btn {
+  position:absolute;
+  top:12px;
+  left:12px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:1px solid #34C759;
+  background:rgba(52,199,89,0.12);
+  color:#34C759;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.15s ease;
+  text-decoration:none;
+  z-index:20;
+}
+
+.edit-btn:hover {
+  background:rgba(52,199,89,0.22);
+  transform:scale(1.08);
+  border-color:#55ff88;
 }

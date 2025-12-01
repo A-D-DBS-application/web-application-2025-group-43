@@ -72,3 +72,58 @@ def add_playfield(garden_id):
         return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
 
     return render_template("add_playfield.html", garden=garden)
+
+@playfield_bp.route("/delete/<string:serial_number>/<uuid:garden_id>", methods=["POST"])
+def delete_playfield(serial_number, garden_id):
+
+    # zoek playfield
+    zone = RobotZone.query.filter_by(serial_number=serial_number).first()
+
+    if not zone:
+        flash("Playfield not found.", "error")
+        return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
+
+    # delete cascade: sensors, measurements, feedback, conclusions
+    db.session.delete(zone)
+    db.session.commit()
+
+    flash("Playfield removed.", "success")
+    return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
+
+# =========================
+# PLAYFIELD WIJZIGEN (EDIT)
+# =========================
+@playfield_bp.route("/edit/<string:serial_number>/<uuid:garden_id>", methods=["GET", "POST"])
+def edit_playfield(serial_number, garden_id):
+    check = require_login()
+    if check:
+        return check
+
+    # garden ophalen
+    garden = Garden.query.filter_by(garden_id=garden_id).first()
+    if not garden:
+        flash("Garden not found.", "error")
+        return redirect(url_for("garden.garden_selection"))
+
+    # playfield ophalen
+    zone = RobotZone.query.filter_by(serial_number=serial_number).first()
+    if not zone:
+        flash("Playfield not found.", "error")
+        return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
+
+    # POST — formulier opslaan
+    if request.method == "POST":
+        zone.robot_name = request.form.get("robot_name")
+        zone.area_playfield = request.form.get("area_playfield")
+
+        db.session.commit()
+
+        flash("Playfield updated!", "success")
+        return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
+
+    # GET — formulier tonen met bestaande waarden
+    return render_template(
+        "edit_playfield.html",
+        garden=garden,
+        zone=zone,
+    )

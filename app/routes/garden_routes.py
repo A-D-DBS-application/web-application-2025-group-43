@@ -104,3 +104,39 @@ def enter_garden(garden_id):
     # return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
 
     return f"You clicked on garden: {garden.garden_name}"
+@garden_bp.route("/delete/<uuid:garden_id>", methods=["POST"])
+def delete_garden(garden_id):
+    garden = Garden.query.get_or_404(garden_id)
+
+    # verwijder alle playfields die gekoppeld zijn
+    for z in garden.robot_zones:
+        db.session.delete(z)
+
+    # verwijder de garden zelf
+    db.session.delete(garden)
+    db.session.commit()
+
+    return redirect(url_for("garden.garden_selection"))
+
+@garden_bp.route("/edit/<uuid:garden_id>", methods=["GET", "POST"])
+def edit_garden(garden_id):
+    check = require_login()
+    if check:
+        return check
+
+    garden = Garden.query.filter_by(garden_id=garden_id).first()
+
+    if not garden:
+        flash("Garden not found.", "error")
+        return redirect(url_for("garden.garden_selection"))
+
+    if request.method == "POST":
+        garden.garden_name = request.form.get("garden_name")
+        garden.adress_garden = request.form.get("address")
+        garden.size = request.form.get("size")
+
+        db.session.commit()
+        flash("Garden updated!", "success")
+        return redirect(url_for("garden.garden_selection"))
+
+    return render_template("edit_garden.html", garden=garden)

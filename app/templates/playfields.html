@@ -1,135 +1,143 @@
 <!doctype html>
 <html lang="nl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Capenta – Playfields</title>
 
-    <!-- Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Capenta – Playfields</title>
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Eigen CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/playfield_selection.css') }}">
-  </head>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <body class="min-h-screen p-6 text-white">
-    <div class="max-w-7xl mx-auto">
+  <!-- Eigen CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/playfield_selection.css') }}">
+</head>
 
-      <!-- TOP BAR -->
-      <header class="mb-8">
-        <div class="flex items-center justify-between topbar">
-          <!-- Links: back + logo -->
-          <div class="flex items-center gap-4">
-            <!-- Back button -->
-            <a
-              href="{{ url_for('garden.garden_selection') }}"
-              class="w-10 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all"
-            >
-              <span class="text-white text-xl">&lsaquo;</span>
-            </a>
+<body class="min-h-screen p-6 text-white">
+  <div class="max-w-7xl mx-auto">
 
-            <!-- Logo links, net als bij Garden -->
-            <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
-              <img
-                class="brand-img"
-                src="{{ url_for('static', filename='img/logo.png') }}"
-                alt="Capenta logo"
-              >
-            </a>
-          </div>
+    <!-- TOP BAR -->
+    <header class="mb-8">
+      <div class="flex items-center justify-between topbar">
 
-          <!-- Rechts: Add Playfield + Logout -->
-          <div class="flex items-center gap-3 topbar-right">
-            <!-- Add playfield -->
-            <a
-              href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}"
-              class="add-playfield-btn bg-[#1F3C26] hover:brightness-110 text-white px-6 h-11 rounded-xl flex items-center transition-all"
-            >
-              <span class="w-5 h-5 mr-2 text-xl">+</span>
-              <span>Add Playfield</span>
-            </a>
+        <!-- Back + Logo -->
+        <div class="flex items-center gap-4">
 
-            <!-- Logout (GET) -->
-            <a
-              href="{{ url_for('auth.logout') }}"
-              class="logout-btn flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 hover:border-[#34C759] transition-all group"
-            >
-              <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
-              <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-                Logout
-              </span>
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <!-- SLOGAN + TITEL (zelfde vibe als Garden) -->
-      <section class="text-center mb-12 wrap">
-        <p class="slogan">
-          Grow more, worry less.
-        </p>
-        <h1 class="page-title">
-          Playfields – {{ garden.garden_name }}
-        </h1>
-        <p class="garden-address">
-          {{ garden.adress_garden }}
-        </p>
-      </section>
-
-      <!-- PLAYFIELDS GRID -->
-      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
-        {% for zone in robot_zones %}
-          <!-- HELE KAART = LINK NAAR DASHBOARD -->
-          <a
-            href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}"
-            class="playfield-card group relative block rounded-2xl overflow-hidden transition-all border
-                   hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(52,199,89,0.25)]"
-          >
-            <div class="absolute inset-0 p-6 flex flex-col justify-between">
-              <!-- Status badge rechtsboven (removed) -->
-
-              <!-- Inhoud card (icoon + naam + info) -->
-              <div class="flex flex-col items-center text-center space-y-3">
-                <div class="playfield-icon">
-                  🍃
-                </div>
-
-                <h3 class="playfield-title">
-                  {{ zone.robot_name }}
-                </h3>
-
-                <div class="flex flex-wrap justify-center items-center gap-2 text-sm text-gray-300">
-                  <span>
-                    {% if zone.area_playfield %}
-                      {{ zone.area_playfield }} m²
-                    {% else %}
-                      Size unknown
-                    {% endif %}
-                  </span>
-                  <span>•</span>
-                  <span>Serial: {{ zone.serial_number }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Hover border highlight -->
-            <div class="absolute inset-0 border-2 border-transparent group-hover:border-[#34C759] group-hover:brightness-110 rounded-2xl transition-all pointer-events-none"></div>
+          <!-- Back button -->
+          <a href="{{ url_for('garden.garden_selection') }}"
+            class="w-10 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all">
+            <span class="text-white text-xl">&lsaquo;</span>
           </a>
-        {% endfor %}
 
-        {% if robot_zones|length == 0 %}
-          <p class="col-span-full text-center text-gray-400 mt-8">
-            No playfields yet for this garden.<br>
-            Click <strong>Add Playfield</strong> to create your first one.
-          </p>
-        {% endif %}
-      </section>
+          <!-- Logo -->
+          <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
+            <img class="brand-img" src="{{ url_for('static', filename='img/logo.png') }}" alt="Capenta logo">
+          </a>
+        </div>
 
-    </div>
-  </body>
+        <!-- Add Playfield + Logout -->
+        <div class="topbar-right">
+          <a href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}" class="add-playfield-btn">
+            <span class="add-playfield-icon">+</span>
+            Add Playfield
+          </a>
+
+          <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            Logout
+          </a>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- SLOGAN + TITEL -->
+    <section class="text-center mb-12 wrap">
+      <p class="slogan">Grow more, worry less.</p>
+      <h1 class="page-title">Playfields – {{ garden.garden_name }}</h1>
+      <p class="garden-address">{{ garden.adress_garden }}</p>
+    </section>
+
+    <!-- PLAYFIELDS GRID -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
+
+      {% for zone in robot_zones %}
+      <div class="playfield-card-container">
+
+        <!-- EDIT BUTTON (links boven) -->
+        <a href="{{ url_for('playfield.edit_playfield',
+                             serial_number=zone.serial_number,
+                             garden_id=garden.garden_id) }}"
+          class="edit-btn">
+          ✎
+        </a>
+
+        <!-- DELETE BUTTON (rechts boven) -->
+        <form method="POST"
+          action="{{ url_for('playfield.delete_playfield',
+                              serial_number=zone.serial_number,
+                              garden_id=garden.garden_id) }}"
+          class="delete-form">
+
+          <button class="delete-btn"
+            onclick="return confirm('Are you sure you want to delete this playfield?');">
+            ✕
+          </button>
+
+        </form>
+
+        <!-- PLAYFIELD CARD -->
+        <a href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}"
+          class="playfield-card group relative block rounded-2xl overflow-hidden transition-all border
+                 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(52,199,89,0.25)]">
+
+          <div class="absolute inset-0 p-6 flex flex-col justify-between">
+
+            <div class="flex flex-col items-center text-center space-y-3">
+
+              <div class="playfield-icon">🍃</div>
+
+              <h3 class="playfield-title">{{ zone.robot_name }}</h3>
+
+              <div class="flex flex-wrap justify-center items-center gap-2 text-sm text-gray-300">
+                <span>
+                  {% if zone.area_playfield %}
+                  {{ zone.area_playfield }} m²
+                  {% else %}
+                  Size unknown
+                  {% endif %}
+                </span>
+                <span>•</span>
+                <span>Serial: {{ zone.serial_number }}</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Hover border highlight -->
+          <div
+            class="absolute inset-0 border-2 border-transparent group-hover:border-[#34C759]
+                    group-hover:brightness-110 rounded-2xl transition-all pointer-events-none">
+          </div>
+
+        </a>
+
+      </div>
+      {% endfor %}
+
+      {% if robot_zones|length == 0 %}
+      <p class="col-span-full text-center text-gray-400 mt-8">
+        No playfields yet for this garden.<br>
+        Click <strong>Add Playfield</strong> to create your first one.
+      </p>
+      {% endif %}
+
+    </section>
+
+  </div>
+</body>
 </html>

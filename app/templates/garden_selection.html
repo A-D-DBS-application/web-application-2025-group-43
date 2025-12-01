@@ -23,6 +23,7 @@
            src="{{ url_for('static', filename='img/logo.png') }}"
            alt="Capenta logo">
     </a>
+
     <div class="topbar-right">
       <a class="add-btn" href="{{ url_for('garden.add_garden') }}">
         <span class="add-btn-icon">+</span>
@@ -45,19 +46,49 @@
 
     {% if gardens %}
       <div class="gardens-grid">
+
         {% for garden in gardens %}
+        <!-- CONTAINER MET EDIT + DELETE KNOPPEN -->
+        <div class="garden-card-container">
+
+          <!-- EDIT BUTTON (LINKSBOVEN) -->
+          <a href="{{ url_for('garden.edit_garden', garden_id=garden.garden_id) }}"
+             class="edit-btn">
+            ✎
+          </a>
+
+          <!-- DELETE BUTTON (RECHTSBOVEN) -->
+          <form method="POST"
+                action="{{ url_for('garden.delete_garden', garden_id=garden.garden_id) }}"
+                class="delete-form">
+
+            <button class="delete-btn"
+                    onclick="return confirm('Are you sure you want to delete this garden?');">
+              ✕
+            </button>
+
+          </form>
+
+          <!-- KAART -->
           <a class="garden-card"
              href="{{ url_for('garden.enter_garden', garden_id=garden.garden_id) }}">
+
             <div class="garden-content">
               <div class="garden-name">{{ garden.garden_name }}</div>
               <div class="garden-address">{{ garden.adress_garden }}</div>
             </div>
+
             <div class="garden-bottom-bar">
               <span>{{ garden.robot_zones|length }} playfields</span>
             </div>
+
           </a>
+
+        </div>
         {% endfor %}
+
       </div>
+
     {% else %}
       <p class="empty-state">
         Je hebt nog geen tuinen. Klik op <strong>Add Garden</strong> om je eerste tuin toe te voegen.

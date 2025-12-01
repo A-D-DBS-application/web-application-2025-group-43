@@ -46,11 +46,13 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
-  /* remove top padding so content is vertically centered even with large logo */
+  justify-content:center; /* ✓ echte verticale centrering */
   padding:0 16px;
   position:relative;
   overflow:hidden;
+
+  /* ↓ brengt de hele stack (logo + subtitle + card) visueel samen */
+  transform:translateY(-40px);
 }
 
 .leaf{
@@ -92,7 +94,7 @@ body{
   align-items:center;
   justify-content:center;
   gap:0;
-  margin-bottom:-15px;
+  margin-bottom:-35px;
 }
 
 .brand-img{
@@ -100,6 +102,8 @@ body{
   width:auto;
   filter:drop-shadow(0 0 14px rgba(75,212,99,0.6));
   display:block;
+  /* move logo down 20px on the login page */
+  margin-top:20px;
 }
 
 .brand-subtitle{
