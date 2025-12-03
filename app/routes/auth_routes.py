@@ -23,26 +23,31 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
 
+        # Geen / lege email
         if not email:
-            flash("Vul een geldig e-mailadres in.", "error")
+            flash("Please enter a valid email address.", "login-error")
             return render_template("login.html")
 
         # User zoeken in DB
         user = User.query.filter_by(uemail=email).first()
 
+        # Geen user gevonden -> foutmelding
         if not user:
-            flash("Geen account gevonden met dit e-mailadres.", "error")
+            flash(
+                "We couldn’t find an account with that email address. "
+                "Please create an account first.",
+                "login-error",
+            )
             return render_template("login.html")
 
         # Login ok -> sessie vullen
         session["user_email"] = user.uemail
         session["user_name"] = user.uname
 
-        # Doorsturen naar garden selection (volgende pagina)
-        # Zorg dat je een garden blueprint hebt met endpoint 'garden_selection'
+        # Doorsturen naar garden selection
         return redirect(url_for("garden.garden_selection"))
 
-    # GET: loginpagina tonen
+    # GET: loginpagina tonen (zonder foutmeldingen)
     return render_template("login.html")
 
 
@@ -60,13 +65,13 @@ def register():
 
         # Basisvalidatie
         if not email or not name or not password:
-            flash("Email, name en password zijn verplicht.", "error")
+            flash("Email, name and password are required.", "error")
             return render_template("register.html")
 
         # Bestaat user al?
         existing = User.query.filter_by(uemail=email).first()
         if existing:
-            flash("Er bestaat al een account met dit e-mailadres.", "error")
+            flash("An account with this email address already exists.", "error")
             return render_template("register.html")
 
         # Nieuwe gebruiker opslaan
@@ -75,15 +80,14 @@ def register():
             uname=name,
             phone=phone,
             adress=adress,
-            password=password   # Voor MVP oké – later kan je hashing toevoegen
+            password=password,  # later kan je hier hashing aan toevoegen
         )
 
         db.session.add(new_user)
         db.session.commit()
 
-        flash("Account succesvol aangemaakt! Log nu in.", "success")
-
-        # 🔥 Na 'Create Account' DIRECT terug naar login
+        # Succesboodschap (wordt NIET getoond op login, zie template-filter)
+        flash("Account created successfully! Please log in.", "success")
         return redirect(url_for("auth.login"))
 
     # GET: registerpagina tonen

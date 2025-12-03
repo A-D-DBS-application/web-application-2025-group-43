@@ -1,15 +1,19 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
+from decimal import Decimal
+
 from ..models import Garden, RobotZone
 from .. import db
 import uuid
 
 playfield_bp = Blueprint("playfield", __name__, url_prefix="/playfield")
 
+
 def require_login():
     if "user_email" not in session:
         flash("You must be logged in.", "error")
         return redirect(url_for("auth.login"))
     return None
+
 
 # =========================
 # OVERZICHT ALLE PLAYFIELDS
@@ -26,7 +30,7 @@ def playfield_selection(garden_id):
         flash("Garden not found.", "error")
         return redirect(url_for("garden.garden_selection"))
 
-    # 🔥 Alle robot_zones (= playfields) voor deze garden
+    # Alle robot_zones (= playfields) voor deze garden
     robot_zones = RobotZone.query.filter_by(garden_id=garden_id).all()
 
     return render_template(
@@ -34,6 +38,7 @@ def playfield_selection(garden_id):
         garden=garden,
         robot_zones=robot_zones,
     )
+
 
 # =========================
 # NIEUW PLAYFIELD TOEVOEGEN
@@ -51,7 +56,8 @@ def add_playfield(garden_id):
 
     if request.method == "POST":
         robot_name = request.form.get("robot_name")
-        area = request.form.get("area_playfield")
+        # area_playfield is voorlopig altijd 1 m²
+        area = Decimal("1")
         serial = request.form.get("serial_number") or str(uuid.uuid4())
 
         if not robot_name:
@@ -73,9 +79,9 @@ def add_playfield(garden_id):
 
     return render_template("add_playfield.html", garden=garden)
 
+
 @playfield_bp.route("/delete/<string:serial_number>/<uuid:garden_id>", methods=["POST"])
 def delete_playfield(serial_number, garden_id):
-
     # zoek playfield
     zone = RobotZone.query.filter_by(serial_number=serial_number).first()
 
@@ -89,6 +95,7 @@ def delete_playfield(serial_number, garden_id):
 
     flash("Playfield removed.", "success")
     return redirect(url_for("playfield.playfield_selection", garden_id=garden_id))
+
 
 # =========================
 # PLAYFIELD WIJZIGEN (EDIT)

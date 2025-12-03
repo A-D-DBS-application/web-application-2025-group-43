@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Koppel je externe CSS -->
+  <!-- External CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
 </head>
 
@@ -32,12 +32,33 @@
     </div>
 
     <div class="card">
+
+      <!-- FLASH MESSAGES: toon alleen login-errors -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container" style="margin-bottom:18px;">
+            {% for category, message in messages %}
+              {% if category == 'login-error' %}
+                <div class="flash flash-error">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <!-- END FLASH -->
+
       <form action="{{ url_for('auth.login') }}" method="post">
+
         <div class="field">
           <label for="email">Email</label>
           <div class="input">
-            <input type="email" id="email" name="email"
-                   placeholder="email@domain.com" required>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="email@domain.com"
+              required
+            >
           </div>
         </div>
 
@@ -49,6 +70,7 @@
           Don't have an account yet?
           <a href="{{ url_for('auth.register') }}">Create an account</a>
         </p>
+
       </form>
     </div>
   </div>
