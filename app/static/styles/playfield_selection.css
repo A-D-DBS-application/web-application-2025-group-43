@@ -251,4 +251,110 @@ body{
   border-color:#55ff88;
 }
 
+/* ============================
+   PLAYFIELD — RESPONSIVE CARD SIZES
+============================ */
+
+/* 1 playfield → huge */
+.playfields-grid.single-playfield .playfield-card {
+  width: 450px;
+  height: 450px;
+}
+
+/* 2 playfields → medium-large */
+.playfields-grid.two-playfields .playfield-card {
+  width: 340px;
+  height: 340px;
+}
+
+/* 3 playfields → medium */
+.playfields-grid.three-playfields .playfield-card {
+  width: 300px;
+  height: 300px;
+}
+
+/* 4+ playfields → base size (compact) */
+.playfields-grid.many-playfields .playfield-card {
+  width: 260px;
+  height: 260px;
+}
+
+/* Optional: icon/text scaling for beauty */
+.playfields-grid.single-playfield .playfield-icon {
+  font-size: 60px;
+}
+
+.playfields-grid.single-playfield .playfield-title {
+  font-size: 28px;
+}
+
+/* ============================
+   CENTERING LIKE GARDENS
+============================ */
+
+/* Wrapper = flex container zoals gardens-grid */
+.playfields-grid-wrapper {
+  display: flex;
+  justify-content: center;   /* centreert alles */
+  flex-wrap: wrap;           /* meerdere rijen */
+  gap: 24px;                 /* zelfde spacing */
+  margin-top: 10px;
+}
+
+/* De grid zelf is nu onze card-container */
+.playfields-grid {
+  display: contents; 
+  /* Hierdoor gedraagt de inhoud zich zoals losse kaarten,
+     maar we behouden de algemene wrapper spacing */
+}
+
+/* === GRID WRAPPER — IDENTIEK AAN GARDENS === */
+.playfields-grid-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* De grid zelf bevat geen layout — kaarten gedragen zich los */
+.playfields-grid {
+  display: contents;
+}
+
+/* === KAART GROOTTES (zelfde als garden) === */
+
+/* 1 playfield → huge */
+.playfields-grid.single-playfield .playfield-card {
+  width: 400px;
+  height: 400px;
+}
+
+/* 2 playfields → medium-large */
+.playfields-grid.two-playfields .playfield-card {
+  width: 340px;
+  height: 340px;
+}
+
+/* 3 playfields → medium */
+.playfields-grid.three-playfields .playfield-card {
+  width: 300px;
+  height: 300px;
+}
+
+/* 4+ playfields → small */
+.playfields-grid.many-playfields .playfield-card {
+  width: 260px;
+  height: 260px;
+}
+
+/* icon scaling */
+.playfields-grid.single-playfield .playfield-icon {
+  font-size: 60px;
+}
+
+.playfields-grid.single-playfield .playfield-title {
+  font-size: 28px;
+}
+
 

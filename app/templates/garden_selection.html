@@ -45,7 +45,12 @@
     </div>
 
     {% if gardens %}
-      <div class="gardens-grid">
+      <div class="gardens-grid 
+          {% if gardens|length == 1 %} single-garden 
+          {% elif gardens|length == 2 %} two-gardens
+          {% elif gardens|length == 3 %} three-gardens
+          {% elif gardens|length >= 4 %} many-gardens
+          {% endif %}">
 
         {% for garden in gardens %}
         <!-- CONTAINER MET EDIT + DELETE KNOPPEN -->

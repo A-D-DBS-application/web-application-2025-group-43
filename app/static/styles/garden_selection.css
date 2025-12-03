@@ -279,3 +279,54 @@ body{
   transform:scale(1.08);
   border-color:#55ff88;
 }
+
+/* ============================
+   DYNAMIC CARD SIZE — 1 GARDEN
+============================ */
+
+/* Als er maar 1 child in .gardens-grid zit → maak de kaart groter */
+.gardens-grid:has(> *:only-child) .garden-card {
+  width:340px;
+  height:340px;
+}
+
+/* ============================
+   SINGLE GARDEN – GROTERE KAART
+============================ */
+
+.gardens-grid.single-garden .garden-card {
+  width:450px;
+  height:450px;
+}
+
+.gardens-grid.single-garden .garden-name {
+  font-size:28px;
+}
+
+/* ============================
+   RESPONSIVE SIZES PER COUNT
+============================ */
+
+/* 1 garden → huge */
+.gardens-grid.single-garden .garden-card {
+  width: 450px;
+  height: 450px;
+}
+
+/* 2 gardens → medium-large */
+.gardens-grid.two-gardens .garden-card {
+  width: 340px;
+  height: 340px;
+}
+
+/* 3 gardens → medium */
+.gardens-grid.three-gardens .garden-card {
+  width: 300px;
+  height: 300px;
+}
+
+/* 4+ gardens → default smaller grid */
+.gardens-grid.many-gardens .garden-card {
+  width: 260px;
+  height: 260px;
+}
