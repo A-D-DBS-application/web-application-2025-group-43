@@ -1,35 +1,37 @@
-# app/routes/profile_routes.py
-from flask import Blueprint, render_template, redirect, url_for, session
+from flask import Blueprint, render_template, redirect, url_for, session, flash
+from ..models import User
 
 profile_bp = Blueprint("profile", __name__, url_prefix="/profile")
 
 
 @profile_bp.route("/")
 def profile():
-    # Alleen toegankelijk als je ingelogd bent
-    if "user_email" not in session:
+    # Enkel toegankelijk indien ingelogd
+    user_email = session.get("user_email")
+    if not user_email:
+        flash("You must be logged in.", "error")
         return redirect(url_for("auth.login"))
 
-    # Basisgegevens uit de sessie (fallback naar dummy waarden)
-    name = session.get("user_name", "Jan Modaal")
-    email = session.get("user_email", "jan.modaal@email.com")
-    phone = session.get("user_phone", "+32 495 12 34 56")
-    address = session.get("user_address", "Kerkstraat 42, 9000 Gent, België")
+    # User ophalen uit database
+    user = User.query.filter_by(uemail=user_email).first()
+    if not user:
+        flash("User not found in database.", "error")
+        return redirect(url_for("auth.login"))
 
-    # Initialen voor de avatar (max 2 letters, vb. 'JM')
-    parts = name.split()
+    # Initialen uit naam (max 2 letters)
+    parts = user.uname.split() if user.uname else []
     initials = ""
     for part in parts[:2]:
         if part:
             initials += part[0].upper()
     if not initials:
-        initials = "JM"
+        initials = "US"
 
     return render_template(
         "profile.html",
-        name=name,
-        email=email,
-        phone=phone,
-        address=address,
+        name=user.uname,
+        email=user.uemail,
+        phone=user.phone,
+        address=user.adress,
         initials=initials,
     )
