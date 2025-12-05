@@ -131,9 +131,22 @@ def edit_garden(garden_id):
         return redirect(url_for("garden.garden_selection"))
 
     if request.method == "POST":
+        # Naam & adres
         garden.garden_name = request.form.get("garden_name")
         garden.adress_garden = request.form.get("address")
-        garden.size = request.form.get("size")
+
+        # ✔️ Belangrijk: area_garden correct uitlezen
+        area_value = request.form.get("area_garden")
+
+        # Indien leeg → None
+        if area_value in (None, "", " "):
+            garden.area_garden = None
+        else:
+            try:
+                garden.area_garden = float(area_value)
+            except ValueError:
+                flash("Size must be a valid number.", "error")
+                return redirect(url_for("garden.edit_garden", garden_id=garden_id))
 
         db.session.commit()
         flash("Garden updated!", "success")
