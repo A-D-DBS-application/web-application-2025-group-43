@@ -277,6 +277,34 @@
       color: var(--muted);
       display: flex;
       gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .alert-causes {
+      margin-top: 8px;
+      padding: 8px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+      border-left: 2px solid currentColor;
+    }
+
+    .causes-header {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .causes-list {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .causes-list li {
+      margin: 2px 0;
     }
 
     /* ========= TIPS ========= */
@@ -542,6 +570,17 @@
               <span>Huidigewaarde: <strong>{{ "%0.1f" | format(alert.value) if alert.value else '–' }} {{ alert.unit }}</strong></span>
               <span>Doel: {{ alert.target }}</span>
             </div>
+            
+            {% if alert.causes and alert.causes|length > 0 %}
+            <div class="alert-causes">
+              <div class="causes-header">💡 Mogelijke oorzaken:</div>
+              <ul class="causes-list">
+                {% for cause in alert.causes %}
+                <li>{{ cause }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
           </div>
           {% endfor %}
         </div>

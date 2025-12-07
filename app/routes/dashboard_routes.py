@@ -34,6 +34,18 @@ ALERT_CONFIG = {
             "Verhoog watergift in droge periodes",
             "Verlaag watergift in regenperiodes",
             "Compactie in de grond kan wateropname belemmeren",
+        ],
+        "causes_high": [
+            "Te veel water gegeven",
+            "Irrigatiesysteem defect (blijft aan)",
+            "Slechte drainage in plantbed",
+            "Zware regenval recent",
+        ],
+        "causes_low": [
+            "Te weinig water gegeven",
+            "Droogte/hoge temperatuur",
+            "Gebroken of verstopt irrigatiesysteem",
+            "Plant groeit snel en verbruikt veel water",
         ]
     },
     "temperature": {
@@ -48,6 +60,20 @@ ALERT_CONFIG = {
             "Zorg voor goede luchtcirculatie",
             "Controleer isolatie van de kas/serre",
             "Extreme temperatuurschommelingen schaden plantgroei",
+        ],
+        "causes_high": [
+            "Te veel zonlicht/warmte inval",
+            "Ventilatie onvoldoende",
+            "Verwarming staat aan terwijl niet nodig",
+            "Kasdak niet open",
+            "Hoge buitentemperatuur",
+        ],
+        "causes_low": [
+            "Verwarming uit of defect",
+            "Koude nacht/winter",
+            "Kasdak open terwijl niet nodig",
+            "Ventilatie werkt te hard",
+            "Isolatie ontoereikend",
         ]
     },
     "humidity": {
@@ -62,6 +88,20 @@ ALERT_CONFIG = {
             "Ziekten gedijen bij hoge luchtvochtigheid (>80%)",
             "Te lage luchtvochtigheid (<40%) belemmert groei",
             "Controleer HVAC (Heating, Ventilation, Air Conditioning) systeem",
+        ],
+        "causes_high": [
+            "Onvoldoende ventilatie",
+            "Te veel water verdampt (natting van planten)",
+            "Nacht is koude periode (natuurlijk hoger)",
+            "Drainagesysteem werkt niet goed",
+            "Irrigatie overdreven",
+        ],
+        "causes_low": [
+            "Ventilatie staat te hard aan",
+            "Te droge buitenlucht",
+            "Lage temperatuur (lucht voelt droger aan)",
+            "Te weinig water verdampt",
+            "Verwarmingssysteem werkt (droogt lucht uit)",
         ]
     },
     "rain": {
@@ -76,6 +116,17 @@ ALERT_CONFIG = {
             "Controleer waterafvoer na zware regenval",
             "Voorkom waterstagnatie en wortelrot",
             "Monitor weersverwachtingen voor irrigatieplanning",
+        ],
+        "causes_high": [
+            "Zware regenval in dit gebied",
+            "Irrigatiesysteem voegt te veel water toe",
+            "Meting mogelijk onnauwkeurig (sensor beschadigd)",
+        ],
+        "causes_low": [
+            "Weinig regenval in dit seizoen",
+            "Droogte periode",
+            "Irrigatiesysteem geeft onvoldoende water",
+            "Plant in kas (geen natuurlijke regen)",
         ]
     },
     "light": {
@@ -90,6 +141,20 @@ ALERT_CONFIG = {
             "Controleer hoogte van LED-lampen",
             "Reinig lensen/reflectoren voor optimale lichtopbrengst",
             "Seizoensverandering beïnvloedt natuurlijke lichtinval",
+        ],
+        "causes_high": [
+            "Directe zonnestraling op sensor",
+            "LED-lampen te dicht bij sensor",
+            "Meerdere lichtbronnen tegelijk",
+            "Reflectoren kaatsen extra licht",
+        ],
+        "causes_low": [
+            "Bewolkt weer (minder natuurlijk licht)",
+            "Winter (lagere zonsstand)",
+            "LED-lampen uit of defect",
+            "Lampen te hoog opgehangen",
+            "Schmutz op lens van sensor",
+            "Plant in schaduw",
         ]
     },
     "co2": {
@@ -104,9 +169,23 @@ ALERT_CONFIG = {
             "Verbeter ventilatie om CO₂ aan te vullen",
             "CO₂ bronnen: compost, decomposeren, CO₂ generatoren",
             "Hoge CO₂ (>1500 ppm) kan negatief zijn zonder meer licht",
+        ],
+        "causes_high": [
+            "CO₂ wordt opzettelijk ingespoten (CO₂ systeem aan)",
+            "Onvoldoende ventilatie",
+            "Veel organisch materiaal dat decomposeeert",
+            "Kas afgesloten voor warmte",
+        ],
+        "causes_low": [
+            "Ventilatie werkt te hard (buitenlucht is ~400ppm)",
+            "Plant absorbeert snel CO₂ (groeit goed)",
+            "CO₂ systeem uit of defect",
+            "Zware wind/luchtbeweging",
+            "Kas perfect geïsoleerd (geen CO₂ uitwisseling)",
         ]
     },
 }
+
 
 
 def _get_current_user():
@@ -419,6 +498,14 @@ def dashboard(serial_number):
             else:
                 msg = f"{direction.capitalize()} dan ideaal."
 
+            # Bepaal oorzaken op basis van richting van afwijking
+            causes = []
+            if value is not None and mean is not None:
+                if value > mean:
+                    causes = cfg.get("causes_high", [])
+                else:
+                    causes = cfg.get("causes_low", [])
+
             alerts.append(
                 {
                     "severity": severity,
@@ -431,6 +518,8 @@ def dashboard(serial_number):
                         else "n.v.t."
                     ),
                     "message": msg,
+                    "sensor_type": key,
+                    "causes": causes,
                 }
             )
 
@@ -720,6 +809,14 @@ def sensor_detail(serial_number, sensor_type):
         else:
             msg = f"{direction.capitalize()} dan ideaal."
 
+        # Bepaal oorzaken op basis van richting van afwijking
+        causes = []
+        if current_value is not None and target_mean is not None:
+            if current_value > target_mean:
+                causes = cfg.get("causes_high", [])
+            else:
+                causes = cfg.get("causes_low", [])
+
         alerts.append({
             "severity": severity,
             "variable": cfg["label"],
@@ -732,6 +829,7 @@ def sensor_detail(serial_number, sensor_type):
             ),
             "message": msg,
             "z_score": z_score,
+            "causes": causes,
         })
 
     # 13) Get tips for this sensor

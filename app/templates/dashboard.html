@@ -680,6 +680,14 @@
       flex-direction:column;
       gap:8px;
     }
+    .alert-link{
+      text-decoration:none;
+      color:inherit;
+      display:block;
+      cursor:pointer;
+      transition:all .12s ease;
+      border-radius:14px;
+    }
     .alert-card{
       border-radius:14px;
       padding:10px 12px;
@@ -688,19 +696,46 @@
       align-items:flex-start;
       border:1px solid var(--border-soft);
       background:#0f1116;
+      transition:all .12s ease;
+    }
+    .alert-link:hover .alert-card{
+      transform:translateX(4px);
+      border-color:var(--accent);
+      background:rgba(52,199,89,0.05);
     }
     .alert-card-warning{
       border-color:#facc15;
       background:rgba(234,179,8,0.10);
     }
+    .alert-link:hover .alert-card-warning{
+      background:rgba(234,179,8,0.15);
+      border-color:#facc15;
+    }
     .alert-card-critical{
       border-color:#fb7185;
       background:rgba(248,113,113,0.10);
+    }
+    .alert-link:hover .alert-card-critical{
+      background:rgba(248,113,113,0.15);
+      border-color:#fb7185;
     }
     .alert-label{
       font-size:11px;
       text-transform:uppercase;
       letter-spacing:.08em;
+      margin-bottom:2px;
+      font-weight:600;
+    }
+    .alert-causes{
+      padding:6px 8px;
+      background:rgba(0,0,0,0.2);
+      border-radius:6px;
+      border-left:2px solid currentColor;
+    }
+    .causes-label{
+      font-size:11px;
+      font-weight:600;
+      color:var(--muted);
       margin-bottom:2px;
     }
 
@@ -1331,18 +1366,35 @@
           {% if alerts and alerts|length > 0 %}
             <div class="alerts-grid">
               {% for a in alerts %}
-                <div class="alert-card alert-card-{{ a.severity }}">
-                  <div>
-                    <div class="alert-label">
-                      {% if a.severity == 'critical' %}Kritiek{% elif a.severity == 'warning' %}Waarschuwing{% else %}Info{% endif %}
-                    </div>
-                    <div><strong>{{ a.variable }}</strong> – {{ a.message }}</div>
-                    <div class="trend-muted" style="margin-top:2px;">
-                      Gemeten: {{ a.value if a.value is not none else '–' }} {{ a.unit }}
-                      • Doel: {{ a.target }}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type=a.sensor_type) }}" class="alert-link">
+                  <div class="alert-card alert-card-{{ a.severity }}">
+                    <div>
+                      <div class="alert-label">
+                        {% if a.severity == 'critical' %}⚠️ Kritiek{% elif a.severity == 'warning' %}⚡ Waarschuwing{% else %}ℹ️ Info{% endif %}
+                      </div>
+                      <div><strong>{{ a.variable }}</strong> – {{ a.message }}</div>
+                      <div class="trend-muted" style="margin-top:4px;">
+                        Gemeten: {{ a.value if a.value is not none else '–' }} {{ a.unit }}
+                        • Doel: {{ a.target }}
+                      </div>
+                      
+                      {% if a.causes and a.causes|length > 0 %}
+                      <div class="alert-causes" style="margin-top:8px;">
+                        <div class="causes-label">Mogelijke oorzaken:</div>
+                        <ul style="margin:4px 0 0 0; padding-left:18px;">
+                          {% for cause in a.causes[:3] %}
+                            <li style="font-size:12px; margin:2px 0; color: var(--muted);">{{ cause }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      {% endif %}
+                      
+                      <div style="margin-top:8px; font-size:11px; color:var(--accent); font-weight:500;">
+                        Klik voor meer details →
+                      </div>
                     </div>
                   </div>
-                </div>
+                </a>
               {% endfor %}
             </div>
           {% else %}
