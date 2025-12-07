@@ -1372,7 +1372,7 @@
           {% if alerts and alerts|length > 0 %}
             <div class="alerts-grid">
               {% for a in alerts %}
-                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type=a.sensor_type) }}" class="alert-link">
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type=a.sensor_type) }}#alerts-section" class="alert-link">
                   <div class="alert-card alert-card-{{ a.severity }}">
                     <div class="alert-label">
                       {% if a.severity == 'critical' %}🔴 Kritiek{% elif a.severity == 'warning' %}🟡 Waarschuwing{% endif %}

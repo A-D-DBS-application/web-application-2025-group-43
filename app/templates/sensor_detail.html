@@ -228,6 +228,13 @@
       margin-bottom: 4px;
     }
 
+    .stat-unit {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
     .stat-label {
       font-size: 11px;
       color: var(--muted);
@@ -491,15 +498,15 @@
           <div class="card-title">📊 Statistieken</div>
           <div class="stats-grid">
             <div class="stat-box">
-              <div class="stat-value">{{ "%0.1f" | format(avg_value) if avg_value is not none else '–' }}</div>
+              <div class="stat-value">{{ "%0.1f" | format(avg_value) if avg_value is not none else '–' }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Gemiddelde</div>
             </div>
             <div class="stat-box">
-              <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }}</div>
+              <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Minimum</div>
             </div>
             <div class="stat-box">
-              <div class="stat-value">{{ "%0.1f" | format(max_value) if max_value is not none else '–' }}</div>
+              <div class="stat-value">{{ "%0.1f" | format(max_value) if max_value is not none else '–' }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Maximum</div>
             </div>
           </div>
@@ -511,11 +518,11 @@
           <div class="card-title">🎯 Doelwaarden ({{ robot.plant_profile.display_name if robot.plant_profile else 'Plant' }})</div>
           <div class="stats-grid">
             <div class="stat-box">
-              <div class="stat-value">{{ "%0.1f" | format(target_mean) }}</div>
+              <div class="stat-value">{{ "%0.1f" | format(target_mean) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Optimaal</div>
             </div>
             <div class="stat-box">
-              <div class="stat-value">± {{ "%0.1f" | format(target_std) }}</div>
+              <div class="stat-value">± {{ "%0.1f" | format(target_std) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Tolerantie</div>
             </div>
             {% if z_score is not none %}
@@ -530,7 +537,7 @@
 
         <!-- Alerts -->
         {% if alerts %}
-        <div class="card alerts-section">
+        <div class="card alerts-section" id="alerts-section">
           <div class="card-title">⚠️ Waarschuwingen</div>
           {% for alert in alerts %}
           <div class="alert-item {{ alert.severity }}">
