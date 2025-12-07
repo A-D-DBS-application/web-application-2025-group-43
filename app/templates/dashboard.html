@@ -811,6 +811,20 @@
       transform:translateY(-2px);
     }
 
+    .sensor-card-link{
+      text-decoration:none;
+      color:inherit;
+      display:block;
+      cursor:pointer;
+      transition:all .12s ease;
+      border-radius:16px;
+    }
+
+    .sensor-card-link:hover .sensor-card{
+      border-color:var(--accent);
+      background:rgba(52,199,89,0.05);
+    }
+
     .sensor-header{
       display:flex;
       align-items:flex-start;
@@ -1352,184 +1366,196 @@
           {% set m_co2   = sensor_data['co2']['measurement'] %}
 
           <!-- Bodemvochtigheid -->
-          <article class="sensor-card" id="sensor-moisture">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">Bodemvochtigheid</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-moisture">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_moist.value|round(1) if m_moist else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_moist.unit if s_moist and s_moist.unit else '%' }}
-                  </span>
+                  <div class="sensor-name">Bodemvochtigheid</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_moist.value|round(1) if m_moist else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_moist.unit if s_moist and s_moist.unit else '%' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-moisture"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk</span>
-              <span>
-                {% if m_moist and m_moist.time_m %}
-                  {{ m_moist.time_m.strftime('%H:%M') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-moisture"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>
+                  {% if m_moist and m_moist.time_m %}
+                    {{ m_moist.time_m.strftime('%H:%M') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
 
           <!-- Temperatuur -->
-          <article class="sensor-card" id="sensor-temperature">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">Temperatuur</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-temperature">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_temp.value|round(1) if m_temp else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_temp.unit if s_temp and s_temp.unit else '°C' }}
-                  </span>
+                  <div class="sensor-name">Temperatuur</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_temp.value|round(1) if m_temp else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_temp.unit if s_temp and s_temp.unit else '°C' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-temperature"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk</span>
-              <span>
-                {% if m_temp and m_temp.time_m %}
-                  {{ m_temp.time_m.strftime('%H:%M') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-temperature"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>
+                  {% if m_temp and m_temp.time_m %}
+                    {{ m_temp.time_m.strftime('%H:%M') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
 
           <!-- Luchtvochtigheid -->
-          <article class="sensor-card" id="sensor-humidity">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">Luchtvochtigheid</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-humidity">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_hum.value|round(1) if m_hum else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_hum.unit if s_hum and s_hum.unit else '%' }}
-                  </span>
+                  <div class="sensor-name">Luchtvochtigheid</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_hum.value|round(1) if m_hum else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_hum.unit if s_hum and s_hum.unit else '%' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-humidity"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk</span>
-              <span>
-                {% if m_hum and m_hum.time_m %}
-                  {{ m_hum.time_m.strftime('%H:%M') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-humidity"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>
+                  {% if m_hum and m_hum.time_m %}
+                    {{ m_hum.time_m.strftime('%H:%M') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
 
           <!-- Regenval -->
-          <article class="sensor-card" id="sensor-rain">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">Regenval (Waterbehoefte)</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-rain">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_rain.value|round(1) if m_rain else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_rain.unit if s_rain and s_rain.unit else 'mm/week' }}
-                  </span>
+                  <div class="sensor-name">Regenval (Waterbehoefte)</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_rain.value|round(1) if m_rain else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_rain.unit if s_rain and s_rain.unit else 'mm/week' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-rain"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk</span>
-              <span>
-                {% if m_rain and m_rain.time_m %}
-                  {{ m_rain.time_m.strftime('%d/%m') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-rain"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>
+                  {% if m_rain and m_rain.time_m %}
+                    {{ m_rain.time_m.strftime('%d/%m') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
 
           <!-- Licht -->
-          <article class="sensor-card" id="sensor-light">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">Licht</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-light">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_light.value|round(1) if m_light else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_light.unit if s_light and s_light.unit else 'µmol/m²/s' }}
-                  </span>
+                  <div class="sensor-name">Licht</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_light.value|round(1) if m_light else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_light.unit if s_light and s_light.unit else 'µmol/m²/s' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-light"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk (PPFD)</span>
-              <span>
-                {% if m_light and m_light.time_m %}
-                  {{ m_light.time_m.strftime('%d/%m') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-light"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk (PPFD)</span>
+                <span>
+                  {% if m_light and m_light.time_m %}
+                    {{ m_light.time_m.strftime('%d/%m') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
 
           <!-- CO₂ -->
-          <article class="sensor-card" id="sensor-co2">
-            <div class="sensor-header">
-              <div>
-                <div class="sensor-name">CO₂</div>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="sensor-card-link">
+            <article class="sensor-card" id="sensor-co2">
+              <div class="sensor-header">
                 <div>
-                  <span class="sensor-value-main">
-                    {{ m_co2.value|round(1) if m_co2 else '–' }}
-                  </span>
-                  <span class="sensor-value-unit">
-                    {{ s_co2.unit if s_co2 and s_co2.unit else 'ppm' }}
-                  </span>
+                  <div class="sensor-name">CO₂</div>
+                  <div>
+                    <span class="sensor-value-main">
+                      {{ m_co2.value|round(1) if m_co2 else '–' }}
+                    </span>
+                    <span class="sensor-value-unit">
+                      {{ s_co2.unit if s_co2 and s_co2.unit else 'ppm' }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="sensor-chart">
-              <canvas id="chart-co2"></canvas>
-            </div>
-            <div class="sensor-footer">
-              <span>Ideaal: plantprofiel-afhankelijk</span>
-              <span>
-                {% if m_co2 and m_co2.time_m %}
-                  {{ m_co2.time_m.strftime('%H:%M') }}
-                {% else %}
-                  geen data
-                {% endif %}
-              </span>
-            </div>
-          </article>
+              <div class="sensor-chart">
+                <canvas id="chart-co2"></canvas>
+              </div>
+              <div class="sensor-footer">
+                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>
+                  {% if m_co2 and m_co2.time_m %}
+                    {{ m_co2.time_m.strftime('%H:%M') }}
+                  {% else %}
+                    geen data
+                  {% endif %}
+                </span>
+              </div>
+            </article>
+          </a>
         </section>
       </div>
     </main>
