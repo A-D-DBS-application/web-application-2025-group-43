@@ -1722,14 +1722,23 @@
       const ctx = canvas.getContext('2d');
       if (!HEALTH_TREND_VALUES.length) return;
 
-      new Chart(ctx, {
+      if (healthTrendChart) {
+        healthTrendChart.destroy();
+      }
+
+      healthTrendChart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: HEALTH_TREND_LABELS,
           datasets: [{
             data: HEALTH_TREND_VALUES,
-            fill: false,
-            tension: 0.3
+            borderColor: '#34C759',
+            backgroundColor: 'rgba(52, 199, 89, 0.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#34C759',
+            fill: true,
+            tension: 0.4
           }]
         },
         options: {
@@ -1740,7 +1749,14 @@
           },
           scales: {
             x: {
-              ticks: { maxTicksLimit: 6 }
+              ticks: { 
+                maxTicksLimit: 6,
+                color: 'rgba(255,255,255,0.5)',
+                font: { size: 10 }
+              },
+              grid: {
+                display: false
+              }
             },
             y: {
               title: {
@@ -1748,7 +1764,14 @@
                 text: 'Gezondheidsscore'
               },
               min: 0,
-              max: 100
+              max: 100,
+              ticks: {
+                color: 'rgba(255,255,255,0.5)',
+                font: { size: 10 }
+              },
+              grid: {
+                color: 'rgba(255,255,255,0.05)'
+              }
             }
           }
         }
@@ -1764,12 +1787,12 @@
     makeSensorChart('chart-co2', 'co2', 'CO₂', 'ppm');
 
     // Health trend grafiek
+    let healthTrendChart = null;
     makeHealthTrendChart();
 
     // Period selector voor health trend
     const serialNumber = window.location.pathname.split('/').pop();
     const periodButtons = document.querySelectorAll('.period-btn');
-    let healthTrendChart = null;
 
     periodButtons.forEach(btn => {
       btn.addEventListener('click', async function() {
