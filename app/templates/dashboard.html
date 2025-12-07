@@ -210,6 +210,46 @@
       color:var(--accent);
     }
 
+    .data-btn-wrapper{
+      display:flex;
+      align-items:center;
+      gap:0;
+      margin-bottom:4px;
+    }
+
+    .data-btn-wrapper .data-btn{
+      flex:1;
+      margin:0;
+    }
+
+    .data-btn-link{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:32px;
+      height:32px;
+      padding:0;
+      border-radius:9px;
+      color:var(--muted);
+      text-decoration:none;
+      background:none;
+      cursor:pointer;
+      transition:background .12s ease,color .12s ease,opacity .12s ease;
+      opacity:0;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .data-btn-wrapper:hover .data-btn-link{
+      opacity:1;
+      background:rgba(52,199,89,0.12);
+      color:var(--accent);
+    }
+
+    .data-btn-link:hover{
+      background:rgba(52,199,89,0.2);
+    }
+
     /* bottom profile / logout */
     .sidebar-bottom{
       border-top:1px solid var(--border);
@@ -375,16 +415,57 @@
       position:absolute;
       inset:0;
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
       font-size:38px;
       font-weight:700;
+      text-align:center;
+    }
+
+    .score-circle-label{
+      font-size:10px;
+      font-weight:500;
+      opacity:0.8;
+      margin-top:2px;
+      letter-spacing:0.5px;
     }
 
     .factor-list{
       display:flex;
       flex-direction:column;
       gap:10px;
+    }
+
+    .factor-item-link{
+      text-decoration:none;
+      color:inherit;
+      display:block;
+      transition:all 0.12s ease;
+      cursor:pointer;
+      border-radius:9px;
+      padding:0;
+    }
+
+    .factor-item{
+      padding:0;
+      cursor:pointer;
+    }
+
+    .factor-item-link:hover{
+      background:rgba(52,199,89,0.08);
+      border-radius:9px;
+      padding:8px 10px;
+      margin:-8px -10px;
+    }
+
+    .factor-item-link:hover .factor-item{
+      background:transparent;
+      cursor:pointer;
+    }
+
+    .factor-item-link:hover .factor-name{
+      color:var(--accent);
     }
 
     .factor-row-top{
@@ -413,6 +494,39 @@
       height:100%;
       border-radius:999px;
       background:var(--accent);
+      transition:width 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Color based on status severity */
+    .factor-bar-fill.status-ok{
+      background:#34C759; /* groen */
+    }
+    .factor-bar-fill.status-warning{
+      background:#facc15; /* geel */
+    }
+    .factor-bar-fill.status-critical{
+      background:#fb7185; /* rood */
+    }
+    .factor-bar-fill.status-unknown{
+      background:#9aa4b2; /* grijs */
+    }
+
+    /* status badge bij factoren */
+    .factor-tag{
+      font-size:11px;
+      margin-left:4px;
+    }
+    .factor-tag-ok{
+      color:var(--accent);
+    }
+    .factor-tag-warning{
+      color:#facc15;
+    }
+    .factor-tag-critical{
+      color:#fb7185;
+    }
+    .factor-tag-unknown{
+      color:var(--muted);
     }
 
     .health-right{
@@ -506,6 +620,29 @@
       color:var(--muted);
     }
 
+    .period-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border-soft);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .period-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .period-btn.active {
+      background: var(--accent);
+      color: #0F1116;
+      border-color: var(--accent);
+    }
+
     .trend-legend{
       display:flex;
       align-items:center;
@@ -527,6 +664,119 @@
 
     .legend-dot-pulse{
       animation:pulse 1.6s infinite;
+    }
+
+    /* ========= ALERTS ========= */
+    .alerts-section{
+      margin-bottom:20px;
+    }
+    .alerts-title{
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    .alerts-grid{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .alert-card{
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:13px;
+      display:flex;
+      align-items:flex-start;
+      border:1px solid var(--border-soft);
+      background:#0f1116;
+    }
+    .alert-card-warning{
+      border-color:#facc15;
+      background:rgba(234,179,8,0.10);
+    }
+    .alert-card-critical{
+      border-color:#fb7185;
+      background:rgba(248,113,113,0.10);
+    }
+    .alert-label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:2px;
+    }
+
+    /* ========= PLANT RECOMMENDATIONS ========= */
+    .recommendations-section{
+      margin-bottom:20px;
+    }
+    .recommendations-title{
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    .recommendations-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width:900px){
+      .recommendations-grid{grid-template-columns:1fr;}
+    }
+    .recommendation-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--border-soft);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      transition:all .12s ease;
+    }
+    .recommendation-card:hover{
+      border-color:var(--accent);
+      background:rgba(52,199,89,0.05);
+    }
+    .recommendation-icon{
+      font-size:32px;
+      line-height:1;
+      flex-shrink:0;
+    }
+    .recommendation-content{
+      flex:1;
+      min-width:0;
+    }
+    .recommendation-name{
+      font-size:13px;
+      font-weight:500;
+      margin-bottom:6px;
+      color:var(--text);
+    }
+    .recommendation-score{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .score-value{
+      font-size:12px;
+      font-weight:600;
+      color:var(--accent);
+      min-width:35px;
+    }
+    .score-bar{
+      flex:1;
+      height:6px;
+      border-radius:999px;
+      background:rgba(52,199,89,0.2);
+      overflow:hidden;
+    }
+    .score-bar-fill{
+      height:100%;
+      border-radius:999px;
+      background:var(--accent);
+      transition:width .3s ease;
+    }
+    .recommendation-rank{
+      font-size:16px;
+      flex-shrink:0;
     }
 
     /* ========= SENSOR GRID ========= */
@@ -720,12 +970,30 @@
             <span>Data variabelen</span>
           </button>
           <div class="data-list" id="dataList">
-            <button class="data-btn active" type="button" data-target="#sensor-moisture">Bodemvochtigheid</button>
-            <button class="data-btn" type="button" data-target="#sensor-temperature">Temperatuur</button>
-            <button class="data-btn" type="button" data-target="#sensor-humidity">Luchtvochtigheid</button>
-            <button class="data-btn" type="button" data-target="#sensor-rain">Regenval (Waterbehoefte)</button>
-            <button class="data-btn" type="button" data-target="#sensor-light">Licht</button>
-            <button class="data-btn" type="button" data-target="#sensor-co2">CO₂ Niveau</button>
+            <div class="data-btn-wrapper">
+              <button class="data-btn active" type="button" data-target="#sensor-moisture">Bodemvochtigheid</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
+            <div class="data-btn-wrapper">
+              <button class="data-btn" type="button" data-target="#sensor-temperature">Temperatuur</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
+            <div class="data-btn-wrapper">
+              <button class="data-btn" type="button" data-target="#sensor-humidity">Luchtvochtigheid</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
+            <div class="data-btn-wrapper">
+              <button class="data-btn" type="button" data-target="#sensor-rain">Regenval (Waterbehoefte)</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
+            <div class="data-btn-wrapper">
+              <button class="data-btn" type="button" data-target="#sensor-light">Licht</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
+            <div class="data-btn-wrapper">
+              <button class="data-btn" type="button" data-target="#sensor-co2">CO₂ Niveau</button>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="data-btn-link" title="Details bekijken">→</a>
+            </div>
           </div>
         </section>
       </div>
@@ -781,6 +1049,23 @@
             <!-- Left -->
             <div class="health-left">
               <div class="score-circle-wrap">
+                {% if health_score < 30 %}
+                  {% set circle_color = '#dc3545' %}
+                  {% set score_label = 'Kritiek' %}
+                {% elif health_score < 50 %}
+                  {% set circle_color = '#fd7e14' %}
+                  {% set score_label = 'Slecht' %}
+                {% elif health_score < 70 %}
+                  {% set circle_color = '#ffc107' %}
+                  {% set score_label = 'Gemiddeld' %}
+                {% elif health_score < 85 %}
+                  {% set circle_color = '#90ee90' %}
+                  {% set score_label = 'Goed' %}
+                {% else %}
+                  {% set circle_color = '#28a745' %}
+                  {% set score_label = 'Uitstekend' %}
+                {% endif %}
+
                 <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
                   <!-- achtergrond -->
                   <circle
@@ -792,7 +1077,7 @@
                   <!-- progress -->
                   <circle
                     cx="70" cy="70" r="52"
-                    stroke="#34C759"
+                    stroke="{{ circle_color }}"
                     stroke-width="12"
                     fill="none"
                     stroke-linecap="round"
@@ -800,119 +1085,152 @@
                     stroke-dashoffset="{{ score_dashoffset }}"
                   />
                 </svg>
-                <div class="score-circle-text">{{ health_score }}</div>
+                <div class="score-circle-text">
+                  <div>{{ health_score }}</div>
+                  <div class="score-circle-label">{{ score_label }}</div>
+                </div>
               </div>
 
-              <!-- factoren -->
               {% set m_moist = sensor_data['moisture']['measurement'] %}
               {% set m_temp  = sensor_data['temperature']['measurement'] %}
               {% set m_hum   = sensor_data['humidity']['measurement'] %}
               {% set m_rain  = sensor_data['rain']['measurement'] %}
               {% set m_light = sensor_data['light']['measurement'] %}
               {% set m_co2   = sensor_data['co2']['measurement'] %}
+              {% set fs = factor_states %}
 
               <div class="factor-list">
                 <!-- bodemvochtigheid -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>💧</span><span>Bodemvochtigheid</span>
+                {% set f = fs['moisture'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>💧</span><span>Bodemvochtigheid</span>
+                      </div>
+                      <div>
+                        {{ m_moist.value|round(1) if m_moist else '–' }}%
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_moist.value|round(1) if m_moist else '–' }}%
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_moist.value if m_moist else 50) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width: {{ (m_moist.value if m_moist else 50) }}%;"></div>
-                  </div>
-                </div>
+                </a>
 
                 <!-- temperatuur -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>🌡️</span><span>Temperatuur</span>
+                {% set f = fs['temperature'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>🌡️</span><span>Temperatuur</span>
+                      </div>
+                      <div>
+                        {{ m_temp.value|round(1) if m_temp else '–' }}°C
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_temp.value|round(1) if m_temp else '–' }}°C
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_temp.value * 5 if m_temp else 40) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width: 80%;"></div>
-                  </div>
-                </div>
+                </a>
 
                 <!-- luchtvochtigheid -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>💨</span><span>Luchtvochtigheid</span>
+                {% set f = fs['humidity'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>💨</span><span>Luchtvochtigheid</span>
+                      </div>
+                      <div>
+                        {{ m_hum.value|round(1) if m_hum else '–' }}%
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_hum.value|round(1) if m_hum else '–' }}%
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_hum.value if m_hum else 60) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width: {{ (m_hum.value if m_hum else 60) }}%;"></div>
-                  </div>
-                </div>
+                </a>
 
                 <!-- regenval -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>🌧️</span><span>Regenval</span>
+                {% set f = fs['rain'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>🌧️</span><span>Regenval</span>
+                      </div>
+                      <div>
+                        {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_rain.value * 10 if m_rain else 50) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width:75%;"></div>
-                  </div>
-                </div>
+                </a>
 
                 <!-- licht -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>☀️</span><span>Licht</span>
+                {% set f = fs['light'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>☀️</span><span>Licht</span>
+                      </div>
+                      <div>
+                        {{ m_light.value|round(1) if m_light else '–' }}<span style="margin-left: 4px; font-size: 0.85em; opacity: 0.7;">PPFD</span>
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_light.value|round(1) if m_light else '–' }} uur/dag
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_light.value / 20 if m_light else 50) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width:80%;"></div>
-                  </div>
-                </div>
+                </a>
 
                 <!-- CO2 -->
-                <div>
-                  <div class="factor-row-top">
-                    <div class="factor-name">
-                      <span>🪴</span><span>CO₂</span>
+                {% set f = fs['co2'] %}
+                <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="factor-item-link">
+                  <div class="factor-item">
+                    <div class="factor-row-top">
+                      <div class="factor-name">
+                        <span>🪴</span><span>CO₂</span>
+                      </div>
+                      <div>
+                        {{ m_co2.value|round(1) if m_co2 else '–' }} ppm
+                        <span class="factor-tag factor-tag-{{ f.severity }}">
+                          {{ f.status_text }}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {{ m_co2.value|round(1) if m_co2 else '–' }} ppm
-                      <span style="color:var(--accent);font-size:11px;margin-left:4px;">✓ Optimaal</span>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill status-{{ f.severity }}"
+                           style="width: {{ (m_co2.value / 10 if m_co2 else 50) }}%;"></div>
                     </div>
                   </div>
-                  <div class="factor-bar">
-                    <div class="factor-bar-fill"
-                         style="width:82%;"></div>
-                  </div>
-                </div>
+                </a>
               </div>
             </div>
 
@@ -927,12 +1245,20 @@
                 <div class="trend-header">
                   <div>
                     <div class="trend-title">Gezondheids Trend</div>
-                    <div class="trend-muted">Laatste 30 dagen</div>
+                    <div class="trend-muted" id="trend-period-label">{{ trend_data.period_label }}</div>
                   </div>
-                  <div class="trend-pill">
-                    <span>▲</span>
-                    <span>+24%</span>
+                  <div class="trend-pill" id="trend-pill">
+                    <span id="trend-arrow">{% if trend_data.trend_direction == 'up' %}▲{% elif trend_data.trend_direction == 'down' %}▼{% else %}→{% endif %}</span>
+                    <span id="trend-percent">{% if trend_data.trend_direction == 'up' %}+{% elif trend_data.trend_direction == 'down' %}-{% endif %}{{ trend_data.trend_percent }}%</span>
                   </div>
+                </div>
+
+                <!-- Period selector -->
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 12px;">
+                  <button class="period-btn" data-period="week">7d</button>
+                  <button class="period-btn active" data-period="month">30d</button>
+                  <button class="period-btn" data-period="quarter">3m</button>
+                  <button class="period-btn" data-period="year">1y</button>
                 </div>
 
                 <div class="trend-chart">
@@ -945,18 +1271,69 @@
                   <div class="trend-legend">
                     <div class="legend-item">
                       <span class="legend-dot"></span>
-                      <span>Start</span>
+                      <span id="trend-prev-avg">Start: {{ trend_data.previous_avg }}%</span>
                     </div>
                     <div class="legend-item">
                       <span class="legend-dot legend-dot-pulse"></span>
-                      <span>Nu: {{ health_score }}%</span>
+                      <span id="trend-current-avg">Nu: {{ trend_data.current_avg }}%</span>
                     </div>
                   </div>
-                  <span>30d</span>
+                  <span id="trend-duration">30d</span>
                 </div>
               </div>
             </div>
           </article>
+        </section>
+
+        <!-- Plant Recommendations -->
+        {% if plant_recommendations and plant_recommendations|length > 0 %}
+        <section class="recommendations-section">
+          <div class="recommendations-title">🌱 Aanbevolen planten</div>
+          <div class="recommendations-grid">
+            {% for rec in plant_recommendations %}
+            <div class="recommendation-card">
+              <div class="recommendation-icon">{{ rec.icon }}</div>
+              <div class="recommendation-content">
+                <div class="recommendation-name">{{ rec.name }}</div>
+                <div class="recommendation-score">
+                  <span class="score-value">{{ rec.score }}%</span>
+                  <div class="score-bar">
+                    <div class="score-bar-fill" style="width: {{ rec.score }}%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="recommendation-rank">
+                {% if loop.index == 1 %}⭐{% elif loop.index == 2 %}✓{% else %}·{% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        <!-- Alerts -->
+        <section class="alerts-section">
+          <div class="alerts-title">Alerts</div>
+          {% if alerts and alerts|length > 0 %}
+            <div class="alerts-grid">
+              {% for a in alerts %}
+                <div class="alert-card alert-card-{{ a.severity }}">
+                  <div>
+                    <div class="alert-label">
+                      {% if a.severity == 'critical' %}Kritiek{% elif a.severity == 'warning' %}Waarschuwing{% else %}Info{% endif %}
+                    </div>
+                    <div><strong>{{ a.variable }}</strong> – {{ a.message }}</div>
+                    <div class="trend-muted" style="margin-top:2px;">
+                      Gemeten: {{ a.value if a.value is not none else '–' }} {{ a.unit }}
+                      • Doel: {{ a.target }}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="trend-muted">Geen actieve alerts. Alle variabelen liggen dicht bij het optimum.</p>
+          {% endif %}
         </section>
 
         <!-- Sensor cards -->
@@ -993,7 +1370,7 @@
               <canvas id="chart-moisture"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideale range: 65–85% veldcapaciteit</span>
+              <span>Ideaal: plantprofiel-afhankelijk</span>
               <span>
                 {% if m_moist and m_moist.time_m %}
                   {{ m_moist.time_m.strftime('%H:%M') }}
@@ -1023,7 +1400,7 @@
               <canvas id="chart-temperature"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideale range: 21–29°C</span>
+              <span>Ideaal: plantprofiel-afhankelijk</span>
               <span>
                 {% if m_temp and m_temp.time_m %}
                   {{ m_temp.time_m.strftime('%H:%M') }}
@@ -1053,7 +1430,7 @@
               <canvas id="chart-humidity"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideale range: 40–70%</span>
+              <span>Ideaal: plantprofiel-afhankelijk</span>
               <span>
                 {% if m_hum and m_hum.time_m %}
                   {{ m_hum.time_m.strftime('%H:%M') }}
@@ -1083,7 +1460,7 @@
               <canvas id="chart-rain"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideaal: 40–60 mm/week</span>
+              <span>Ideaal: plantprofiel-afhankelijk</span>
               <span>
                 {% if m_rain and m_rain.time_m %}
                   {{ m_rain.time_m.strftime('%d/%m') }}
@@ -1104,7 +1481,7 @@
                     {{ m_light.value|round(1) if m_light else '–' }}
                   </span>
                   <span class="sensor-value-unit">
-                    {{ s_light.unit if s_light and s_light.unit else 'uur/dag' }}
+                    {{ s_light.unit if s_light and s_light.unit else 'µmol/m²/s' }}
                   </span>
                 </div>
               </div>
@@ -1113,7 +1490,7 @@
               <canvas id="chart-light"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideaal: 8–10 uur zon</span>
+              <span>Ideaal: plantprofiel-afhankelijk (PPFD)</span>
               <span>
                 {% if m_light and m_light.time_m %}
                   {{ m_light.time_m.strftime('%d/%m') }}
@@ -1143,7 +1520,7 @@
               <canvas id="chart-co2"></canvas>
             </div>
             <div class="sensor-footer">
-              <span>Ideale range: 800–1200 ppm</span>
+              <span>Ideaal: plantprofiel-afhankelijk</span>
               <span>
                 {% if m_co2 and m_co2.time_m %}
                   {{ m_co2.time_m.strftime('%H:%M') }}
@@ -1315,11 +1692,107 @@
     makeSensorChart('chart-temperature', 'temperature', 'Temperatuur', '°C');
     makeSensorChart('chart-humidity', 'humidity', 'Luchtvochtigheid', '%');
     makeSensorChart('chart-rain', 'rain', 'Regenval', 'mm/week');
-    makeSensorChart('chart-light', 'light', 'Licht', 'uur/dag');
+    makeSensorChart('chart-light', 'light', 'Licht', 'PPFD (µmol/m²/s)');
     makeSensorChart('chart-co2', 'co2', 'CO₂', 'ppm');
 
     // Health trend grafiek
     makeHealthTrendChart();
+
+    // Period selector voor health trend
+    const serialNumber = window.location.pathname.split('/').pop();
+    const periodButtons = document.querySelectorAll('.period-btn');
+    let healthTrendChart = null;
+
+    periodButtons.forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const period = this.getAttribute('data-period');
+        
+        // Update active button
+        periodButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        try {
+          // Fetch trend data
+          const response = await fetch(`/dashboard/${serialNumber}/health-trend-api?period=${period}`);
+          const data = await response.json();
+          
+          if (!response.ok) throw new Error(data.error);
+          
+          // Update UI
+          document.getElementById('trend-period-label').textContent = data.period_label;
+          document.getElementById('trend-duration').textContent = 
+            period === 'week' ? '7d' : period === 'month' ? '30d' : period === 'quarter' ? '3m' : '1y';
+          
+          // Update trend percentage pill
+          const arrow = data.trend_direction === 'up' ? '▲' : data.trend_direction === 'down' ? '▼' : '→';
+          const sign = data.trend_direction === 'down' ? '-' : data.trend_direction === 'up' ? '+' : '';
+          document.getElementById('trend-arrow').textContent = arrow;
+          document.getElementById('trend-percent').textContent = sign + data.trend_percent + '%';
+          
+          // Update averages
+          document.getElementById('trend-prev-avg').textContent = `Start: ${data.previous_avg}%`;
+          document.getElementById('trend-current-avg').textContent = `Nu: ${data.current_avg}%`;
+          
+          // Update chart
+          const ctx = document.getElementById('chart-health-trend');
+          if (healthTrendChart) {
+            healthTrendChart.destroy();
+          }
+          
+          healthTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: data.labels,
+              datasets: [
+                {
+                  label: 'Gezondheid Score',
+                  data: data.values,
+                  borderColor: '#34C759',
+                  backgroundColor: 'rgba(52, 199, 89, 0.1)',
+                  borderWidth: 2,
+                  pointRadius: 3,
+                  pointBackgroundColor: '#34C759',
+                  tension: 0.4,
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100,
+                  ticks: {
+                    color: 'rgba(255,255,255,0.5)',
+                    font: { size: 10 }
+                  },
+                  grid: {
+                    color: 'rgba(255,255,255,0.05)'
+                  }
+                },
+                x: {
+                  ticks: {
+                    color: 'rgba(255,255,255,0.5)',
+                    font: { size: 10 }
+                  },
+                  grid: {
+                    display: false
+                  }
+                }
+              }
+            }
+          });
+        } catch (error) {
+          console.error('Error loading trend data:', error);
+        }
+      });
+    });
   </script>
 </body>
 </html>
