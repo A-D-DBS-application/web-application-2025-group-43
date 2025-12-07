@@ -690,10 +690,11 @@
     }
     .alert-card{
       border-radius:14px;
-      padding:10px 12px;
+      padding:12px 14px;
       font-size:13px;
       display:flex;
-      align-items:flex-start;
+      flex-direction:column;
+      gap:6px;
       border:1px solid var(--border-soft);
       background:#0f1116;
       transition:all .12s ease;
@@ -721,22 +722,27 @@
     }
     .alert-label{
       font-size:11px;
-      text-transform:uppercase;
+      font-weight:600;
       letter-spacing:.08em;
-      margin-bottom:2px;
-      font-weight:600;
     }
-    .alert-causes{
-      padding:6px 8px;
-      background:rgba(0,0,0,0.2);
-      border-radius:6px;
-      border-left:2px solid currentColor;
+    .alert-content{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
     }
-    .causes-label{
-      font-size:11px;
+    .alert-variable{
       font-weight:600;
+      color:var(--text);
+    }
+    .alert-message{
+      font-size:12px;
       color:var(--muted);
-      margin-bottom:2px;
+    }
+    .alert-cta{
+      font-size:11px;
+      color:var(--accent);
+      font-weight:500;
+      margin-top:2px;
     }
 
     /* ========= PLANT RECOMMENDATIONS ========= */
@@ -1368,30 +1374,13 @@
               {% for a in alerts %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type=a.sensor_type) }}" class="alert-link">
                   <div class="alert-card alert-card-{{ a.severity }}">
-                    <div>
-                      <div class="alert-label">
-                        {% if a.severity == 'critical' %}⚠️ Kritiek{% elif a.severity == 'warning' %}⚡ Waarschuwing{% else %}ℹ️ Info{% endif %}
-                      </div>
-                      <div><strong>{{ a.variable }}</strong> – {{ a.message }}</div>
-                      <div class="trend-muted" style="margin-top:4px;">
-                        Gemeten: {{ a.value if a.value is not none else '–' }} {{ a.unit }}
-                        • Doel: {{ a.target }}
-                      </div>
-                      
-                      {% if a.causes and a.causes|length > 0 %}
-                      <div class="alert-causes" style="margin-top:8px;">
-                        <div class="causes-label">Mogelijke oorzaken:</div>
-                        <ul style="margin:4px 0 0 0; padding-left:18px;">
-                          {% for cause in a.causes[:3] %}
-                            <li style="font-size:12px; margin:2px 0; color: var(--muted);">{{ cause }}</li>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                      {% endif %}
-                      
-                      <div style="margin-top:8px; font-size:11px; color:var(--accent); font-weight:500;">
-                        Klik voor meer details →
-                      </div>
+                    <div class="alert-label">
+                      {% if a.severity == 'critical' %}🔴 Kritiek{% elif a.severity == 'warning' %}🟡 Waarschuwing{% endif %}
+                    </div>
+                    <div class="alert-content">
+                      <div class="alert-variable">{{ a.variable }}</div>
+                      <div class="alert-message">{{ a.message }}</div>
+                      <div class="alert-cta">Klik voor details →</div>
                     </div>
                   </div>
                 </a>
@@ -1400,6 +1389,7 @@
           {% else %}
             <p class="trend-muted">Geen actieve alerts. Alle variabelen liggen dicht bij het optimum.</p>
           {% endif %}
+        </section>
         </section>
 
         <!-- Sensor cards -->
