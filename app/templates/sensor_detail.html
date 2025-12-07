@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ sensor_config.label }} - Capenta</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/globals.css') }}" />
+  <style>
+    :root {
+      --bg-1: #0F1116;
+      --bg-2: #161B22;
+      --bg-3: #21262D;
+      --accent: #34C759;
+      --accent-hover: #30B24F;
+      --border-soft: rgba(255, 255, 255, 0.1);
+      --muted: #8B949E;
+      --text: #E6EDF3;
+      --danger: #F85149;
+      --warning: #D29922;
+      --success: #3FB950;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-1);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ========= LAYOUT ========= */
+    .container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: var(--bg-2);
+      border-right: 1px solid var(--border-soft);
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ========= TOPBAR ========= */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--bg-2);
+      height: 56px;
+    }
+
+    .topbar-back {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: opacity 0.2s;
+    }
+
+    .topbar-back:hover {
+      opacity: 0.7;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .topbar-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ========= MAIN SCROLL ========= */
+    .main-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    /* ========= CARDS ========= */
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ========= SENSOR HEADER ========= */
+    .sensor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .sensor-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sensor-icon {
+      font-size: 32px;
+    }
+
+    .sensor-header-info h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .sensor-header-info p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .sensor-value-display {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .sensor-value-main {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .sensor-value-unit {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .status-ok {
+      background: rgba(52, 199, 89, 0.2);
+      color: #34C759;
+    }
+
+    .status-warning {
+      background: rgba(250, 204, 21, 0.2);
+      color: #facc15;
+    }
+
+    .status-critical {
+      background: rgba(251, 113, 133, 0.2);
+      color: #fb7185;
+    }
+
+    .status-unknown {
+      background: rgba(154, 164, 178, 0.2);
+      color: #9aa4b2;
+    }
+
+    /* ========= CHART ========= */
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+
+    .chart-container canvas {
+      max-height: 400px;
+    }
+
+    /* ========= STATISTICS ========= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: var(--bg-3);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ========= ALERTS ========= */
+    .alerts-section {
+      margin-bottom: 20px;
+    }
+
+    .alert-item {
+      background: var(--bg-3);
+      border-left: 4px solid;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .alert-item.critical {
+      border-left-color: #fb7185;
+      background: rgba(251, 113, 133, 0.1);
+    }
+
+    .alert-item.warning {
+      border-left-color: #facc15;
+      background: rgba(250, 204, 21, 0.1);
+    }
+
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-message {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .alert-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ========= TIPS ========= */
+    .tips-section {
+      margin-top: 20px;
+    }
+
+    .tip-item {
+      background: var(--bg-3);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .tip-item::before {
+      content: "💡 ";
+      margin-right: 4px;
+    }
+
+    /* ========= SIDEBAR ========= */
+    .sidebar-logo {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-subsection {
+      margin-bottom: 16px;
+    }
+
+    .sidebar-subsection-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 8px 0;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-item {
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .sidebar-item:hover {
+      background: var(--bg-3);
+      color: var(--accent);
+    }
+
+    .sidebar-item.active {
+      background: var(--accent);
+      color: var(--bg-1);
+      font-weight: 600;
+    }
+
+    /* ========= RESPONSIVE ========= */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-soft);
+        max-height: 120px;
+        overflow-x: auto;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sensor-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .sensor-value-display {
+        align-items: flex-start;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">🌱 Capenta</div>
+
+      <!-- Sensor Navigation -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Data Variabelen</div>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" 
+           class="sidebar-item {% if sensor_type == 'moisture' %}active{% endif %}">
+          💧 Bodemvochtigheid
+        </a>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" 
+           class="sidebar-item {% if sensor_type == 'temperature' %}active{% endif %}">
+          🌡️ Temperatuur
+        </a>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" 
+           class="sidebar-item {% if sensor_type == 'humidity' %}active{% endif %}">
+          💨 Luchtvochtigheid
+        </a>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" 
+           class="sidebar-item {% if sensor_type == 'rain' %}active{% endif %}">
+          🌧️ Regenval
+        </a>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" 
+           class="sidebar-item {% if sensor_type == 'light' %}active{% endif %}">
+          ☀️ Licht
+        </a>
+        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" 
+           class="sidebar-item {% if sensor_type == 'co2' %}active{% endif %}">
+          🪴 CO₂
+        </a>
+      </div>
+
+      <!-- Playfields Navigation -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Tuinen &amp; Playfields</div>
+        {% for item in sidebar_gardens %}
+          <div class="sidebar-subsection">
+            <div class="sidebar-subsection-title">{{ item.garden.garden_name }}</div>
+            {% for zone in item.zones %}
+              <a href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}" class="sidebar-item">
+                {{ zone.robot_name or 'Veld' }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="Terug naar dashboard">
+          ←
+        </a>
+        <div>
+          <div class="topbar-title">{{ sensor_config.label }}</div>
+          <div class="topbar-subtitle">{{ robot.robot_name or 'Playfield' }}</div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="main-scroll">
+        <!-- Sensor Header -->
+        <div class="sensor-header">
+          <div class="sensor-header-left">
+            <div class="sensor-icon">{{ sensor_config.icon }}</div>
+            <div class="sensor-header-info">
+              <h1>{{ sensor_config.label }}</h1>
+              <p>Huidige meting: {{ current_measurement.time_m.strftime('%d/%m %H:%M') if current_measurement and current_measurement.time_m else 'Geen data' }}</p>
+            </div>
+          </div>
+          <div class="sensor-value-display">
+            <div class="sensor-value-main">
+              {{ "%0.1f" | format(current_value) if current_value is not none else '–' }}
+            </div>
+            <div class="sensor-value-unit">{{ sensor_config.unit }}</div>
+            <div class="status-badge status-{{ severity }}">
+              {{ status_text }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="card">
+          <div class="card-title">📈 Grafiek (30 dagen)</div>
+          <div class="chart-container">
+            <canvas id="chart-sensor"></canvas>
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+          <div class="card-title">📊 Statistieken</div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-value">{{ "%0.1f" | format(avg_value) if avg_value is not none else '–' }}</div>
+              <div class="stat-label">Gemiddelde</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }}</div>
+              <div class="stat-label">Minimum</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">{{ "%0.1f" | format(max_value) if max_value is not none else '–' }}</div>
+              <div class="stat-label">Maximum</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Values -->
+        {% if target_mean and target_std %}
+        <div class="card">
+          <div class="card-title">🎯 Doelwaarden ({{ robot.plant_profile.display_name if robot.plant_profile else 'Plant' }})</div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-value">{{ "%0.1f" | format(target_mean) }}</div>
+              <div class="stat-label">Optimaal</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">± {{ "%0.1f" | format(target_std) }}</div>
+              <div class="stat-label">Tolerantie</div>
+            </div>
+            {% if z_score is not none %}
+            <div class="stat-box">
+              <div class="stat-value">{{ "%0.2f" | format(z_score) }}</div>
+              <div class="stat-label">Z-Score</div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Alerts -->
+        {% if alerts %}
+        <div class="card alerts-section">
+          <div class="card-title">⚠️ Waarschuwingen</div>
+          {% for alert in alerts %}
+          <div class="alert-item {{ alert.severity }}">
+            <div class="alert-title">
+              {% if alert.severity == 'critical' %}🔴{% elif alert.severity == 'warning' %}🟡{% endif %}
+              {{ alert.variable }}
+            </div>
+            <div class="alert-message">{{ alert.message }}</div>
+            <div class="alert-meta">
+              <span>Huidigewaarde: <strong>{{ "%0.1f" | format(alert.value) if alert.value else '–' }} {{ alert.unit }}</strong></span>
+              <span>Doel: {{ alert.target }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="card">
+          <div class="card-title">✅ Status</div>
+          <p style="color: var(--accent); font-weight: 500;">Alles verloopt optimaal!</p>
+        </div>
+        {% endif %}
+
+        <!-- Tips -->
+        <div class="card tips-section">
+          <div class="card-title">📚 Adviezen & Tips</div>
+          {% for tip in tips %}
+          <div class="tip-item">{{ tip }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Chart.js initialization
+    const chartCtx = document.getElementById('chart-sensor').getContext('2d');
+    const chartValues = {{ chart_values | tojson }};
+    const chartLabels = {{ chart_labels | tojson }};
+    const targetMean = {{ target_mean | tojson if target_mean else 'null' }};
+
+    new Chart(chartCtx, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          {
+            label: '{{ sensor_config.label }}',
+            data: chartValues,
+            borderColor: '#34C759',
+            backgroundColor: 'rgba(52, 199, 89, 0.1)',
+            borderWidth: 2,
+            pointRadius: 2,
+            pointBackgroundColor: '#34C759',
+            pointHoverRadius: 4,
+            tension: 0.4,
+            fill: true,
+          },
+          {% if targetMean %}
+          {
+            label: 'Doelwaarde',
+            data: new Array(chartLabels.length).fill({{ target_mean }}),
+            borderColor: '#facc15',
+            borderDash: [5, 5],
+            borderWidth: 1,
+            pointRadius: 0,
+            fill: false,
+          }
+          {% endif %}
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#E6EDF3',
+              font: { size: 12 },
+              padding: 12,
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            titleColor: '#E6EDF3',
+            bodyColor: '#E6EDF3',
+            borderColor: '#34C759',
+            borderWidth: 1,
+            padding: 8,
+            titleFont: { size: 12 },
+            bodyFont: { size: 11 },
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: 'rgba(255,255,255,0.5)',
+              font: { size: 11 },
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.05)',
+              drawBorder: false,
+            }
+          },
+          x: {
+            ticks: {
+              color: 'rgba(255,255,255,0.5)',
+              font: { size: 10 },
+              maxRotation: 45,
+              minRotation: 0,
+            },
+            grid: {
+              display: false,
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
