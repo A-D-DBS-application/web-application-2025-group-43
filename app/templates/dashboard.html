@@ -1749,10 +1749,20 @@
           },
           scales: {
             x: {
-              ticks: { 
-                maxTicksLimit: 6,
+              type: 'category',
+              ticks: {
                 color: 'rgba(255,255,255,0.5)',
-                font: { size: 10 }
+                font: { size: 10 },
+                maxRotation: 0,
+                autoSkipPadding: 50,
+                callback: function(value, index, values) {
+                  // Toon elke 7de label voor lange periodes (30+, 90+, 365)
+                  const totalLabels = values.length;
+                  if (totalLabels > 20) {
+                    return (index % Math.ceil(totalLabels / 6) === 0) ? this.getLabelForValue(value) : '';
+                  }
+                  return this.getLabelForValue(value);
+                }
               },
               grid: {
                 display: false
@@ -1843,19 +1853,40 @@
                   borderWidth: 2,
                   pointRadius: 3,
                   pointBackgroundColor: '#34C759',
+                  fill: true,
                   tension: 0.4,
                 }
               ]
             },
             options: {
               responsive: true,
-              maintainAspectRatio: true,
+              maintainAspectRatio: false,
               plugins: {
                 legend: {
                   display: false
                 }
               },
               scales: {
+                x: {
+                  type: 'category',
+                  ticks: {
+                    color: 'rgba(255,255,255,0.5)',
+                    font: { size: 10 },
+                    maxRotation: 0,
+                    autoSkipPadding: 50,
+                    callback: function(value, index, values) {
+                      // Toon elke 7de label voor lange periodes (30+, 90+, 365)
+                      const totalLabels = values.length;
+                      if (totalLabels > 20) {
+                        return (index % Math.ceil(totalLabels / 6) === 0) ? this.getLabelForValue(value) : '';
+                      }
+                      return this.getLabelForValue(value);
+                    }
+                  },
+                  grid: {
+                    display: false
+                  }
+                },
                 y: {
                   min: 0,
                   max: 100,
@@ -1865,15 +1896,6 @@
                   },
                   grid: {
                     color: 'rgba(255,255,255,0.05)'
-                  }
-                },
-                x: {
-                  ticks: {
-                    color: 'rgba(255,255,255,0.5)',
-                    font: { size: 10 }
-                  },
-                  grid: {
-                    display: false
                   }
                 }
               }
