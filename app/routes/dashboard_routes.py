@@ -562,6 +562,9 @@ def dashboard(serial_number):
         for key in SENSOR_KEYS
     }
 
+    # Store current dashboard serial for profile back button
+    session['last_robot_serial'] = serial_number
+
     return render_template(
         "dashboard.html",
         garden=garden,

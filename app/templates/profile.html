@@ -204,7 +204,7 @@
     <!-- Topbar met back + logo -->
     <div class="topbar">
       <div class="topbar-left">
-        <form method="get" action="{{ url_for('garden.garden_selection') }}">
+        <form method="get" action="{% if last_robot_serial %}{{ url_for('dashboard.dashboard', serial_number=last_robot_serial) }}{% else %}{{ url_for('garden.garden_selection') }}{% endif %}">
           <button class="back-btn" type="submit" title="Terug">
             <span>←</span>
           </button>

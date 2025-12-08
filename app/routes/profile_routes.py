@@ -34,4 +34,5 @@ def profile():
         phone=user.phone,
         address=user.adress,
         initials=initials,
+        last_robot_serial=session.get('last_robot_serial'),
     )
