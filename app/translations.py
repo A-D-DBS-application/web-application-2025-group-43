@@ -43,6 +43,10 @@ TRANSLATIONS = {
         "email": "Email",
         "username": "Username",
         "back": "Back",
+        "name": "Name",
+        "phone": "Phone Number",
+        "address": "Address",
+        "fields": "Fields (read only)",
         
         # Login/Auth
         "login": "Login",
@@ -51,6 +55,14 @@ TRANSLATIONS = {
         "remember_me": "Remember me",
         "dont_have_account": "Don't have an account?",
         "already_have_account": "Already have an account?",
+        "email_address": "Email Address",
+        "create_account": "Create Account",
+        "sign_in": "Sign In",
+        "invalid_credentials": "Invalid email or password",
+        "email_already_registered": "Email already registered",
+        "account_created_success": "Account created! Please log in.",
+        "capenta_autonomous": "Capenta – Autonomous Garden Robot",
+        "fill_info": "Fill in the information to start using Capenta.",
         
         # Garden/Playfield selection
         "select_garden": "Select Garden",
@@ -60,10 +72,25 @@ TRANSLATIONS = {
         "add": "Add",
         "edit": "Edit",
         "delete": "Delete",
+        "add_garden": "Add Garden",
+        "add_playfield": "Add Playfield",
+        "garden_name": "Garden Name",
+        "location": "Location",
+        "edit_garden": "Edit Garden",
+        "edit_playfield": "Edit Playfield",
+        "playfield_name": "Playfield Name",
+        "serial_number": "Serial Number",
+        "back_to_gardens": "Back to gardens",
+        "welcome_select_garden": "Welcome! Select a garden to get started",
+        "gardens_playfields": "Gardens & Playfields",
+        "no_gardens_yet": "You don't have any gardens yet. Click on Add Garden to add your first garden.",
+        "confirm_delete_garden": "Are you sure you want to delete this garden?",
         
         # General
         "ideal_plant_dependent": "Ideal: plant profile-dependent",
         "language": "Language",
+        "en": "English",
+        "nl": "Nederlands",
     },
     "nl": {
         # Dashboard
@@ -107,6 +134,10 @@ TRANSLATIONS = {
         "email": "E-mailadres",
         "username": "Gebruikersnaam",
         "back": "Terug",
+        "name": "Naam",
+        "phone": "Telefoonnummer",
+        "address": "Adres",
+        "fields": "Velden (alleen-lezen)",
         
         # Login/Auth
         "login": "Inloggen",
@@ -115,6 +146,14 @@ TRANSLATIONS = {
         "remember_me": "Onthoud mij",
         "dont_have_account": "Heb je geen account?",
         "already_have_account": "Heb je al een account?",
+        "email_address": "E-mailadres",
+        "create_account": "Account aanmaken",
+        "sign_in": "Inloggen",
+        "invalid_credentials": "Ongeldig e-mailadres of wachtwoord",
+        "email_already_registered": "E-mailadres al geregistreerd",
+        "account_created_success": "Account aangemaakt! Log alstublieft in.",
+        "capenta_autonomous": "Capenta – Autonome Tuinrobot",
+        "fill_info": "Vul de informatie in om Capenta te gebruiken.",
         
         # Garden/Playfield selection
         "select_garden": "Tuin selecteren",
@@ -124,10 +163,25 @@ TRANSLATIONS = {
         "add": "Toevoegen",
         "edit": "Bewerken",
         "delete": "Verwijderen",
+        "add_garden": "Tuin toevoegen",
+        "add_playfield": "Speelveld toevoegen",
+        "garden_name": "Tuinnaam",
+        "location": "Locatie",
+        "edit_garden": "Tuin bewerken",
+        "edit_playfield": "Speelveld bewerken",
+        "playfield_name": "Speelveldnaam",
+        "serial_number": "Serienummer",
+        "back_to_gardens": "Terug naar tuinen",
+        "welcome_select_garden": "Welkom! Selecteer een tuin om te beginnen",
+        "gardens_playfields": "Tuinen & Speelvelden",
+        "no_gardens_yet": "Je hebt nog geen tuinen. Klik op Tuin toevoegen om je eerste tuin toe te voegen.",
+        "confirm_delete_garden": "Weet je zeker dat je deze tuin wilt verwijderen?",
         
         # General
         "ideal_plant_dependent": "Ideaal: plantprofiel-afhankelijk",
         "language": "Taal",
+        "en": "English",
+        "nl": "Nederlands",
     }
 }
 

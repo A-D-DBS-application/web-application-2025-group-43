@@ -1,0 +1,62 @@
+<!-- Global Language Switcher -->
+<div class="language-switcher" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+  <button 
+    class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
+    onclick="setLanguage('en')"
+    style="margin-right: 8px;">
+    EN
+  </button>
+  <button 
+    class="lang-btn lang-btn-nl {% if lang == 'nl' %}active{% endif %}"
+    onclick="setLanguage('nl')">
+    NL
+  </button>
+</div>
+
+<style>
+  .language-switcher {
+    display: flex;
+    gap: 0;
+  }
+  
+  .lang-btn {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .lang-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .lang-btn.active {
+    background: #34C759;
+    color: white;
+    border-color: #34C759;
+  }
+  
+  .lang-btn.active:hover {
+    background: #30B24F;
+    border-color: #30B24F;
+  }
+</style>
+
+<script>
+  function setLanguage(lang) {
+    // Fetch the language switch endpoint
+    fetch(`/set-language/${lang}`, {
+      method: 'GET',
+      credentials: 'same-origin'
+    }).then(() => {
+      // Reload the page to apply new language
+      location.reload();
+    });
+  }
+</script>
