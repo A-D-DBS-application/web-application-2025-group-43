@@ -1156,23 +1156,23 @@
           </button>
           <div class="data-list" id="dataList">
             <div class="data-btn-wrapper">
-              <button class="data-btn active" type="button" data-target="#sensor-moisture">Bodemvochtigheid</button>
+              <button class="data-btn active" type="button" data-target="#sensor-moisture">Soil Moisture</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-temperature">Temperatuur</button>
+              <button class="data-btn" type="button" data-target="#sensor-temperature">Temperature</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-humidity">Luchtvochtigheid</button>
+              <button class="data-btn" type="button" data-target="#sensor-humidity">Humidity</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-rain">Regenval (Waterbehoefte)</button>
+              <button class="data-btn" type="button" data-target="#sensor-rain">Rainfall (Water Needs)</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-light">Licht</button>
+              <button class="data-btn" type="button" data-target="#sensor-light">Light</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
@@ -1228,7 +1228,7 @@
         </h1>
         <div class="status-pill">
           <span class="status-dot"></span>
-          <span>Online – Actief</span>
+          <span>Online – Active</span>
         </div>
       </header>
 
@@ -1291,13 +1291,13 @@
               {% set fs = factor_states %}
 
               <div class="factor-list">
-                <!-- bodemvochtigheid -->
+                <!-- Soil Moisture -->
                 {% set f = fs['moisture'] %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="factor-item-link">
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>💧</span><span>Bodemvochtigheid</span>
+                        <span>💧</span><span>Soil Moisture</span>
                       </div>
                       <div>
                         {{ m_moist.value|round(1) if m_moist else '–' }}%
@@ -1313,13 +1313,13 @@
                   </div>
                 </a>
 
-                <!-- temperatuur -->
+                <!-- Temperature -->
                 {% set f = fs['temperature'] %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="factor-item-link">
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>🌡️</span><span>Temperatuur</span>
+                        <span>🌡️</span><span>Temperature</span>
                       </div>
                       <div>
                         {{ m_temp.value|round(1) if m_temp else '–' }}°C
@@ -1335,13 +1335,13 @@
                   </div>
                 </a>
 
-                <!-- luchtvochtigheid -->
+                <!-- Humidity -->
                 {% set f = fs['humidity'] %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="factor-item-link">
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>💨</span><span>Luchtvochtigheid</span>
+                        <span>💨</span><span>Humidity</span>
                       </div>
                       <div>
                         {{ m_hum.value|round(1) if m_hum else '–' }}%
@@ -1357,13 +1357,13 @@
                   </div>
                 </a>
 
-                <!-- regenval -->
+                <!-- Rainfall -->
                 {% set f = fs['rain'] %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="factor-item-link">
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>🌧️</span><span>Regenval</span>
+                        <span>🌧️</span><span>Rainfall</span>
                       </div>
                       <div>
                         {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
@@ -1379,13 +1379,13 @@
                   </div>
                 </a>
 
-                <!-- licht -->
+                <!-- Light -->
                 {% set f = fs['light'] %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="factor-item-link">
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>☀️</span><span>Licht</span>
+                        <span>☀️</span><span>Light</span>
                       </div>
                       <div>
                         {{ m_light.value|round(1) if m_light else '–' }}<span style="margin-left: 4px; font-size: 0.85em; opacity: 0.7;">PPFD</span>
@@ -1428,14 +1428,14 @@
             <!-- Right -->
             <div class="health-right">
               <div class="health-right-header">
-                <div class="health-right-title">Algemene Playfield Gezondheid</div>
+                <div class="health-right-title">Overall Playfield Health</div>
                 <p class="health-right-sub">{{ health_label }}</p>
               </div>
 
               <div class="trend-card">
                 <div class="trend-header">
                   <div>
-                    <div class="trend-title">Gezondheids Trend</div>
+                    <div class="trend-title">Health Trend</div>
                     <div class="trend-muted" id="trend-period-label">{{ trend_data.period_label }}</div>
                   </div>
                   <div class="trend-pill" id="trend-pill">
@@ -1543,12 +1543,12 @@
           {% set s_co2   = sensor_data['co2']['sensor'] %}
           {% set m_co2   = sensor_data['co2']['measurement'] %}
 
-          <!-- Bodemvochtigheid -->
+          <!-- Soil Moisture -->
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="sensor-card-link">
             <article class="sensor-card" id="sensor-moisture">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Bodemvochtigheid</div>
+                  <div class="sensor-name">Soil Moisture</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_moist.value|round(1) if m_moist else '–' }}
@@ -1575,12 +1575,12 @@
             </article>
           </a>
 
-          <!-- Temperatuur -->
+          <!-- Temperature -->
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="sensor-card-link">
             <article class="sensor-card" id="sensor-temperature">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Temperatuur</div>
+                  <div class="sensor-name">Temperature</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_temp.value|round(1) if m_temp else '–' }}
@@ -1607,12 +1607,12 @@
             </article>
           </a>
 
-          <!-- Luchtvochtigheid -->
+          <!-- Humidity -->
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="sensor-card-link">
             <article class="sensor-card" id="sensor-humidity">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Luchtvochtigheid</div>
+                  <div class="sensor-name">Humidity</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_hum.value|round(1) if m_hum else '–' }}
@@ -1639,12 +1639,12 @@
             </article>
           </a>
 
-          <!-- Regenval -->
+          <!-- Rainfall (Water Needs) -->
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="sensor-card-link">
             <article class="sensor-card" id="sensor-rain">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Regenval (Waterbehoefte)</div>
+                  <div class="sensor-name">Rainfall (Water Needs)</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_rain.value|round(1) if m_rain else '–' }}
@@ -1671,12 +1671,12 @@
             </article>
           </a>
 
-          <!-- Licht -->
+          <!-- Light -->
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="sensor-card-link">
             <article class="sensor-card" id="sensor-light">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Licht</div>
+                  <div class="sensor-name">Light</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_light.value|round(1) if m_light else '–' }}
@@ -1742,20 +1742,20 @@
     <div class="fab-wrap">
       <div class="fab-actions" id="fabActions">
         <button class="fab-action-btn" type="button">
-          💧 Water geven
+          💧 Water Plants
         </button>
         <button class="fab-action-btn" type="button">
-          🧹 Onkruid wieden
+          🧹 Remove Weeds
         </button>
       </div>
-      <button class="fab-main" type="button" id="fabMain" aria-label="Handmatige actie">
+      <button class="fab-main" type="button" id="fabMain" aria-label="Manual action">
         🤖
       </button>
     </div>
   </div>
 
   <script>
-    // ====== data vanuit Flask naar JS ======
+    // ====== data from Flask to JS ======
     const CHART_DATA = {{ chart_data|tojson }};
     const HEALTH_TREND_VALUES = {{ health_trend_values|tojson }};
     const HEALTH_TREND_LABELS = {{ health_trend_labels|tojson }};
@@ -1907,7 +1907,7 @@
             y: {
               title: {
                 display: true,
-                text: 'Gezondheidsscore'
+                text: 'Health Score'
               },
               min: 0,
               max: 100,
@@ -1924,19 +1924,19 @@
       });
     }
 
-    // Sensor grafieken
-    makeSensorChart('chart-moisture', 'moisture', 'Bodemvochtigheid', '%');
-    makeSensorChart('chart-temperature', 'temperature', 'Temperatuur', '°C');
-    makeSensorChart('chart-humidity', 'humidity', 'Luchtvochtigheid', '%');
-    makeSensorChart('chart-rain', 'rain', 'Regenval', 'mm/week');
-    makeSensorChart('chart-light', 'light', 'Licht', 'PPFD (µmol/m²/s)');
+    // Sensor charts
+    makeSensorChart('chart-moisture', 'moisture', 'Soil Moisture', '%');
+    makeSensorChart('chart-temperature', 'temperature', 'Temperature', '°C');
+    makeSensorChart('chart-humidity', 'humidity', 'Humidity', '%');
+    makeSensorChart('chart-rain', 'rain', 'Rainfall', 'mm/week');
+    makeSensorChart('chart-light', 'light', 'Light', 'PPFD (µmol/m²/s)');
     makeSensorChart('chart-co2', 'co2', 'CO₂', 'ppm');
 
-    // Health trend grafiek
+    // Health trend chart
     let healthTrendChart = null;
     makeHealthTrendChart();
 
-    // Period selector voor health trend
+    // Period selector for health trend
     const serialNumber = window.location.pathname.split('/').pop();
     const periodButtons = document.querySelectorAll('.period-btn');
 
@@ -1968,7 +1968,7 @@
           
           // Update averages
           document.getElementById('trend-prev-avg').textContent = `Start: ${data.previous_avg}%`;
-          document.getElementById('trend-current-avg').textContent = `Nu: ${data.current_avg}%`;
+          document.getElementById('trend-current-avg').textContent = `Now: ${data.current_avg}%`;
           
           // Update chart
           const ctx = document.getElementById('chart-health-trend');
@@ -1982,7 +1982,7 @@
               labels: data.labels,
               datasets: [
                 {
-                  label: 'Gezondheid Score',
+                  label: 'Health Score',
                   data: data.values,
                   borderColor: '#34C759',
                   backgroundColor: 'rgba(52, 199, 89, 0.1)',
