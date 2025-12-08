@@ -1183,7 +1183,7 @@
         </section>
       </div>
 
-      <!-- onderaan profiel + logout -->
+      <!-- Profile & Logout Section -->
       <div class="sidebar-bottom">
         <!-- Profielknop -->
         <form method="get" action="{{ url_for('profile.profile') }}">
@@ -1568,7 +1568,7 @@
                   {% if m_moist and m_moist.time_m %}
                     {{ m_moist.time_m.strftime('%H:%M') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
@@ -1600,7 +1600,7 @@
                   {% if m_temp and m_temp.time_m %}
                     {{ m_temp.time_m.strftime('%H:%M') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
@@ -1632,7 +1632,7 @@
                   {% if m_hum and m_hum.time_m %}
                     {{ m_hum.time_m.strftime('%H:%M') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
@@ -1664,7 +1664,7 @@
                   {% if m_rain and m_rain.time_m %}
                     {{ m_rain.time_m.strftime('%d/%m') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
@@ -1696,7 +1696,7 @@
                   {% if m_light and m_light.time_m %}
                     {{ m_light.time_m.strftime('%d/%m') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
@@ -1728,7 +1728,7 @@
                   {% if m_co2 and m_co2.time_m %}
                     {{ m_co2.time_m.strftime('%H:%M') }}
                   {% else %}
-                    geen data
+                    {{ 'no data' if lang == 'en' else 'geen data' }}
                   {% endif %}
                 </span>
               </div>
