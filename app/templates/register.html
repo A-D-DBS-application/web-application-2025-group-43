@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Capenta – Create Account</title>
+  <title>Capenta – {{ t('register') }}</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,6 +78,44 @@
       font-weight:500;
     }
 
+    /* Language Switcher Styles */
+    .language-switcher {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 0;
+    }
+    
+    .lang-btn {
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+    }
+    
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .lang-btn.active {
+      background: #34C759;
+      color: white;
+      border-color: #34C759;
+    }
+    
+    .lang-btn.active:hover {
+      background: #30B24F;
+      border-color: #30B24F;
+    }
+
     .field input{
       width:100%;
       border-radius:999px;
@@ -122,46 +160,72 @@
 </head>
 
 <body>
+  <!-- Global Language Switcher -->
+  <div class="language-switcher">
+    <button 
+      class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
+      onclick="setLanguage('en')"
+      style="margin-right: 0;">
+      EN
+    </button>
+    <button 
+      class="lang-btn lang-btn-nl {% if lang == 'nl' %}active{% endif %}"
+      onclick="setLanguage('nl')">
+      NL
+    </button>
+  </div>
+
   <div class="page">
     <div class="card">
-      <h1>Create Account</h1>
-      <p class="subtitle">Fill in the information to start using Capenta.</p>
+      <h1>{{ t('create_account') }}</h1>
+      <p class="subtitle">{{ t('fill_info') if lang == 'en' else 'Vul de informatie in om Capenta te gebruiken.' }}</p>
 
       <form method="post" action="{{ url_for('auth.register') }}">
 
         <div class="field">
-          <label for="name">Name</label>
+          <label for="name">{{ t('name') }}</label>
           <input type="text" id="name" name="name" placeholder="Your name" required>
         </div>
 
         <div class="field">
-          <label for="email">Email</label>
+          <label for="email">{{ t('email_address') }}</label>
           <input type="email" id="email" name="email" placeholder="email@domain.com" required>
         </div>
 
         <div class="field">
-          <label for="phone">Phone</label>
+          <label for="phone">{{ t('phone') }}</label>
           <input type="text" id="phone" name="phone" placeholder="+32 ...">
         </div>
 
         <div class="field">
-          <label for="adress">Address</label>
+          <label for="adress">{{ t('address') }}</label>
           <input type="text" id="adress" name="adress" placeholder="Street, number, city">
         </div>
 
         <div class="field">
-          <label for="password">Password</label>
+          <label for="password">{{ t('password') }}</label>
           <input type="password" id="password" name="password" placeholder="Choose a password" required>
         </div>
 
-        <button type="submit" class="btn">Create Account</button>
+        <button type="submit" class="btn">{{ t('create_account') }}</button>
 
         <p class="helper">
-          Already have an account?
-          <a href="{{ url_for('auth.login') }}">Log in</a>
+          {{ t('already_have_account') }}
+          <a href="{{ url_for('auth.login') }}">{{ t('login') }}</a>
         </p>
       </form>
     </div>
   </div>
+  
+  <script>
+    function setLanguage(lang) {
+      fetch(`/set-language/${lang}`, {
+        method: 'GET',
+        credentials: 'same-origin'
+      }).then(() => {
+        location.reload();
+      });
+    }
+  </script>
 </body>
 </html>

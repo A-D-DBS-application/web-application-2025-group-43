@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
+from .translations import get_all_translations, get_translation
 
 db = SQLAlchemy()
 
@@ -26,9 +27,21 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(profile_bp)
 
-    # Debug: routes tonen
-    print("============== ROUTES DIE FLASK ZIET ===============")
-    print(app.url_map)
-    print("====================================================")
+    # ✅ Taal context processor voor templates
+    @app.context_processor
+    def inject_language():
+        lang = session.get('language', 'en')
+        return {
+            'lang': lang,
+            'translations': get_all_translations(lang),
+            't': lambda key: get_translation(key, lang)
+        }
+
+    # ✅ Route voor taal wisselen
+    @app.route('/set-language/<language>')
+    def set_language(language):
+        if language in ['en', 'nl']:
+            session['language'] = language
+        return '', 204
 
     return app

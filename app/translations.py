@@ -1,0 +1,198 @@
+"""Translation system for English/Dutch support"""
+
+TRANSLATIONS = {
+    "en": {
+        # Dashboard
+        "recommended_plants": "Recommended Plants",
+        "alerts": "Alerts",
+        "no_active_alerts": "No active alerts. All variables are close to optimal.",
+        "critical": "Critical",
+        "warning": "Warning",
+        "click_for_details": "Click for details →",
+        "alerts_heading": "Alerts",
+        "health_score": "Health Score",
+        "health_trend": "Health Trend",
+        "7d": "7 Days",
+        "30d": "30 Days",
+        "3m": "3 Months",
+        "1y": "1 Year",
+        "profile_settings": "Profile & Settings",
+        "logout": "Logout",
+        "view_details": "View details",
+        
+        # Sensor names
+        "moisture": "Moisture",
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "rain": "Rain",
+        "light": "Light",
+        "co2": "CO2",
+        
+        # Sensor detail
+        "average": "Average",
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "ideal": "Ideal",
+        "tolerance": "Tolerance",
+        "back_to_dashboard": "Back to Dashboard",
+        "warnings": "Warnings",
+        "sensor_data": "Sensor Data",
+        
+        # Profile
+        "profile": "Profile",
+        "email": "Email",
+        "username": "Username",
+        "back": "Back",
+        "name": "Name",
+        "phone": "Phone Number",
+        "address": "Address",
+        "fields": "Fields (read only)",
+        
+        # Login/Auth
+        "login": "Login",
+        "register": "Register",
+        "password": "Password",
+        "remember_me": "Remember me",
+        "dont_have_account": "Don't have an account?",
+        "already_have_account": "Already have an account?",
+        "email_address": "Email Address",
+        "create_account": "Create Account",
+        "sign_in": "Sign In",
+        "invalid_credentials": "Invalid email or password",
+        "email_already_registered": "Email already registered",
+        "account_created_success": "Account created! Please log in.",
+        "capenta_autonomous": "Capenta – Autonomous Garden Robot",
+        "fill_info": "Fill in the information to start using Capenta.",
+        
+        # Garden/Playfield selection
+        "select_garden": "Select Garden",
+        "select_playfield": "Select Playfield",
+        "gardens": "Gardens",
+        "playfields": "Playfields",
+        "add": "Add",
+        "edit": "Edit",
+        "delete": "Delete",
+        "add_garden": "Add Garden",
+        "add_playfield": "Add Playfield",
+        "garden_name": "Garden Name",
+        "location": "Location",
+        "edit_garden": "Edit Garden",
+        "edit_playfield": "Edit Playfield",
+        "playfield_name": "Playfield Name",
+        "serial_number": "Serial Number",
+        "back_to_gardens": "Back to gardens",
+        "welcome_select_garden": "Welcome! Select a garden to get started",
+        "gardens_playfields": "Gardens & Playfields",
+        "no_gardens_yet": "You don't have any gardens yet. Click on Add Garden to add your first garden.",
+        "confirm_delete_garden": "Are you sure you want to delete this garden?",
+        
+        # General
+        "ideal_plant_dependent": "Ideal: plant profile-dependent",
+        "language": "Language",
+        "en": "English",
+        "nl": "Nederlands",
+    },
+    "nl": {
+        # Dashboard
+        "recommended_plants": "Aanbevolen planten",
+        "alerts": "Alerts",
+        "no_active_alerts": "Geen actieve alerts. Alle variabelen liggen dicht bij het optimum.",
+        "critical": "Kritiek",
+        "warning": "Waarschuwing",
+        "click_for_details": "Klik voor details →",
+        "alerts_heading": "Alerts",
+        "health_score": "Gezondheidsscores",
+        "health_trend": "Gezondheidstrend",
+        "7d": "7 Dagen",
+        "30d": "30 Dagen",
+        "3m": "3 Maanden",
+        "1y": "1 Jaar",
+        "profile_settings": "Profiel & Instellingen",
+        "logout": "Afmelden",
+        "view_details": "Details bekijken",
+        
+        # Sensor names
+        "moisture": "Vochtigheid",
+        "temperature": "Temperatuur",
+        "humidity": "Luchtvochtigheid",
+        "rain": "Regen",
+        "light": "Licht",
+        "co2": "CO₂",
+        
+        # Sensor detail
+        "average": "Gemiddelde",
+        "minimum": "Minimum",
+        "maximum": "Maximum",
+        "ideal": "Ideaal",
+        "tolerance": "Tolerantie",
+        "back_to_dashboard": "Terug naar Dashboard",
+        "warnings": "Waarschuwingen",
+        "sensor_data": "Sensorgegevens",
+        
+        # Profile
+        "profile": "Profiel",
+        "email": "E-mailadres",
+        "username": "Gebruikersnaam",
+        "back": "Terug",
+        "name": "Naam",
+        "phone": "Telefoonnummer",
+        "address": "Adres",
+        "fields": "Velden (alleen-lezen)",
+        
+        # Login/Auth
+        "login": "Inloggen",
+        "register": "Registreren",
+        "password": "Wachtwoord",
+        "remember_me": "Onthoud mij",
+        "dont_have_account": "Heb je geen account?",
+        "already_have_account": "Heb je al een account?",
+        "email_address": "E-mailadres",
+        "create_account": "Account aanmaken",
+        "sign_in": "Inloggen",
+        "invalid_credentials": "Ongeldig e-mailadres of wachtwoord",
+        "email_already_registered": "E-mailadres al geregistreerd",
+        "account_created_success": "Account aangemaakt! Log alstublieft in.",
+        "capenta_autonomous": "Capenta – Autonome Tuinrobot",
+        "fill_info": "Vul de informatie in om Capenta te gebruiken.",
+        
+        # Garden/Playfield selection
+        "select_garden": "Tuin selecteren",
+        "select_playfield": "Speelveld selecteren",
+        "gardens": "Tuinen",
+        "playfields": "Speelvelden",
+        "add": "Toevoegen",
+        "edit": "Bewerken",
+        "delete": "Verwijderen",
+        "add_garden": "Tuin toevoegen",
+        "add_playfield": "Speelveld toevoegen",
+        "garden_name": "Tuinnaam",
+        "location": "Locatie",
+        "edit_garden": "Tuin bewerken",
+        "edit_playfield": "Speelveld bewerken",
+        "playfield_name": "Speelveldnaam",
+        "serial_number": "Serienummer",
+        "back_to_gardens": "Terug naar tuinen",
+        "welcome_select_garden": "Welkom! Selecteer een tuin om te beginnen",
+        "gardens_playfields": "Tuinen & Speelvelden",
+        "no_gardens_yet": "Je hebt nog geen tuinen. Klik op Tuin toevoegen om je eerste tuin toe te voegen.",
+        "confirm_delete_garden": "Weet je zeker dat je deze tuin wilt verwijderen?",
+        
+        # General
+        "ideal_plant_dependent": "Ideaal: plantprofiel-afhankelijk",
+        "language": "Taal",
+        "en": "English",
+        "nl": "Nederlands",
+    }
+}
+
+def get_translation(key: str, language: str = "en") -> str:
+    """Get translated string for given key and language"""
+    if language not in TRANSLATIONS:
+        language = "en"
+    return TRANSLATIONS[language].get(key, key)
+
+def get_all_translations(language: str = "en") -> dict:
+    """Get all translations for a language"""
+    if language not in TRANSLATIONS:
+        language = "en"
+    return TRANSLATIONS[language]
