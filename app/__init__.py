@@ -26,9 +26,4 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(profile_bp)
 
-    # Debug: routes tonen
-    print("============== ROUTES DIE FLASK ZIET ===============")
-    print(app.url_map)
-    print("====================================================")
-
     return app
