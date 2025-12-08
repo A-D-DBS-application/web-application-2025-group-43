@@ -1242,19 +1242,19 @@
               <div class="score-circle-wrap">
                 {% if health_score < 30 %}
                   {% set circle_color = '#dc3545' %}
-                  {% set score_label = 'Kritiek' %}
+                  {% set score_label = 'Critical' if lang == 'en' else 'Kritiek' %}
                 {% elif health_score < 50 %}
                   {% set circle_color = '#fd7e14' %}
-                  {% set score_label = 'Slecht' %}
+                  {% set score_label = 'Poor' if lang == 'en' else 'Slecht' %}
                 {% elif health_score < 70 %}
                   {% set circle_color = '#ffc107' %}
-                  {% set score_label = 'Gemiddeld' %}
+                  {% set score_label = 'Fair' if lang == 'en' else 'Gemiddeld' %}
                 {% elif health_score < 85 %}
                   {% set circle_color = '#90ee90' %}
-                  {% set score_label = 'Goed' %}
+                  {% set score_label = 'Good' if lang == 'en' else 'Goed' %}
                 {% else %}
                   {% set circle_color = '#28a745' %}
-                  {% set score_label = 'Uitstekend' %}
+                  {% set score_label = 'Excellent' if lang == 'en' else 'Uitstekend' %}
                 {% endif %}
 
                 <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
@@ -1563,7 +1563,7 @@
                 <canvas id="chart-moisture"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}</span>
                 <span>
                   {% if m_moist and m_moist.time_m %}
                     {{ m_moist.time_m.strftime('%H:%M') }}
@@ -1595,7 +1595,7 @@
                 <canvas id="chart-temperature"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}</span>
                 <span>
                   {% if m_temp and m_temp.time_m %}
                     {{ m_temp.time_m.strftime('%H:%M') }}
@@ -1627,7 +1627,7 @@
                 <canvas id="chart-humidity"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}</span>
                 <span>
                   {% if m_hum and m_hum.time_m %}
                     {{ m_hum.time_m.strftime('%H:%M') }}
@@ -1659,7 +1659,7 @@
                 <canvas id="chart-rain"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}</span>
                 <span>
                   {% if m_rain and m_rain.time_m %}
                     {{ m_rain.time_m.strftime('%d/%m') }}
@@ -1691,7 +1691,7 @@
                 <canvas id="chart-light"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk (PPFD)</span>
+                <span>{{ 'Ideal: plant profile-dependent (PPFD)' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk (PPFD)' }}</span>
                 <span>
                   {% if m_light and m_light.time_m %}
                     {{ m_light.time_m.strftime('%d/%m') }}
@@ -1723,7 +1723,7 @@
                 <canvas id="chart-co2"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>Ideaal: plantprofiel-afhankelijk</span>
+                <span>{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}</span>
                 <span>
                   {% if m_co2 and m_co2.time_m %}
                     {{ m_co2.time_m.strftime('%H:%M') }}
