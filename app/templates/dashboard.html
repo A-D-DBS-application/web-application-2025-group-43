@@ -372,6 +372,39 @@
       color:rgba(255,255,255,0.85);
     }
 
+    .language-toggle{
+      display:flex;
+      gap:6px;
+      margin-top:12px;
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding-top:12px;
+    }
+
+    .lang-btn{
+      flex:1;
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,0.15);
+      background:rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.6);
+      border-radius:6px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all .12s ease;
+    }
+
+    .lang-btn:hover{
+      border-color:rgba(255,255,255,0.25);
+      background:rgba(255,255,255,0.08);
+      color:rgba(255,255,255,0.8);
+    }
+
+    .lang-btn.active{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#000;
+    }
+
     /* ========= MAIN AREA ========= */
     .main{
       flex:1;
@@ -1124,27 +1157,27 @@
           <div class="data-list" id="dataList">
             <div class="data-btn-wrapper">
               <button class="data-btn active" type="button" data-target="#sensor-moisture">Bodemvochtigheid</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
               <button class="data-btn" type="button" data-target="#sensor-temperature">Temperatuur</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
               <button class="data-btn" type="button" data-target="#sensor-humidity">Luchtvochtigheid</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
               <button class="data-btn" type="button" data-target="#sensor-rain">Regenval (Waterbehoefte)</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
               <button class="data-btn" type="button" data-target="#sensor-light">Licht</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
               <button class="data-btn" type="button" data-target="#sensor-co2">CO₂ Niveau</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="data-btn-link" title="Details bekijken">→</a>
+              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
           </div>
         </section>
@@ -1161,7 +1194,7 @@
               </div>
               <div>
                 <div class="profile-text-main">{{ user_name or 'Demo Gebruiker' }}</div>
-                <div class="profile-text-sub">Profiel &amp; Instellingen</div>
+                <div class="profile-text-sub">{{ t('profile_settings') }}</div>
               </div>
             </div>
           </button>
@@ -1170,8 +1203,14 @@
         <!-- Logout -->
         <a class="logout-btn" href="{{ url_for('auth.logout') }}">
           <span>⟵</span>
-          <span>Logout</span>
+          <span>{{ t('logout') }}</span>
         </a>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button class="lang-btn {% if lang == 'en' %}active{% endif %}" onclick="setLanguage('en')">EN</button>
+          <button class="lang-btn {% if lang == 'nl' %}active{% endif %}" onclick="setLanguage('nl')">NL</button>
+        </div>
       </div>
     </aside>
 
@@ -1440,7 +1479,7 @@
         <!-- Plant Recommendations -->
         {% if plant_recommendations and plant_recommendations|length > 0 %}
         <section class="recommendations-section">
-          <div class="recommendations-title">Aanbevolen planten</div>
+          <div class="recommendations-title">{{ t('recommended_plants') }}</div>
           <div class="recommendations-grid">
             {% for rec in plant_recommendations %}
             <div class="recommendation-card">
@@ -1465,26 +1504,26 @@
 
         <!-- Alerts -->
         <section class="alerts-section">
-          <div class="alerts-title">Alerts</div>
+          <div class="alerts-title">{{ t('alerts') }}</div>
           {% if alerts and alerts|length > 0 %}
             <div class="alerts-grid">
               {% for a in alerts %}
                 <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type=a.sensor_type) }}#alerts-section" class="alert-link">
                   <div class="alert-card alert-card-{{ a.severity }}">
                     <div class="alert-label">
-                      {% if a.severity == 'critical' %}🔴 Kritiek{% elif a.severity == 'warning' %}🟡 Waarschuwing{% endif %}
+                      {% if a.severity == 'critical' %}🔴 {{ t('critical') }}{% elif a.severity == 'warning' %}🟡 {{ t('warning') }}{% endif %}
                     </div>
                     <div class="alert-content">
                       <div class="alert-variable">{{ a.variable }}</div>
                       <div class="alert-message">{{ a.message }}</div>
-                      <div class="alert-cta">Klik voor details →</div>
+                      <div class="alert-cta">{{ t('click_for_details') }}</div>
                     </div>
                   </div>
                 </a>
               {% endfor %}
             </div>
           {% else %}
-            <p class="trend-muted">Geen actieve alerts. Alle variabelen liggen dicht bij het optimum.</p>
+            <p class="trend-muted">{{ t('no_active_alerts') }}</p>
           {% endif %}
         </section>
         </section>
@@ -2003,6 +2042,14 @@
         }
       });
     });
+
+    // Language toggle
+    function setLanguage(language) {
+      fetch(`/set-language/${language}`)
+        .then(() => {
+          location.reload();
+        });
+    }
   </script>
 </body>
 </html>

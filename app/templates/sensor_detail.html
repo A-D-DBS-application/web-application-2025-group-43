@@ -454,7 +454,7 @@
     <div class="main">
       <!-- Topbar -->
       <header class="topbar">
-        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="Terug naar dashboard">
+        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="{{ t('back_to_dashboard') }}">
           ←
         </a>
         <div>
@@ -538,7 +538,7 @@
         <!-- Alerts -->
         {% if alerts %}
         <div class="card alerts-section" id="alerts-section">
-          <div class="card-title">⚠️ Waarschuwingen</div>
+          <div class="card-title">⚠️ {{ t('warnings') }}</div>
           {% for alert in alerts %}
           <div class="alert-item {{ alert.severity }}">
             <div class="alert-title">
