@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Profiel — Capenta</title>
+  <title>Profile — Capenta</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,7 +205,7 @@
     <div class="topbar">
       <div class="topbar-left">
         <form method="get" action="{% if last_robot_serial %}{{ url_for('dashboard.dashboard', serial_number=last_robot_serial) }}{% else %}{{ url_for('garden.garden_selection') }}{% endif %}">
-          <button class="back-btn" type="submit" title="Terug">
+          <button class="back-btn" type="submit" title="Back">
             <span>←</span>
           </button>
         </form>
@@ -225,7 +225,7 @@
 
     <div class="card-wrap">
       <section class="profile-card">
-        <!-- Header met avatar, naam, e-mail -->
+        <!-- Header with avatar, name, email -->
         <div class="profile-header">
           <div class="avatar">{{ initials }}</div>
           <div>
@@ -242,7 +242,7 @@
           </div>
 
           <div>
-            <div class="field-label">E-mail</div>
+            <div class="field-label">Email</div>
             <div class="field-box">{{ email }}</div>
           </div>
 

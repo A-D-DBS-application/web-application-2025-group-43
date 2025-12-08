@@ -1185,7 +1185,7 @@
 
       <!-- Profile & Logout Section -->
       <div class="sidebar-bottom">
-        <!-- Profielknop -->
+        <!-- Profile Button -->
         <form method="get" action="{{ url_for('profile.profile') }}">
           <button type="submit" class="profile-row-button">
             <div class="profile-row">
@@ -1193,7 +1193,7 @@
                 {{ (user_name or 'U')[0] }}
               </div>
               <div>
-                <div class="profile-text-main">{{ user_name or 'Demo Gebruiker' }}</div>
+                <div class="profile-text-main">{{ user_name or 'Demo User' }}</div>
                 <div class="profile-text-sub">{{ t('profile_settings') }}</div>
               </div>
             </div>
@@ -1219,7 +1219,7 @@
       <!-- top bar -->
       <header class="topbar">
         <form method="get" action="{{ url_for('garden.garden_selection') }}">
-          <button class="topbar-back" type="submit" title="Terug naar tuinen">
+          <button class="topbar-back" type="submit" title="Back to gardens">
             ←
           </button>
         </form>
