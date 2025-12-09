@@ -455,6 +455,11 @@
     <div class="main">
       <!-- Topbar -->
       <header class="topbar">
+        <img 
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="Capenta"
+          style="height: 32px; margin-right: 12px;"
+        >
         <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="{{ t('back_to_dashboard') }}">
           ←
         </a>

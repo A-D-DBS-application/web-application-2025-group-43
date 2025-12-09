@@ -1218,6 +1218,11 @@
     <main class="main">
       <!-- top bar -->
       <header class="topbar">
+        <img 
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="Capenta"
+          style="height: 32px; margin-right: 12px;"
+        >
         <form method="get" action="{{ url_for('playfield.playfield_selection', garden_id=robot.garden.garden_id) }}">
           <button class="topbar-back" type="submit" title="Back to playfields">
             ←
