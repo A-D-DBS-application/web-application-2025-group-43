@@ -1218,7 +1218,7 @@
     <main class="main">
       <!-- top bar -->
       <header class="topbar">
-        <form method="get" action="{{ url_for('garden.garden_selection') }}">
+        <form method="get" action="{{ url_for('playfield.playfields', garden_id=robot.garden.garden_id) }}">
           <button class="topbar-back" type="submit" title="Back to gardens">
             ←
           </button>
