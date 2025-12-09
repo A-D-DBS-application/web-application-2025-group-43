@@ -728,10 +728,7 @@ def sensor_detail(serial_number, sensor_type):
         else:
             direction = "afwijkend"
 
-        if z_score is not None:
-            msg = f"{direction.capitalize()} dan ideaal (z={z_score:.2f})."
-        else:
-            msg = f"{direction.capitalize()} dan ideaal."
+        msg = f"{direction.capitalize()} dan ideaal."
 
         alerts.append({
             "severity": severity,

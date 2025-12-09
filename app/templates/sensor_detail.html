@@ -525,12 +525,6 @@
               <div class="stat-value">± {{ "%0.1f" | format(target_std) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
               <div class="stat-label">Tolerantie</div>
             </div>
-            {% if z_score is not none %}
-            <div class="stat-box">
-              <div class="stat-value">{{ "%0.2f" | format(z_score) }}</div>
-              <div class="stat-label">Z-Score</div>
-            </div>
-            {% endif %}
           </div>
         </div>
         {% endif %}
