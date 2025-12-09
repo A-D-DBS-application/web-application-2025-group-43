@@ -15,6 +15,14 @@ from ..models import (
     PlantProfile,
     HealthScore,
 )
+from ..plant_recommendation_engine import (
+    calculate_plant_rankings,
+    get_top_recommendations,
+    get_average_measurements,
+    calculate_plant_health_score,
+    validate_playfield_access,
+    SENSOR_WEIGHTS,
+)
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -514,7 +522,7 @@ def dashboard(serial_number):
     # 8) Plant recommendations - from database PlantProfile
     plant_recommendations = []
     try:
-        avg_measurements = _get_average_measurements(serial_number, days=5)
+        avg_measurements = get_average_measurements(serial_number, days=5)
         if avg_measurements:
             # Get all plant profiles from database
             from app.models import PlantProfile
@@ -537,7 +545,7 @@ def dashboard(serial_number):
                     'co2_mean': plant.co2_mean,
                     'co2_std': plant.co2_std,
                 }
-                score = _calculate_plant_health_score(avg_measurements, plant_data)
+                score = calculate_plant_health_score(avg_measurements, plant_data)
                 if score is not None:
                     plant_rankings.append({
                         'key': plant.key,
@@ -779,91 +787,22 @@ def sensor_detail(serial_number, sensor_type):
 
 
 # ====================================================================
-# PLANT RECOMMENDATION ENGINE
+# PLANT RECOMMENDATION ENGINE - MOVED TO SEPARATE MODULE
 # ====================================================================
-# PLANT RECOMMENDATION SCORING WEIGHTS
+# The complete plant recommendation algorithm has been centralized in:
+#
+#   app/plant_recommendation_engine.py
+#
+# This module contains:
+# - calculate_plant_health_score()     : Core quadratic penalty scoring
+# - get_average_measurements()          : Fetch average sensor readings
+# - calculate_plant_rankings()          : Rank all plants
+# - get_top_recommendations()           : Get top N plants
+# - validate_playfield_access()         : Permission checking
+# - SENSOR_WEIGHTS                      : Configuration
+#
+# All functions are imported at the top of this file and used throughout.
 # ====================================================================
-SENSOR_WEIGHTS = {
-    "moisture": 0.25,      # 25% - zeer belangrijk
-    "temperature": 0.20,   # 20% - belangrijk
-    "humidity": 0.15,      # 15% - belangrijk
-    "rain": 0.15,          # 15% - waterbehoefte
-    "light": 0.15,         # 15% - fotosynthese
-    "co2": 0.10,           # 10% - ondersteunend
-}
-
-
-def _calculate_plant_health_score(measurements_dict, plant_profile):
-    """
-    Berekent gezondheidscore voor een plant op basis van kwadratische penaliteit
-    
-    Formula: s_v = max(0, 1 - (|m_v - opt_v| / dev_v)²)
-    Final score = weighted average * 100
-    """
-    
-    if not measurements_dict or not plant_profile:
-        return None
-    
-    weighted_sum = 0
-    weights_sum = 0
-    
-    for sensor_type, weight in SENSOR_WEIGHTS.items():
-        measurement = measurements_dict.get(sensor_type)
-        
-        if measurement is None:
-            continue
-        
-        # Get mean and std
-        attr_mean = plant_profile.get(f"{sensor_type}_mean")
-        attr_std = plant_profile.get(f"{sensor_type}_std")
-        
-        if attr_mean is None or attr_std is None:
-            continue
-        
-        # Quadratic scoring
-        try:
-            deviation = abs(float(measurement) - float(attr_mean)) / float(attr_std)
-            sensor_score = max(0, 1 - (deviation ** 2))
-            weighted_sum += sensor_score * weight
-            weights_sum += weight
-        except (ValueError, ZeroDivisionError):
-            continue
-    
-    if weights_sum == 0:
-        return None
-    
-    final_score = (weighted_sum / weights_sum) * 100
-    return round(final_score, 2)
-
-
-def _get_average_measurements(serial_number, days=5):
-    """
-    Haalt de gemiddelde sensorwaarden van de afgelopen N dagen
-    """
-    
-    measurements_avg = {}
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
-    
-    for sensor_type in SENSOR_KEYS:
-        sensor = Sensor.query.filter_by(
-            serial_number=serial_number,
-            sensor_type=sensor_type
-        ).first()
-        
-        if not sensor:
-            measurements_avg[sensor_type] = None
-            continue
-        
-        avg_value = db.session.query(
-            func.avg(Measurement.value)
-        ).filter(
-            Measurement.srnr_sensor == sensor.srnr_sensor,
-            Measurement.time_m >= cutoff_date
-        ).scalar()
-        
-        measurements_avg[sensor_type] = float(avg_value) if avg_value else None
-    
-    return measurements_avg
 
 
 @dashboard_bp.route("/<serial_number>/plant-recommendation-api", methods=["GET"])
@@ -885,93 +824,48 @@ def plant_recommendation_api(serial_number):
     if not robot:
         return jsonify({"error": "Playfield not found"}), 404
     
-    # Permission check
-    if robot.garden.user_email != current_user.uemail:
+    # Permission check using centralized function
+    if not validate_playfield_access(serial_number, current_user.uemail):
         return jsonify({"error": "Forbidden"}), 403
     
     # Get analysis period
     days = request.args.get("days", 5, type=int)
     days = max(1, min(days, 30))  # Clamp between 1-30
     
-    # Get average measurements
-    avg_measurements = _get_average_measurements(serial_number, days)
+    # Get plant rankings using centralized engine
+    plant_rankings = calculate_plant_rankings(serial_number, days)
     
-    # Check if we have enough data
-    if not any(v is not None for v in avg_measurements.values()):
-        return jsonify({
-            "error": "Insufficient data",
-            "message": f"No measurement data available for the last {days} days"
-        }), 400
-    
-    # Calculate scores for all plants from database
-    from app.models import PlantProfile
-    all_plants = PlantProfile.query.all()
-    
-    plant_scores = {}
-    for plant in all_plants:
-        plant_data = {
-            'moisture_mean': plant.soil_moisture_mean,
-            'moisture_std': plant.soil_moisture_std,
-            'temperature_mean': plant.temperature_mean,
-            'temperature_std': plant.temperature_std,
-            'humidity_mean': plant.humidity_mean,
-            'humidity_std': plant.humidity_std,
-            'rain_mean': plant.rain_mm_week_mean,
-            'rain_std': plant.rain_mm_week_std,
-            'light_mean': plant.ppfd_mean,
-            'light_std': plant.ppfd_std,
-            'co2_mean': plant.co2_mean,
-            'co2_std': plant.co2_std,
-        }
-        score = _calculate_plant_health_score(avg_measurements, plant_data)
-        if score is not None:
-            plant_scores[plant.key] = {
-                "score": score,
-                "display_name": plant.display_name,
-                "icon": "🌱"
-            }
-    
-    # Sort by score
-    sorted_plants = sorted(
-        plant_scores.items(),
-        key=lambda x: x[1]["score"],
-        reverse=True
-    )
-    
-    if not sorted_plants:
+    if not plant_rankings:
         return jsonify({
             "error": "No recommendations",
-            "message": "Could not calculate plant scores"
+            "message": f"Insufficient measurement data for the last {days} days"
         }), 400
     
-    # Build response
+    # Get average measurements for the response
+    avg_measurements = get_average_measurements(serial_number, days)
+    
+    # Build response with rankings
     recommendation = {
         "period_days": days,
         "average_measurements": avg_measurements,
         "plant_rankings": [
             {
                 "rank": idx + 1,
-                "plant_key": plant_key,
-                "display_name": plant_scores[plant_key]["display_name"],
-                "icon": plant_scores[plant_key]["icon"],
-                "score": plant_scores[plant_key]["score"],
-                "compatibility": "Excellent" if plant_scores[plant_key]["score"] >= 80 else
-                               "Good" if plant_scores[plant_key]["score"] >= 60 else
-                               "Fair" if plant_scores[plant_key]["score"] >= 40 else
-                               "Poor"
+                "plant_key": plant["key"],
+                "display_name": plant["name"],
+                "icon": plant["icon"],
+                "score": plant["score"],
+                "compatibility": plant["compatibility"]
             }
-            for idx, (plant_key, _) in enumerate(sorted_plants)
+            for idx, plant in enumerate(plant_rankings)
         ],
         "recommended_plant": {
             "rank": 1,
-            "plant_key": sorted_plants[0][0],
-            "display_name": sorted_plants[0][1]["display_name"],
-            "icon": sorted_plants[0][1]["icon"],
-            "score": sorted_plants[0][1]["score"],
-            "compatibility": "Excellent" if sorted_plants[0][1]["score"] >= 80 else
-                           "Good" if sorted_plants[0][1]["score"] >= 60 else
-                           "Fair" if sorted_plants[0][1]["score"] >= 40 else
-                           "Poor"
+            "plant_key": plant_rankings[0]["key"],
+            "display_name": plant_rankings[0]["name"],
+            "icon": plant_rankings[0]["icon"],
+            "score": plant_rankings[0]["score"],
+            "compatibility": plant_rankings[0]["compatibility"]
         }
     }
     
