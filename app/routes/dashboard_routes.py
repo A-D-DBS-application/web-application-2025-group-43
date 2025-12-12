@@ -594,7 +594,7 @@ def dashboard(serial_number):
                 score = calculate_plant_health_score(avg_measurements, plant_data)
                 if score is not None:
                     plant_rankings.append({
-                        'key': plant.key,
+                        'key': plant.plant_name,
                         'name': plant.display_name,
                         'icon': '🌱',  # Default icon since DB doesn't have emoji
                         'score': round(score, 2)
