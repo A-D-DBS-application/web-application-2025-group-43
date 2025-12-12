@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="nl">
+<html lang="{{ lang or 'en' }}">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Edit Garden – Capenta</title>
+  <title>{{ t('edit_garden') }} – Capenta</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,7 @@
 </head>
 
 <body class="min-h-screen text-white">
+  {% include '_language_switcher.html' %}
   <div class="max-w-7xl mx-auto px-6 py-6">
 
     <!-- Top bar -->
@@ -32,7 +33,7 @@
       </a>
 
       <h1 class="text-white text-2xl font-semibold">
-        Edit Garden
+        {{ t('edit_garden') }}
       </h1>
 
       <!-- Logout -->
@@ -41,7 +42,7 @@
                 border border-gray-700 hover:border-[#34C759] transition-all group">
         <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
         <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-          Logout
+          {{ t('logout') }}
         </span>
       </a>
     </header>
@@ -50,14 +51,14 @@
     <main class="max-w-xl mx-auto">
       <div class="bg-[#1E1E1E] rounded-2xl p-8 border border-gray-800">
 
-        <h2 class="text-white text-2xl font-bold mb-2">Update Garden</h2>
-        <p class="text-gray-400 mb-8">Change the details and save.</p>
+        <h2 class="text-white text-2xl font-bold mb-2">{{ t('update_garden') }}</h2>
+        <p class="text-gray-400 mb-8">{{ t('change_details_and_save') }}</p>
 
         <form method="post" class="space-y-6">
 
           <!-- Garden Name -->
           <div>
-            <label class="block text-gray-300 mb-2">Garden name</label>
+            <label class="block text-gray-300 mb-2">{{ t('garden_name') }}</label>
             <input type="text" name="garden_name" required
                    value="{{ garden.garden_name }}"
                    class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700
@@ -68,7 +69,7 @@
 
           <!-- Address -->
           <div>
-            <label class="block text-gray-300 mb-2">Address</label>
+            <label class="block text-gray-300 mb-2">{{ t('address') }}</label>
             <input type="text" name="address"
                    value="{{ garden.adress_garden }}"
                    class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700
@@ -79,7 +80,7 @@
 
           <!-- Size -->
           <div>
-            <label class="block text-gray-300 mb-2">Size of garden</label>
+            <label class="block text-gray-300 mb-2">{{ t('size_of_garden') }}</label>
             <div class="relative">
               <input type="number" step="0.1" min="0" name="area_garden"
                     value="{{ garden.area_garden }}"
@@ -97,13 +98,13 @@
                class="flex-1 text-center bg-transparent border border-gray-700 text-gray-300
                       hover:border-gray-600 hover:bg-gray-800/50 px-6 h-11 rounded-xl
                       flex items-center justify-center text-sm transition-all">
-              Cancel
+              {{ t('cancel') }}
             </a>
 
             <button type="submit"
               class="flex-1 bg-[#34C759] hover:brightness-110 text-white px-6 h-11
                      rounded-xl text-sm font-semibold transition-all">
-              Save Garden
+              {{ t('save_garden') }}
             </button>
           </div>
 

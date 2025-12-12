@@ -94,6 +94,19 @@ TRANSLATIONS = {
         "cancel": "Cancel",
         "save_garden": "Save Garden",
         
+        "update_garden": "Update Garden",
+        "change_details_and_save": "Change the details and save.",
+        "update_playfield": "Update Playfield",
+        "adjust_details_and_save": "Adjust the details and save.",
+        "save_changes": "Save Changes",
+        "new_playfield": "New Playfield",
+        "playfield_details_subtitle": "Provide the details for your new playfield.",
+        "playfield_name_placeholder": "e.g., Robot 1's field",
+        "size_of_playfield": "Size of playfield",
+        "crop_plants": "Crop / Plants",
+        "select_a_crop": "Select a crop",
+        "save_playfield": "Save Playfield",
+
         # General
         "ideal_plant_dependent": "Ideal: plant profile-dependent",
         "language": "Language",
@@ -192,6 +205,19 @@ TRANSLATIONS = {
         "size_placeholder": "bv. 120",
         "cancel": "Annuleren",
         "save_garden": "Tuin Opslaan",
+
+        "update_garden": "Tuin bijwerken",
+        "change_details_and_save": "Wijzig de details en sla op.",
+        "update_playfield": "Speelveld bijwerken",
+        "adjust_details_and_save": "Pas de details aan en sla op.",
+        "save_changes": "Wijzigingen opslaan",
+        "new_playfield": "Nieuw speelveld",
+        "playfield_details_subtitle": "Geef de details voor je nieuwe speelveld op.",
+        "playfield_name_placeholder": "bv. Robot 1's veld",
+        "size_of_playfield": "Grootte van speelveld",
+        "crop_plants": "Gewas / Planten",
+        "select_a_crop": "Selecteer een gewas",
+        "save_playfield": "Speelveld opslaan",
         
         # General
         "ideal_plant_dependent": "Ideaal: plantprofiel-afhankelijk",
