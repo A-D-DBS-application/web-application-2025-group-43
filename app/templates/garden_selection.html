@@ -101,11 +101,11 @@
     <div class="topbar-right">
       <a class="add-btn" href="{{ url_for('garden.add_garden') }}">
         <span class="add-btn-icon">+</span>
-        Add Garden
+        {{ t('add_garden') }}
       </a>
 
       <a class="logout-btn" href="{{ url_for('auth.logout') }}">
-        Logout
+        {{ t('logout') }}
       </a>
     </div>
   </div>
@@ -158,7 +158,10 @@
             </div>
 
             <div class="garden-bottom-bar">
-              <span>{{ garden.robot_zones|length }} {{ t('playfields') }}</span>
+              <span class="playfield-count">{{ garden.robot_zones|length }} {{ t('playfields') }}</span>
+              {% if garden.area_garden %}
+                <span class="garden-area">{{ garden.area_garden }} m²</span>
+              {% endif %}
             </div>
 
           </a>

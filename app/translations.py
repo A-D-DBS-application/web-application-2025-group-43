@@ -85,6 +85,14 @@ TRANSLATIONS = {
         "gardens_playfields": "Gardens & Playfields",
         "no_gardens_yet": "You don't have any gardens yet. Click on Add Garden to add your first garden.",
         "confirm_delete_garden": "Are you sure you want to delete this garden?",
+        "new_garden": "New Garden",
+        "garden_details_subtitle": "Enter the details of your garden to get started.",
+        "garden_name_placeholder": "e.g. East Garden",
+        "address_placeholder": "Street, number, city, country",
+        "size_of_garden": "Size of garden",
+        "size_placeholder": "e.g. 120",
+        "cancel": "Cancel",
+        "save_garden": "Save Garden",
         
         # General
         "ideal_plant_dependent": "Ideal: plant profile-dependent",
@@ -108,7 +116,7 @@ TRANSLATIONS = {
         "3m": "3 Maanden",
         "1y": "1 Jaar",
         "profile_settings": "Profiel & Instellingen",
-        "logout": "Afmelden",
+        "logout": "Uitloggen",
         "view_details": "Details bekijken",
         
         # Sensor names
@@ -176,6 +184,14 @@ TRANSLATIONS = {
         "gardens_playfields": "Tuinen & Speelvelden",
         "no_gardens_yet": "Je hebt nog geen tuinen. Klik op Tuin toevoegen om je eerste tuin toe te voegen.",
         "confirm_delete_garden": "Weet je zeker dat je deze tuin wilt verwijderen?",
+        "new_garden": "Nieuwe Tuin",
+        "garden_details_subtitle": "Voer de details van je tuin in om te beginnen.",
+        "garden_name_placeholder": "bv. Oost-tuin",
+        "address_placeholder": "Straat, nummer, stad, land",
+        "size_of_garden": "Grootte van de tuin",
+        "size_placeholder": "bv. 120",
+        "cancel": "Annuleren",
+        "save_garden": "Tuin Opslaan",
         
         # General
         "ideal_plant_dependent": "Ideaal: plantprofiel-afhankelijk",

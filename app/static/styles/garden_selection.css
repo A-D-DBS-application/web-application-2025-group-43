@@ -183,17 +183,25 @@ body{
 }
 
 .garden-address{
-  font-size:14px;
+  font-size:16px;
   color:#ccc;
+  margin-top: 8px;
 }
 
 .garden-bottom-bar{
   width:100%;
   padding-top:18px;
   border-top:1px solid rgba(255,255,255,0.15);
-  text-align:left;
-  font-size:12px;
   color:#d1d5db;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.playfield-count,
+.garden-area {
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .empty-state{

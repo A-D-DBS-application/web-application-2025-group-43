@@ -118,11 +118,11 @@
           <a href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}"
              class="add-playfield-btn">
             <span class="add-playfield-icon">+</span>
-            Add Playfield
+            {{ t('add_playfield') }}
           </a>
 
           <a href="{{ url_for('auth.logout') }}" class="logout-btn">
-            Logout
+            {{ t('logout') }}
           </a>
         </div>
 
@@ -175,9 +175,18 @@
              class="playfield-card">
 
             <div class="playfield-content">
-              <div class="playfield-icon">🍃</div>
 
               <h3 class="playfield-title">{{ zone.robot_name }}</h3>
+
+              <div class="playfield-icon">🍃</div>
+              
+              <p class="playfield-crop">
+                {% if zone.plant_profile %}
+                  {{ zone.plant_profile.display_name }}
+                {% else %}
+                  No crop set
+                {% endif %}
+              </p>
 
               <p class="playfield-area">
                 {% if zone.area_playfield %}

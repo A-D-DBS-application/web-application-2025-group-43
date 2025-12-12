@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ lang or 'en' }}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Capenta – Add Garden</title>
+  <title>Capenta – {{ t('add_garden') }}</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -260,55 +260,57 @@
 </head>
 
 <body>
+  {% include '_language_switcher.html' %}
+
   <div class="page">
     <!-- Top bar -->
     <header class="top-bar">
       <!-- Back naar garden selection -->
-      <a href="{{ url_for('garden.garden_selection') }}" class="back-btn" aria-label="Back">
+      <a href="{{ url_for('garden.garden_selection') }}" class="back-btn" aria-label="{{ t('back') }}">
         <span class="back-icon"></span>
       </a>
 
-      <div class="top-title">Add Garden</div>
+      <div class="top-title">{{ t('add_garden') }}</div>
 
       <!-- Logout -->
       <a href="{{ url_for('auth.logout') }}" class="logout-btn">
         <span class="logout-icon"></span>
-        <span>Logout</span>
+        <span>{{ t('logout') }}</span>
       </a>
     </header>
 
     <main class="content">
       <section class="card">
-        <h1>New Garden</h1>
-        <p class="card-subtitle">Enter the details of your garden to get started.</p>
+        <h1>{{ t('new_garden') }}</h1>
+        <p class="card-subtitle">{{ t('garden_details_subtitle') }}</p>
 
         <form method="post" action="{{ url_for('garden.add_garden') }}">
           <!-- Garden name -->
           <div class="field">
-            <label for="garden_name">Garden name</label>
+            <label for="garden_name">{{ t('garden_name') }}</label>
             <input
               type="text"
               id="garden_name"
               name="garden_name"
-              placeholder="e.g. East Garden"
+              placeholder="{{ t('garden_name_placeholder') }}"
               required
             >
           </div>
 
           <!-- Address -->
           <div class="field">
-            <label for="address">Address</label>
+            <label for="address">{{ t('address') }}</label>
             <input
               type="text"
               id="address"
               name="address"
-              placeholder="Street, number, city, country"
+              placeholder="{{ t('address_placeholder') }}"
             >
           </div>
 
           <!-- Size of garden -->
           <div class="field">
-            <label for="size">Size of garden</label>
+            <label for="size">{{ t('size_of_garden') }}</label>
             <div class="size-row">
               <input
                 type="number"
@@ -316,7 +318,7 @@
                 name="size"
                 step="0.01"
                 min="0"
-                placeholder="e.g. 120"
+                placeholder="{{ t('size_placeholder') }}"
               >
               <div class="unit-pill">m²</div>
             </div>
@@ -325,10 +327,10 @@
           <!-- Buttons -->
           <div class="actions">
             <!-- Cancel: back to overview -->
-            <a href="{{ url_for('garden.garden_selection') }}" class="btn-secondary">Cancel</a>
+            <a href="{{ url_for('garden.garden_selection') }}" class="btn-secondary">{{ t('cancel') }}</a>
 
             <!-- Save Garden: submit form -->
-            <button type="submit" class="btn-primary">Save Garden</button>
+            <button type="submit" class="btn-primary">{{ t('save_garden') }}</button>
           </div>
         </form>
       </section>
