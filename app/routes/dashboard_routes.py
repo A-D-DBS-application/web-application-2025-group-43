@@ -15,6 +15,7 @@ from ..models import (
     PlantProfile,
     HealthScore,
 )
+from ..icons import get_plant_icon
 from ..plant_recommendation_engine import (
     calculate_plant_rankings,
     get_top_recommendations,
@@ -596,7 +597,7 @@ def dashboard(serial_number):
                     plant_rankings.append({
                         'key': plant.plant_name,
                         'name': plant.display_name,
-                        'icon': '🌱',  # Default icon since DB doesn't have emoji
+                        'icon': get_plant_icon(plant.plant_name),
                         'score': round(score, 2)
                     })
             plant_rankings.sort(key=lambda x: x['score'], reverse=True)
