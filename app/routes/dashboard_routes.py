@@ -153,6 +153,41 @@ def _classify_status(value, mean, std):
         return "critical", "Sterke afwijking", z
 
 
+def _calculate_quality_score(value, mean, std):
+    """
+    Calculate a quality score (0-100) for a sensor measurement based on
+    how well it matches the optimal range.
+    
+    Uses the same quadratic penalty formula as the plant recommendation engine.
+    
+    Args:
+        value (float): Current measurement value
+        mean (float): Optimal mean value
+        std (float): Standard deviation (tolerance)
+    
+    Returns:
+        float: Quality score 0-100, or None if invalid data
+    """
+    if value is None or mean is None or std is None:
+        return None
+    
+    try:
+        v = float(value)
+        m = float(mean)
+        s = float(std)
+    except Exception:
+        return None
+    
+    if s == 0:
+        return None
+    
+    # Calculate deviation in standard deviations
+    x = abs((v - m) / s)
+    
+    # Apply quadratic penalty: score = max(0, 1 - x²) × 100
+    quality = max(0, 1 - (x ** 2)) * 100
+    return round(quality, 1)
+
 def _calculate_daily_health_score(robot, sensor_data):
     """
     Berekent de dagelijkse gezondheidsscore volgens de formule:
@@ -234,39 +269,44 @@ def _get_health_trend_data(serial_number, period='month'):
     """
     today = date.today()
     
-    # Bepaal date range
+    # Bepaal date range en label format
     if period == 'week':
         days = 7
         compare_days = 7
         period_label = "Laatste 7 dagen"
-        fmt = "%d/%m"
+        fmt = "%d/%m"  # Day/Month
+        label_step = 1  # Show every day
     elif period == 'month':
         days = 30
         compare_days = 30
         period_label = "Laatste 30 dagen"
-        fmt = "%d/%m"
+        fmt = "%d/%m"  # Day/Month
+        label_step = 5  # Show every 5 days
     elif period == 'quarter':
         days = 90
         compare_days = 90
         period_label = "Laatste 3 maanden"
-        fmt = "%d/%m"
+        fmt = "%d/%m"  # Day/Month
+        label_step = 10  # Show every 10 days
     elif period == 'year':
         days = 365
         compare_days = 365
         period_label = "Afgelopen jaar"
-        fmt = "%d/%m"
+        fmt = "%d/%m"  # Day/Month
+        label_step = 30  # Show every 30 days (monthly)
     else:
         days = 30
         period_label = "Laatste 30 dagen"
         fmt = "%d/%m"
+        label_step = 5
     
     # Haal huidige periode op
     start_date = today - timedelta(days=days)
     current_scores = (
         HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.score_date >= start_date)
-        .filter(HealthScore.score_date <= today)
-        .order_by(HealthScore.score_date.asc())
+        .filter(HealthScore.calculated_at >= datetime.combine(start_date, datetime.min.time()))
+        .filter(HealthScore.calculated_at <= datetime.combine(today, datetime.max.time()))
+        .order_by(HealthScore.calculated_at.asc())
         .all()
     )
     
@@ -275,9 +315,9 @@ def _get_health_trend_data(serial_number, period='month'):
     prev_start_date = prev_end_date - timedelta(days=compare_days)
     previous_scores = (
         HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.score_date >= prev_start_date)
-        .filter(HealthScore.score_date <= prev_end_date)
-        .order_by(HealthScore.score_date.asc())
+        .filter(HealthScore.calculated_at >= datetime.combine(prev_start_date, datetime.min.time()))
+        .filter(HealthScore.calculated_at <= datetime.combine(prev_end_date, datetime.max.time()))
+        .order_by(HealthScore.calculated_at.asc())
         .all()
     )
     
@@ -299,9 +339,17 @@ def _get_health_trend_data(serial_number, period='month'):
         trend_percent = 0
         trend_direction = "neutral"
     
-    # Formatteer data voor grafiek
+    # Formatteer data voor grafiek met intelligent label spacing
     values = [float(s.score) for s in current_scores]
-    labels = [s.score_date.strftime(fmt) for s in current_scores]
+    all_dates = [s.calculated_at.date() if s.calculated_at else s.score_date for s in current_scores]
+    
+    # Create labels with intelligent spacing based on period
+    labels = []
+    for i, dt in enumerate(all_dates):
+        if i % label_step == 0 or i == len(all_dates) - 1:
+            labels.append(dt.strftime(fmt))
+        else:
+            labels.append("")
     
     return {
         'values': values,
@@ -344,6 +392,9 @@ def dashboard(serial_number):
 
     # 4) Sensor-data per type
     sensor_data = {}
+    
+    # Get plant profile early for use in sensor loop
+    plant_profile = robot.plant_profile  # kan None zijn
 
     for key in SENSOR_KEYS:
         sensor = (
@@ -386,16 +437,25 @@ def dashboard(serial_number):
                     else:
                         labels.append("")
 
+        # Get optimal values from plant profile if available
+        cfg = ALERT_CONFIG.get(key)
+        optimal_mean = None
+        optimal_std = None
+        if plant_profile and cfg:
+            optimal_mean = getattr(plant_profile, cfg["mean_attr"], None)
+            optimal_std = getattr(plant_profile, cfg["std_attr"], None)
+
         sensor_data[key] = {
             "sensor": sensor,
             "measurement": measurement,
             "series": series,
             "values": values,
             "labels": labels,
+            "optimal_mean": optimal_mean,
+            "optimal_std": optimal_std,
         }
 
     # 5) Alerts & factor status op basis van PlantProfile
-    plant_profile = robot.plant_profile  # kan None zijn
     alerts = []
     factor_states = {}
 
@@ -408,6 +468,7 @@ def dashboard(serial_number):
         std = getattr(plant_profile, cfg["std_attr"], None) if plant_profile else None
 
         severity, status_text, z = _classify_status(value, mean, std)
+        quality_score = _calculate_quality_score(value, mean, std)
 
         factor_states[key] = {
             "severity": severity,
@@ -415,6 +476,7 @@ def dashboard(serial_number):
             "z": z,
             "mean": mean,
             "std": std,
+            "quality_score": quality_score,
         }
 
         if severity in ("warning", "critical"):
@@ -494,12 +556,12 @@ def dashboard(serial_number):
     score_dasharray = circumference
     score_dashoffset = circumference * (1 - health_score / 100.0)
 
-    # 7) Health-trend (gebruik HealthScore records - de afgelopen 30 dagen)
+    # 7) Health-trend (gebruik HealthScore records - de afgelopen 30 dagen met proper dating)
     trend_rows = list(
         reversed(
             list(
                 HealthScore.query.filter_by(serial_number=serial_number)
-                .order_by(HealthScore.score_date.desc())
+                .order_by(HealthScore.calculated_at.desc())
                 .limit(30)
                 .all()
             )
@@ -512,7 +574,7 @@ def dashboard(serial_number):
         if row.score is not None
     ]
     health_trend_labels = [
-        row.score_date.strftime("%d/%m") if row.score_date is not None else ""
+        row.calculated_at.strftime("%d/%m") if row.calculated_at is not None else ""
         for row in trend_rows
     ]
 
@@ -668,7 +730,7 @@ def sensor_detail(serial_number, sensor_type):
     if not cfg:
         abort(404)
 
-    # 7) Get sensor data (30 days history)
+    # 7) Get sensor data with period-based filtering
     sensor = Sensor.query.filter_by(
         serial_number=serial_number,
         sensor_type=sensor_type
@@ -677,15 +739,31 @@ def sensor_detail(serial_number, sensor_type):
     if sensor is None:
         abort(404)
 
-    # Get last 30 days of data
+    # Get period from query parameter (default: 7 days)
+    period = request.args.get('period', '7d')
+    
+    # Determine cutoff date and format based on period
+    today = datetime.utcnow()
+    if period == '30d':
+        cutoff_date = today - timedelta(days=30)
+        time_format = "%d/%m"
+    elif period == '3m':
+        cutoff_date = today - timedelta(days=90)
+        time_format = "%d/%m"
+    elif period == '1y':
+        cutoff_date = today - timedelta(days=365)
+        time_format = "%d/%m"
+    else:  # Default: 7d
+        cutoff_date = today - timedelta(days=7)
+        time_format = "%H:%M"
+    
+    # Get measurements within the period
     measurements = (
         Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
-        .order_by(Measurement.time_m.desc())
-        .limit(720)  # ~30 dagen * 24 uur
+        .filter(Measurement.time_m >= cutoff_date)
+        .order_by(Measurement.time_m.asc())
         .all()
     )
-
-    measurements = list(reversed(measurements))  # Chronologisch
 
     # Extract values and labels for chart
     chart_values = []
@@ -696,7 +774,7 @@ def sensor_detail(serial_number, sensor_type):
         except:
             chart_values.append(None)
         if m.time_m:
-            chart_labels.append(m.time_m.strftime("%d/%m %H:%M"))
+            chart_labels.append(m.time_m.strftime(time_format))
         else:
             chart_labels.append("")
 

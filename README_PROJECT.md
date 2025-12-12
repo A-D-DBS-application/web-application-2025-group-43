@@ -1,8 +1,29 @@
 # Capenta - Plant Monitoring Flask Application
 
-Gestructureerde Flask applicatie voor het monitoren en beheren van plantgroei in indoor gardens met sensordata analyse en plantaanbevelingen.
+A structured Flask application for monitoring and managing plant growth in indoor gardens with sensor data analysis and plant recommendations.
 
-## 📁 Project Structuur
+## 📋 Assignment Documentation
+
+### Project Resources
+- **UI Prototype**: [INSERT PROTOTYPE LINK HERE]
+- **Kanban Board**: [INSERT KANBAN BOARD LINK HERE]
+- **GitHub Repository**: [INSERT REPOSITORY LINK HERE]
+
+### Feedback Sessions
+#### Audio/Video Recordings with Partner
+- **Session 1**: [INSERT AUDIO/VIDEO LINK HERE]
+- **Session 2**: [INSERT AUDIO/VIDEO LINK HERE]
+- **Session 3**: [INSERT AUDIO/VIDEO LINK HERE]
+
+### Additional Documentation
+- **Project Report**: [INSERT LINK IF AVAILABLE]
+- **API Documentation**: [INSERT LINK IF AVAILABLE]
+- **Design Document**: [INSERT LINK IF AVAILABLE]
+- **Other Resources**: [INSERT ADDITIONAL LINKS HERE]
+
+---
+
+## 📁 Project Structure
 
 ```
 /
@@ -46,64 +67,116 @@ Gestructureerde Flask applicatie voor het monitoren en beheren van plantgroei in
 └── README.md                     # This file
 ```
 
-## 🚀 Aan de Slag
+## 🚀 Installation & Setup
 
-### Installatie
+### Prerequisites
+- Python 3.8 or higher
+- PostgreSQL (Supabase database)
+- pip package manager
+- Git
 
+### Step 1: Clone the Repository
 ```bash
-# Clone repository
 git clone <repo-url>
 cd web-application-2025-group-43
+```
 
-# Create virtual environment
+### Step 2: Create Virtual Environment
+```bash
+# On Windows
+python -m venv venv
+venv\Scripts\activate
+
+# On macOS/Linux
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate
+```
 
-# Install dependencies
+### Step 3: Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
 
-### Database Setup
-
+### Step 4: Run the Application
 ```bash
-# Create health_score table
-python3 -m app.scripts.create_health_score_table
-
-# Setup test environment with demo data
-python3 -m app.scripts.setup_test_environment
+python run.py
 ```
 
-### Run Application
+The application will start at `http://localhost:5000`
 
-```bash
-python3 run.py
-```
+---
 
-Visit http://127.0.0.1:5000
+## 🎯 Usage Guide
+
+### About Demo Data
+Since this application relies on physical sensors to collect plant data, newly created accounts will not have any sensor measurements or data to display. To see the full functionality of the application, including health scores, trends, and plant recommendations, you can log in with our **demo user account**.
+
+**Demo User Login Credentials:**
+- **Email**: [INSERT DEMO EMAIL HERE]
+- **Password**: [INSERT DEMO PASSWORD HERE]
+
+The demo account includes sample gardens, playfields, and sensor data so you can explore all features of the application.
+
+### User Authentication
+1. Navigate to the login page at `http://localhost:5000/`
+2. **New users**: Click "Register" to create an account (note: your account will not have sensor data until physical sensors are configured)
+3. **Demo users**: Use the demo credentials above to see the application with sample data
+
+### Creating a Garden
+1. After login, click "Add Garden"
+2. Enter garden name, address (optional), and area (optional)
+3. Click "Save" to create the garden
+
+### Adding a Playfield (Robot Zone)
+1. Select your garden from the garden selection screen
+2. Click "Add Playfield"
+3. Enter playfield name and select a plant type
+4. Click "Save"
+
+### Viewing Dashboard
+1. Select a garden
+2. Select a playfield
+3. The dashboard displays:
+   - **Health Score**: Overall plant health (0-100%)
+   - **Health Factors**: Individual sensor readings
+   - **Trend Chart**: Health trend over selected period (7d, 30d, 90d, 1y)
+   - **Plant Recommendations**: Top 3 recommended plants for current conditions
+   - **Alerts**: Conditions outside optimal range
+
+### Viewing Sensor Details
+1. Click on any health factor on the dashboard
+2. View sensor readings history
+3. See current sensor value and status
+
+### Selecting Time Periods
+- Click period buttons (7d, 30d, 3m, 1y) on trend chart to change timeframe
+- Trend percentage shows change compared to previous period
+
+---
 
 ## 📊 Features
 
 ### 1. **Plant Health Scoring**
-- Automatische dagelijkse gezondheidsscores (0-100%)
-- Gebaseerd op 6 sensortypes: moisture, temperature, humidity, rain, light, CO₂
-- Vergelijkt realtime metingen met plantprofieloptimale waarden
-- Quadratische penaliteitsformule voor nauwkeurige beoordeling
+- Automatic daily health scores (0-100%)
+- Based on 6 sensor types: moisture, temperature, humidity, rainfall, light, CO₂
+- Compares real-time measurements against plant profile optimal values
+- Quadratic penalty formula for accurate assessment
 
 ### 2. **Plant Recommendations**
-- Intelligente plantaanbevelingen op basis van huidige omstandigheden
-- Analyseert 5-daags gemiddelde van alle sensoren
-- Beoordeelt alle 10 beschikbare planten
-- Toont top 3 aanbevelingen op dashboard met visuele scorebalken
+- Intelligent plant recommendations based on current environmental conditions
+- Analyzes 5-day average of all sensors
+- Evaluates all 10 available plants
+- Displays top 3 recommendations on dashboard with visual score bars
 
 ### 3. **Health Trend Analysis**
-- Visualiseer gezondheid trend over periode (7d, 30d, 3m, 1y)
-- Dynamische trend berekening (% change vs vorige periode)
-- Interactieve Chart.js grafieken
-- Real-time API updates zonder pagina refresh
+- Visualize health trends over time periods (7d, 30d, 3m, 1y)
+- Dynamic trend calculation (% change vs. previous period)
+- Interactive Chart.js graphs
+- Real-time API updates without page refresh
 
 ### 4. **Sensor Management**
-- Clickable sensor cards op dashboard
-- Gedetailleerde sensor historiek
+- Clickable sensor cards on dashboard
+- Detailed sensor history
 - Real-time sensor value display
 - Status indicators (OK, Warning, Critical)
 
@@ -113,76 +186,6 @@ Visit http://127.0.0.1:5000
 - Multiple playfields per garden
 - Role-based access control
 
-## 🛠️ Utility Scripts
-
-Alle scripts bevinden zich in `app/scripts/` en kunnen worden uitgevoerd als Python modules:
-
-### Create Health Score Table
-```bash
-python3 -m app.scripts.create_health_score_table
-```
-Maakt de `health_score` tabel aan in de database.
-
-### Generate Sample Data
-```bash
-python3 -m app.scripts.generate_sample_data --playfield RZ-001-A --days 5
-```
-Genereert 5 dagen realistische sensordata voor testen.
-
-### Generate Health Scores
-```bash
-python3 -m app.scripts.generate_health_scores --playfield RZ-001-A --days 5
-```
-Berekent dagelijkse gezondheidsscores van afgelopen N dagen.
-
-### Setup Test Environment
-```bash
-python3 -m app.scripts.setup_test_environment
-```
-Maakt demo user, garden, en playfield aan.
-- Username: `demo`
-- Password: `demo1234`
-
-### Test Plant Recommendations
-```bash
-python3 -m app.scripts.test_plant_recommendation
-```
-Verifieert dat plant recommendation algoritme correct werkt.
-
-## 📚 API Endpoints
-
-### Dashboard & Health
-- `GET /dashboard/<serial_number>` - Main dashboard
-- `GET /dashboard/<serial_number>/sensor/<sensor_type>` - Sensor details
-- `GET /dashboard/<serial_number>/health-trend-api?period=week|month|quarter|year` - Trend data
-- `GET /dashboard/<serial_number>/plant-recommendation-api` - Plant recommendations
-
-### Gardens & Playfields
-- `GET /garden/select` - Select garden
-- `POST /garden/add` - Create garden
-- `GET /playfield/<garden_id>` - Playfield selection
-- `POST /playfield/<garden_id>/add` - Create playfield
-
-### Authentication
-- `POST /login` - User login
-- `POST /register` - User registration
-- `GET /logout` - Logout
-
-## 🌱 Plant Recommendation Algorithm
-
-**Formula**:
-```
-score_per_sensor = max(0, 1 - (|measurement - optimal| / tolerance)²)
-final_score = weighted_average(all_sensors) × 100
-```
-
-**Sensor Weights**:
-- Moisture: 25%
-- Temperature: 20%
-- Humidity: 15%
-- Rain: 15%
-- Light: 15%
-- CO₂: 10%
 
 **10 Available Plants**:
 1. Tomaat
@@ -198,16 +201,12 @@ final_score = weighted_average(all_sensors) × 100
 
 ## 📖 Documentation
 
-- **[Health Score Implementation](docs/HEALTH_SCORE_IMPLEMENTATION.md)** - Gezondheidsscore berekening
-- **[Health Trend Feature](docs/HEALTH_TREND_FEATURE.md)** - Trend analyse feature
+- **[Health Score Implementation](docs/HEALTH_SCORE_IMPLEMENTATION.md)** - Health score calculation details
+- **[Health Trend Feature](docs/HEALTH_TREND_FEATURE.md)** - Trend analysis feature documentation
 
 ## 🔧 Configuration
 
-Edit `app/config.py` for:
-- Database connection
-- Secret key
-- Debug mode
-- Session settings
+The application is pre-configured to use the shared Supabase database. All users connect to the same database automatically, so no additional database configuration is required.
 
 ## 📝 Database Models
 
@@ -220,6 +219,11 @@ Edit `app/config.py` for:
 - **HealthScore**: Daily health scores
 
 ## 🐛 Troubleshooting
+
+### New Account Has No Data
+- This is normal! Newly created accounts have no sensor measurements because we don't have physical sensors connected
+- Use the demo account to see sample data and test all features
+- When physical sensors are integrated, new measurements will automatically appear
 
 ### Health Score Shows 0%
 - Ensure playfield has a PlantProfile assigned
@@ -238,8 +242,70 @@ Edit `app/config.py` for:
 
 ## 📄 License
 
-[Your License Here]
+[YOUR LICENSE HERE]
 
 ## 👥 Team
 
-[Your Team Info Here]
+[YOUR TEAM INFORMATION HERE]
+
+---
+
+## 📌 How to Add Audio/Video Files to README
+
+### Option 1: Link to External Hosting (Recommended)
+Upload your audio/video files to one of these services and paste the link:
+- **Google Drive**: Upload file → Share → Copy link
+- **OneDrive**: Upload file → Share → Copy link
+- **YouTube**: Upload video as unlisted or private → Copy link
+- **GitHub Releases**: Attach files to a release
+- **Dropbox**: Upload file → Share → Copy link
+
+Then add to README:
+```markdown
+- **Session 1**: [Listen/Watch here](https://drive.google.com/...)
+- **Session 2**: [Listen/Watch here](https://youtu.be/...)
+```
+
+### Option 2: GitHub Releases (Best for GitHub)
+1. Go to your repository → Releases → Create New Release
+2. Upload audio/video files as attachments
+3. Copy the file URL and paste in README
+
+### Option 3: Embed Audio/Video Files Directly (HTML)
+If hosting externally, you can embed players in README using HTML:
+
+**For Audio Files**:
+```html
+<audio controls>
+  <source src="https://your-link-to-audio.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+```
+
+**For Video Files**:
+```html
+<video width="320" height="240" controls>
+  <source src="https://your-link-to-video.mp4" type="video/mp4">
+  Your browser does not support the video element.
+</video>
+```
+
+### Option 4: Link to Streaming Platforms
+If your recordings are on platforms like:
+- **Microsoft Teams**: Share recording link
+- **Zoom**: Share recording link
+- **Loom**: Share loom.com link
+- **Vimeo**: Share vimeo link
+
+Example:
+```markdown
+- **Feedback Session 1**: [Watch on Loom](https://www.loom.com/share/...)
+- **Feedback Session 2**: [View on Teams](https://teams.microsoft.com/...)
+```
+
+### ⚠️ Important Notes
+- **GitHub README file size limit**: Keep links external, not embedded files
+- **Privacy**: Ensure videos/recordings are set to appropriate sharing level
+- **Permissions**: Get consent from all participants before sharing recordings
+- **Storage**: Use free tier services or GitHub releases for better accessibility
+
