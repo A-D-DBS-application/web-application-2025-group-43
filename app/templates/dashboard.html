@@ -128,7 +128,7 @@
           </button>
         </form>
         <h1 class="topbar-title">
-          {{ robot.robot_name or 'Playfield' }}
+          {{ robot.robot_name or 'Playfield' }}{% if robot.plant_profile %} - {{ robot.plant_profile.display_name }}{% endif %}
         </h1>
         <div class="topbar-language">
           <button 
@@ -210,7 +210,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>💧</span><span>Soil Moisture</span>
+                        <span>Soil Moisture</span>
                       </div>
                       <div>
                         {{ m_moist.value|round(1) if m_moist else '–' }}%
@@ -232,7 +232,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>🌡️</span><span>Temperature</span>
+                        <span>Temperature</span>
                       </div>
                       <div>
                         {{ m_temp.value|round(1) if m_temp else '–' }}°C
@@ -254,7 +254,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>💨</span><span>Humidity</span>
+                        <span>Humidity</span>
                       </div>
                       <div>
                         {{ m_hum.value|round(1) if m_hum else '–' }}%
@@ -276,7 +276,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>🌧️</span><span>Rainfall</span>
+                        <span>Rainfall</span>
                       </div>
                       <div>
                         {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
@@ -298,7 +298,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>☀️</span><span>Light</span>
+                        <span>Light</span>
                       </div>
                       <div>
                         {{ m_light.value|round(1) if m_light else '–' }}<span style="margin-left: 4px; font-size: 0.85em; opacity: 0.7;">PPFD</span>
@@ -320,7 +320,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>🪴</span><span>CO₂</span>
+                        <span>CO₂</span>
                       </div>
                       <div>
                         {{ m_co2.value|round(1) if m_co2 else '–' }} ppm
