@@ -486,7 +486,7 @@ def dashboard(serial_number):
                 direction = "afwijkend"
 
             if z is not None:
-                msg = f"{direction.capitalize()} dan ideaal (z={z:.2f})."
+                msg = f"{direction.capitalize()} dan ideaal."
             else:
                 msg = f"{direction.capitalize()} dan ideaal."
 

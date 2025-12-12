@@ -17,7 +17,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <img src="{{ url_for('static', filename='img/logo-dark.svg') }}" alt="Capenta logo">
+          <img src="{{ url_for('static', filename='img/capenta-logo.png') }}" alt="Capenta logo">
         </div>
         <div class="sidebar-title">Capenta</div>
       </div>
@@ -25,9 +25,12 @@
       <div class="sidebar-scroll">
         <!-- Gardens & playfields -->
         <section class="sidebar-section">
-          <div class="section-label">Gardens &amp; Playfields</div>
-
-          {% for item in sidebar_gardens %}
+          <button class="data-toggle" type="button" id="gardensToggleBtn">
+            <span class="garden-chevron" id="gardensToggleIcon">▼</span>
+            <span>Gardens &amp; Playfields</span>
+          </button>
+          <div class="data-list" id="gardensList">
+            {% for item in sidebar_gardens %}
             {% set g = item.garden %}
             {% set zones = item.zones %}
             <button
@@ -52,6 +55,7 @@
               {% endfor %}
             </div>
           {% endfor %}
+          </div>
         </section>
 
         <!-- Data variabelen -->
@@ -111,12 +115,6 @@
           <span>⟵</span>
           <span>{{ t('logout') }}</span>
         </a>
-
-        <!-- Language Toggle -->
-        <div class="language-toggle">
-          <button class="lang-btn {% if lang == 'en' %}active{% endif %}" onclick="setLanguage('en')">EN</button>
-          <button class="lang-btn {% if lang == 'nl' %}active{% endif %}" onclick="setLanguage('nl')">NL</button>
-        </div>
       </div>
     </aside>
 
@@ -132,6 +130,19 @@
         <h1 class="topbar-title">
           {{ robot.robot_name or 'Playfield' }}
         </h1>
+        <div class="topbar-language">
+          <button 
+            class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
+            onclick="setLanguage('en')"
+            style="margin-right: 8px;">
+            EN
+          </button>
+          <button 
+            class="lang-btn lang-btn-nl {% if lang == 'nl' %}active{% endif %}"
+            onclick="setLanguage('nl')">
+            NL
+          </button>
+        </div>
       </header>
 
       <!-- scrollable content -->
@@ -670,6 +681,17 @@
       const isHidden = dataList.style.display === 'none';
       dataList.style.display = isHidden ? 'block' : 'none';
       dataToggleIcon.textContent = isHidden ? '▼' : '▶';
+    });
+
+    // toggle gardens
+    const gardensToggleBtn = document.getElementById('gardensToggleBtn');
+    const gardensToggleIcon = document.getElementById('gardensToggleIcon');
+    const gardensList = document.getElementById('gardensList');
+
+    gardensToggleBtn?.addEventListener('click', () => {
+      const isHidden = gardensList.style.display === 'none';
+      gardensList.style.display = isHidden ? 'block' : 'none';
+      gardensToggleIcon.textContent = isHidden ? '▼' : '▶';
     });
 
     // scroll naar juiste sensor-kaart
