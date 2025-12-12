@@ -200,8 +200,9 @@
   </style>
 </head>
 <body>
+  {% include '_language_switcher.html' %}
   <div class="page">
-    <!-- Topbar met back + logo -->
+    <!-- Topbar met back -->
     <div class="topbar">
       <div class="topbar-left">
         <form method="get" action="{% if last_robot_serial %}{{ url_for('dashboard.dashboard', serial_number=last_robot_serial) }}{% else %}{{ url_for('garden.garden_selection') }}{% endif %}">
@@ -210,20 +211,9 @@
           </button>
         </form>
       </div>
-
-      <div class="topbar-center">
-        <div class="logo-pill">
-          <img src="{{ url_for('static', filename='img/capenta-logo.png') }}" alt="Capenta logo">
-        </div>
-        <div class="logo-text">Capenta</div>
-      </div>
-
-      <div class="topbar-right"><!-- lege spacer --></div>
     </div>
 
-    <h1 class="page-title">{{ t('profile') }}</h1>
-
-    <div class="card-wrap">
+    <div class="card-wrap" style="margin-top: 0;">
       <section class="profile-card">
         <!-- Header with avatar, name, email -->
         <div class="profile-header">
@@ -237,22 +227,22 @@
         <!-- Fields (read only) -->
         <div class="fields">
           <div>
-            <div class="field-label">Name</div>
+            <div class="field-label">{{ t('name') }}</div>
             <div class="field-box">{{ name }}</div>
           </div>
 
           <div>
-            <div class="field-label">Email</div>
+            <div class="field-label">{{ t('email') }}</div>
             <div class="field-box">{{ email }}</div>
           </div>
 
           <div>
-            <div class="field-label">Phone Number</div>
+            <div class="field-label">{{ t('phone') }}</div>
             <div class="field-box">{{ phone }}</div>
           </div>
 
           <div>
-            <div class="field-label">Address</div>
+            <div class="field-label">{{ t('address') }}</div>
             <div class="field-box">{{ address }}</div>
           </div>
         </div>
