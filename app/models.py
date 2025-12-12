@@ -1,16 +1,16 @@
-# app/models.py
 from . import db
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 
 # ==========================================================
-# PlantProfile (optimal values per plant)
+# PlantProfile (optimale waarden per plant)
 # ==========================================================
 class PlantProfile(db.Model):
     __tablename__ = "plant_profiles"
 
-    plant_name = db.Column(db.String, primary_key=True, nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True)
+    key = db.Column(db.String, unique=True, nullable=False)
     display_name = db.Column(db.String, nullable=False)
 
     temperature_mean = db.Column(db.Float)
@@ -31,14 +31,17 @@ class PlantProfile(db.Model):
     co2_mean = db.Column(db.Float)
     co2_std = db.Column(db.Float)
 
-    robot_zones = db.relationship("RobotZone", back_populates="plant_profile")
+    robot_zones = db.relationship(
+        "RobotZone",
+        back_populates="plant_profile"
+    )
 
     def __repr__(self):
-        return f"<PlantProfile {self.display_name} ({self.plant_name})>"
+        return f"<PlantProfile {self.display_name} ({self.key})>"
 
 
 # ==========================================================
-# User
+# User  ✅ PASSWORD VERWIJDERD
 # ==========================================================
 class User(db.Model):
     __tablename__ = "user"
@@ -47,7 +50,6 @@ class User(db.Model):
     uname = db.Column(db.String, nullable=False)
     phone = db.Column(db.String)
     adress = db.Column(db.String)
-    password = db.Column(db.String, nullable=False)
 
     gardens = db.relationship(
         "Garden",
@@ -104,16 +106,32 @@ class RobotZone(db.Model):
         db.ForeignKey("garden.garden_id", ondelete="CASCADE"),
     )
 
-    # Foreign key to plant_profiles (plant_name)
-    plant_name = db.Column(
-        db.String,
-        db.ForeignKey("plant_profiles.plant_name", ondelete="SET NULL"),
+    # ⚠️ BELANGRIJK: deze kolom MOET bestaan in Supabase
+    plant_profile_id = db.Column(
+        db.BigInteger,
+        db.ForeignKey("plant_profiles.id", ondelete="SET NULL"),
         nullable=True,
     )
-    plant_profile = db.relationship("PlantProfile", back_populates="robot_zones")
+
+    plant_profile = db.relationship(
+        "PlantProfile",
+        back_populates="robot_zones",
+    )
 
     sensors = db.relationship(
         "Sensor",
+        backref="robot_zone",
+        cascade="all, delete-orphan",
+    )
+
+    feedback = db.relationship(
+        "Feedback",
+        backref="robot_zone",
+        cascade="all, delete-orphan",
+    )
+
+    health_scores = db.relationship(
+        "HealthScore",
         backref="robot_zone",
         cascade="all, delete-orphan",
     )
@@ -129,7 +147,7 @@ class Sensor(db.Model):
     __tablename__ = "sensor"
 
     srnr_sensor = db.Column(db.String, primary_key=True)
-    sensor_type = db.Column(db.String, nullable=False)  # 'moisture', 'temperature', ...
+    sensor_type = db.Column(db.String, nullable=False)
     unit = db.Column(db.String)
 
     serial_number = db.Column(
@@ -167,21 +185,38 @@ class Measurement(db.Model):
 
 
 # ==========================================================
-# HealthScore (daily health score per playfield)
+# Feedback
 # ==========================================================
-class HealthScore(db.Model):
-    __tablename__ = "health_score"
+class Feedback(db.Model):
+    __tablename__ = "feedback"
 
-    hid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    score = db.Column(db.Float, nullable=False)  # 0-100
-    calculated_at = db.Column(db.DateTime(timezone=True), nullable=False)  # When calculated
+    fid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    f_text = db.Column(db.String, nullable=False)
 
     serial_number = db.Column(
         db.String,
         db.ForeignKey("robot_zone.serial_number", ondelete="CASCADE"),
     )
 
-    robot_zone = db.relationship("RobotZone", backref="health_scores")
+    def __repr__(self):
+        return f"<Feedback {self.fid} for {self.serial_number}>"
+
+
+# ==========================================================
+# HealthScore
+# ==========================================================
+class HealthScore(db.Model):
+    __tablename__ = "health_score"
+
+    hid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    score = db.Column(db.Float, nullable=False)
+    score_date = db.Column(db.Date, nullable=False)
+    calculated_at = db.Column(db.DateTime(timezone=True), nullable=False)
+
+    serial_number = db.Column(
+        db.String,
+        db.ForeignKey("robot_zone.serial_number", ondelete="CASCADE"),
+    )
 
     def __repr__(self):
-        return f"<HealthScore {self.serial_number} {self.calculated_at.date()}: {self.score}>"
+        return f"<HealthScore {self.serial_number} {self.score_date}: {self.score}>"

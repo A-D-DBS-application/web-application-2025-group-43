@@ -61,12 +61,12 @@ def register():
         name = request.form.get("name")
         phone = request.form.get("phone")
         adress = request.form.get("adress")
-        password = request.form.get("password")
 
         # Basisvalidatie
-        if not email or not name or not password:
-            flash("Email, name and password are required.", "error")
+        if not email or not name:
+            flash("Email and name are required.", "error")
             return render_template("register.html")
+
 
         # Bestaat user al?
         existing = User.query.filter_by(uemail=email).first()
