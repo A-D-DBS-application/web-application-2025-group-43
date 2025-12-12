@@ -178,13 +178,13 @@
 
               <h3 class="playfield-title">{{ zone.robot_name }}</h3>
 
-              <div class="playfield-icon">🍃</div>
+              <div class="playfield-icon">{{ icon_for_plant(zone.plant_profile.plant_name if zone.plant_profile else None) }}</div>
               
               <p class="playfield-crop">
                 {% if zone.plant_profile %}
-                  {{ zone.plant_profile.display_name }}
+                  {{ t(zone.plant_profile.display_name) }}
                 {% else %}
-                  No crop set
+                  {{ t('no_crop_set') }}
                 {% endif %}
               </p>
 

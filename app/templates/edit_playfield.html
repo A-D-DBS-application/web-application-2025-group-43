@@ -79,10 +79,9 @@
                 step="0.1"
                 min="0"
                 name="area_playfield"
-                value="{{ zone.area_playfield }}"
-                class="w-full px-4 py-3 pr-12 bg-[#0F1116] border border-gray-700 rounded-xl text-white
-                       placeholder-gray-500 focus:outline-none focus:border-[#34C759]
-                       focus:ring-2 focus:ring-[#34C759]/20 transition-all" />
+                value="1"
+                readonly
+                class="w-full px-4 py-3 pr-12 bg-[#0F1116] border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed" />
               <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">m²</span>
             </div>
           </div>
@@ -96,7 +95,7 @@
             >
               <option value="">-- {{ t('select_a_crop') }} --</option>
               {% for plant in plants %}
-                <option value="{{ plant.plant_name }}" {% if zone.plant_name == plant.plant_name %}selected{% endif %}>{{ plant.display_name }}</option>
+                <option value="{{ plant.plant_name }}" {% if zone.plant_name == plant.plant_name %}selected{% endif %}>{{ t(plant.display_name) }}</option>
               {% endfor %}
             </select>
             <style>

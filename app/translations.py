@@ -107,11 +107,26 @@ TRANSLATIONS = {
         "select_a_crop": "Select a crop",
         "save_playfield": "Save Playfield",
 
+        "no_crop_set": "No crop set",
+
         # General
         "ideal_plant_dependent": "Ideal: plant profile-dependent",
         "language": "Language",
         "en": "English",
         "nl": "Nederlands",
+
+        # Crops
+        "Beans": "Beans",
+        "Carrot": "Carrot",
+        "Leek": "Leek",
+        "Lettuce": "Lettuce",
+        "Onion/shallot": "Onion/shallot",
+        "Paprika/pepper": "Paprika/pepper",
+        "Pumpkin": "Pumpkin",
+        "Strawberry": "Strawberry",
+        "Tomato": "Tomato",
+        "Zucchini": "Zucchini",
+        "Plant": "Plant",
     },
     "nl": {
         # Dashboard
@@ -219,11 +234,26 @@ TRANSLATIONS = {
         "select_a_crop": "Selecteer een gewas",
         "save_playfield": "Speelveld opslaan",
         
+        "no_crop_set": "Geen gewas ingesteld",
+
         # General
         "ideal_plant_dependent": "Ideaal: plantprofiel-afhankelijk",
         "language": "Taal",
         "en": "English",
         "nl": "Nederlands",
+        
+        # Crops
+        "Beans": "Bonen",
+        "Carrot": "Wortel",
+        "Leek": "Prei",
+        "Lettuce": "Sla",
+        "Onion/shallot": "Ui/sjalot",
+        "Paprika/pepper": "Paprika/peper",
+        "Pumpkin": "Pompoen",
+        "Strawberry": "Aardbei",
+        "Tomato": "Tomaat",
+        "Zucchini": "Courgette",
+        "Plant": "Plant",
     }
 }
 
@@ -231,7 +261,16 @@ def get_translation(key: str, language: str = "en") -> str:
     """Get translated string for given key and language"""
     if language not in TRANSLATIONS:
         language = "en"
-    return TRANSLATIONS[language].get(key, key)
+
+    # First, check in the main categories
+    if key in TRANSLATIONS[language]:
+        return TRANSLATIONS[language][key]
+
+    # Fallback to English crops if the key exists there
+    if key in TRANSLATIONS["en"]:
+        return TRANSLATIONS[language].get(key, key)
+
+    return key
 
 def get_all_translations(language: str = "en") -> dict:
     """Get all translations for a language"""

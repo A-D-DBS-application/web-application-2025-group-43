@@ -129,7 +129,6 @@ def edit_playfield(serial_number, garden_id):
     # POST — formulier opslaan
     if request.method == "POST":
         zone.robot_name = request.form.get("robot_name")
-        zone.area_playfield = request.form.get("area_playfield")
         plant_name = request.form.get("plant_name")
         zone.plant_name = plant_name if plant_name else None
 

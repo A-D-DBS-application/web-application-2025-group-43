@@ -223,43 +223,42 @@ body{
 
 .playfield-content{
   text-align:center;
-  /* Make content a flex column to control ordering */
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 12px; /* Increased spacing */
 }
 
 .playfield-icon{
-  font-size:44px;
-  width:72px;
-  height:72px;
+  font-size: 52px; /* Bigger icon */
+  width: 80px;
+  height: 80px;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin:0 auto; /* Removed bottom margin */
-  border-radius:12px;
+  margin:0;
+  border-radius:16px; /* Slightly more rounded */
   background:rgba(255,255,255,0.02);
   line-height:1;
 }
 
 .playfield-title{
-  font-size:24px;
+  font-size: 28px; /* Bigger title */
   font-weight:700;
-  margin-bottom: 8px; /* Added margin */
+  margin:0;
 }
 
 .playfield-crop {
-  font-size: 16px;
+  font-size: 18px; /* Bigger crop text */
   color: #a0f0c0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin:0;
   font-style: italic;
 }
 
 .playfield-area{
-  font-size:14px;
+  font-size: 16px; /* Bigger area text */
   color:#d1d5db;
-  margin-top:0; /* Removed margin */
+  margin:0;
 }
 
 /* Empty state */

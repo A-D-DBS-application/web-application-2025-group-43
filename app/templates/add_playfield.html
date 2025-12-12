@@ -125,7 +125,7 @@
               >
                 <option value="">-- {{ t('select_a_crop') }} --</option>
                 {% for plant in plants %}
-                  <option value="{{ plant.plant_name }}">{{ plant.display_name }}</option>
+                  <option value="{{ plant.plant_name }}">{{ t(plant.display_name) }}</option>
                 {% endfor %}
               </select>
               <style>

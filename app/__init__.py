@@ -2,6 +2,7 @@ from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 from .translations import get_all_translations, get_translation
+from .icons import get_plant_icon
 
 db = SQLAlchemy()
 
@@ -29,12 +30,13 @@ def create_app():
 
     # ✅ Taal context processor voor templates
     @app.context_processor
-    def inject_language():
+    def inject_language_and_icons():
         lang = session.get('language', 'en')
         return {
             'lang': lang,
             'translations': get_all_translations(lang),
-            't': lambda key: get_translation(key, lang)
+            't': lambda key: get_translation(key, lang),
+            'icon_for_plant': get_plant_icon
         }
 
     # ✅ Route voor taal wisselen

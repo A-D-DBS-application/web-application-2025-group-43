@@ -516,7 +516,7 @@
         <!-- Target Values -->
         {% if target_mean and target_std %}
         <div class="card">
-          <div class="card-title">🎯 Doelwaarden ({{ robot.plant_profile.display_name if robot.plant_profile else 'Plant' }})</div>
+          <div class="card-title">🎯 Doelwaarden ({{ t(robot.plant_profile.display_name) if robot.plant_profile else t('Plant') }})</div>
           <div class="stats-grid">
             <div class="stat-box">
               <div class="stat-value">{{ "%0.1f" | format(target_mean) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
