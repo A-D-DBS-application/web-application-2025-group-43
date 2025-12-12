@@ -166,8 +166,9 @@ def get_average_measurements(serial_number, days=5):
     """
     Retrieve average sensor measurements for the last N days.
     
-    Queries the database for all sensor data and calculates averages
-    for each sensor type on the specified playfield/robot.
+    Since physical sensors may not take measurements daily, this function
+    falls back to using the latest available measurements if no data exists
+    within the specified time window.
     
     Args:
         serial_number (str): Serial number of the robot/playfield
@@ -199,13 +200,22 @@ def get_average_measurements(serial_number, days=5):
             measurements_avg[sensor_type] = None
             continue
         
-        # Calculate average for this sensor
+        # Calculate average for this sensor within the time window
         avg_value = db.session.query(
             func.avg(Measurement.value)
         ).filter(
             Measurement.srnr_sensor == sensor.srnr_sensor,
             Measurement.time_m >= cutoff_date
         ).scalar()
+        
+        # If no data within the time window, use the latest measurement
+        if avg_value is None:
+            latest_measurement = (
+                Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
+                .order_by(Measurement.time_m.desc())
+                .first()
+            )
+            avg_value = latest_measurement.value if latest_measurement else None
         
         measurements_avg[sensor_type] = float(avg_value) if avg_value else None
     
