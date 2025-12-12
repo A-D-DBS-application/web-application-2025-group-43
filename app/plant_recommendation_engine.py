@@ -292,7 +292,7 @@ def calculate_plant_rankings(serial_number, days=5):
                 compatibility = "Poor"
             
             plant_rankings.append({
-                'key': plant.key,
+                'key': plant.plant_name,
                 'name': plant.display_name,
                 'icon': '🌱',
                 'score': round(score, 2),

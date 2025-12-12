@@ -62,7 +62,7 @@ def add_playfield(garden_id):
         # area_playfield is voorlopig altijd 1 m²
         area = Decimal("1")
         serial = request.form.get("serial_number") or str(uuid.uuid4())
-        plant_profile_id = request.form.get("plant_profile_id")
+        plant_name = request.form.get("plant_name")
 
         if not robot_name:
             flash("Playfield name is required.", "error")
@@ -73,7 +73,7 @@ def add_playfield(garden_id):
             area_playfield=area,
             robot_name=robot_name,
             garden_id=garden.garden_id,
-            plant_profile_id=int(plant_profile_id) if plant_profile_id else None,
+            plant_name=plant_name if plant_name else None,
         )
 
         db.session.add(new_zone)
@@ -130,8 +130,8 @@ def edit_playfield(serial_number, garden_id):
     if request.method == "POST":
         zone.robot_name = request.form.get("robot_name")
         zone.area_playfield = request.form.get("area_playfield")
-        plant_profile_id = request.form.get("plant_profile_id")
-        zone.plant_profile_id = int(plant_profile_id) if plant_profile_id else None
+        plant_name = request.form.get("plant_name")
+        zone.plant_name = plant_name if plant_name else None
 
         db.session.commit()
 

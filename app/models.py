@@ -5,13 +5,12 @@ import uuid
 
 
 # ==========================================================
-# PlantProfile (optimale waarden per plant)
+# PlantProfile (optimal values per plant)
 # ==========================================================
 class PlantProfile(db.Model):
     __tablename__ = "plant_profiles"
 
-    id = db.Column(db.BigInteger, primary_key=True)  # komt overeen met Supabase serial
-    key = db.Column(db.String, unique=True, nullable=False)
+    plant_name = db.Column(db.String, primary_key=True, nullable=False)
     display_name = db.Column(db.String, nullable=False)
 
     temperature_mean = db.Column(db.Float)
@@ -35,7 +34,7 @@ class PlantProfile(db.Model):
     robot_zones = db.relationship("RobotZone", back_populates="plant_profile")
 
     def __repr__(self):
-        return f"<PlantProfile {self.display_name} ({self.key})>"
+        return f"<PlantProfile {self.display_name} ({self.plant_name})>"
 
 
 # ==========================================================
@@ -105,21 +104,16 @@ class RobotZone(db.Model):
         db.ForeignKey("garden.garden_id", ondelete="CASCADE"),
     )
 
-    # 🔹 FK naar plant_profiles (matcht Supabase kolom)
-    plant_profile_id = db.Column(
-        db.BigInteger,
-        db.ForeignKey("plant_profiles.id", ondelete="SET NULL"),
+    # Foreign key to plant_profiles (plant_name)
+    plant_name = db.Column(
+        db.String,
+        db.ForeignKey("plant_profiles.plant_name", ondelete="SET NULL"),
         nullable=True,
     )
     plant_profile = db.relationship("PlantProfile", back_populates="robot_zones")
 
     sensors = db.relationship(
         "Sensor",
-        backref="robot_zone",
-        cascade="all, delete-orphan",
-    )
-    feedback = db.relationship(
-        "Feedback",
         backref="robot_zone",
         cascade="all, delete-orphan",
     )
@@ -173,33 +167,14 @@ class Measurement(db.Model):
 
 
 # ==========================================================
-# Feedback
-# ==========================================================
-class Feedback(db.Model):
-    __tablename__ = "feedback"
-
-    fid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    f_text = db.Column(db.String, nullable=False)
-
-    serial_number = db.Column(
-        db.String,
-        db.ForeignKey("robot_zone.serial_number", ondelete="CASCADE"),
-    )
-
-    def __repr__(self):
-        return f"<Feedback {self.fid} for {self.serial_number}>"
-
-
-# ==========================================================
-# HealthScore (dagelijkse gezondheidsscore per playfield)
+# HealthScore (daily health score per playfield)
 # ==========================================================
 class HealthScore(db.Model):
     __tablename__ = "health_score"
 
     hid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     score = db.Column(db.Float, nullable=False)  # 0-100
-    score_date = db.Column(db.Date, nullable=False)  # Datum van de score
-    calculated_at = db.Column(db.DateTime(timezone=True), nullable=False)  # Wanneer berekend
+    calculated_at = db.Column(db.DateTime(timezone=True), nullable=False)  # When calculated
 
     serial_number = db.Column(
         db.String,
@@ -209,4 +184,4 @@ class HealthScore(db.Model):
     robot_zone = db.relationship("RobotZone", backref="health_scores")
 
     def __repr__(self):
-        return f"<HealthScore {self.serial_number} {self.score_date}: {self.score}>"
+        return f"<HealthScore {self.serial_number} {self.calculated_at.date()}: {self.score}>"

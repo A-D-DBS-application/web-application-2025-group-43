@@ -341,7 +341,7 @@ def _get_health_trend_data(serial_number, period='month'):
     
     # Formatteer data voor grafiek met intelligent label spacing
     values = [float(s.score) for s in current_scores]
-    all_dates = [s.calculated_at.date() if s.calculated_at else s.score_date for s in current_scores]
+    all_dates = [s.calculated_at.date() for s in current_scores if s.calculated_at]
     
     # Create labels with intelligent spacing based on period
     labels = []
@@ -509,32 +509,16 @@ def dashboard(serial_number):
     # 5.5) Bereken nieuwe health score op basis van formule
     calculated_health_score = _calculate_daily_health_score(robot, sensor_data)
     
-    # Sla health score op voor vandaag (als nog niet gedaan)
+    # Sla health score op (altijd een nieuwe record met huidy calculated_at)
     if calculated_health_score is not None:
-        today = date.today()
-        existing_score = (
-            HealthScore.query.filter_by(
-                serial_number=serial_number,
-                score_date=today
-            )
-            .first()
+        # Maak nieuwe health score record aan met current timestamp
+        new_health_score = HealthScore(
+            serial_number=serial_number,
+            score=calculated_health_score,
+            calculated_at=datetime.now(),
         )
-        
-        if existing_score is None:
-            # Maak nieuwe health score record aan
-            new_health_score = HealthScore(
-                serial_number=serial_number,
-                score=calculated_health_score,
-                score_date=today,
-                calculated_at=datetime.now(),
-            )
-            db.session.add(new_health_score)
-            db.session.commit()
-        else:
-            # Update bestaande record
-            existing_score.score = calculated_health_score
-            existing_score.calculated_at = datetime.now()
-            db.session.commit()
+        db.session.add(new_health_score)
+        db.session.commit()
 
     # 6) Health score uit database
     if calculated_health_score is not None:
