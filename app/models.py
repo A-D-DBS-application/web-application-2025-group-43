@@ -107,7 +107,7 @@ class RobotZone(db.Model):
     )
 
     # ⚠️ BELANGRIJK: deze kolom MOET bestaan in Supabase
-    plant_profile_id = db.Column(
+    plant_name = db.Column(
         db.BigInteger,
         db.ForeignKey("plant_profiles.id", ondelete="SET NULL"),
         nullable=True,
