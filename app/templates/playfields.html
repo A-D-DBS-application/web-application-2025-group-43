@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="nl">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -11,12 +10,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- (optioneel) Bootstrap CSS, zoals bij garden_selection -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
 
   <!-- Eigen CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/playfield_selection.css') }}">
-  
+
   <!-- Language Switcher Styles -->
   <style>
     .language-switcher {
@@ -55,10 +59,21 @@
       background: #30B24F;
       border-color: #30B24F;
     }
+
+    @media (max-width: 576px) {
+      .language-switcher {
+        top: 12px;
+        right: 12px;
+      }
+      .lang-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
   </style>
 </head>
 
-<body class="min-h-screen p-6 text-white">
+<body>
   <!-- Global Language Switcher -->
   <div class="language-switcher">
     <button 
@@ -74,30 +89,34 @@
     </button>
   </div>
   
-  <div class="max-w-7xl mx-auto">
+  <div class="page-container">
 
     <!-- TOP BAR -->
     <header class="mb-8">
-      <div class="flex items-center justify-between topbar">
+      <div class="topbar">
 
         <!-- Back + Logo -->
-        <div class="flex items-center gap-4">
+        <div class="topbar-left">
 
           <!-- Back button -->
           <a href="{{ url_for('garden.garden_selection') }}"
-            class="w-10 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all">
-            <span class="text-white text-xl">&lsaquo;</span>
+             class="back-btn"
+             aria-label="Back to gardens">
+            <span>&lsaquo;</span>
           </a>
 
           <!-- Logo -->
           <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
-            <img class="brand-img" src="{{ url_for('static', filename='img/logo.png') }}" alt="Capenta logo">
+            <img class="brand-img"
+                 src="{{ url_for('static', filename='img/logo.png') }}"
+                 alt="Capenta logo">
           </a>
         </div>
 
         <!-- Add Playfield + Logout -->
         <div class="topbar-right">
-          <a href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}" class="add-playfield-btn">
+          <a href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}"
+             class="add-playfield-btn">
             <span class="add-playfield-icon">+</span>
             Add Playfield
           </a>
@@ -117,18 +136,14 @@
       <p class="garden-address">{{ garden.adress_garden }}</p>
     </section>
 
-    <!-- PLAYFIELDS GRID WRAPPER (NIEUW: identiek systeem als garden) -->
+    <!-- PLAYFIELDS GRID -->
     <section class="playfields-grid-wrapper">
-
       <div class="playfields-grid
           {% if robot_zones|length == 1 %} single-playfield 
           {% elif robot_zones|length == 2 %} two-playfields
           {% elif robot_zones|length == 3 %} three-playfields
           {% elif robot_zones|length >= 4 %} many-playfields
           {% endif %}">
-
-      <!-- GRID BEVAT GEEN LAYOUT MEER (display: contents) -->
-      <div class="playfields-grid">
 
         {% for zone in robot_zones %}
         <div class="playfield-card-container">
@@ -137,19 +152,19 @@
           <a href="{{ url_for('playfield.edit_playfield',
                                serial_number=zone.serial_number,
                                garden_id=garden.garden_id) }}"
-            class="edit-btn">
+             class="edit-btn">
             ✎
           </a>
 
           <!-- DELETE BUTTON -->
           <form method="POST"
                 action="{{ url_for('playfield.delete_playfield',
-                                    serial_number=zone.serial_number,
-                                    garden_id=garden.garden_id) }}"
+                                   serial_number=zone.serial_number,
+                                   garden_id=garden.garden_id) }}"
                 class="delete-form">
 
             <button class="delete-btn"
-              onclick="return confirm('Are you sure you want to delete this playfield?');">
+                    onclick="return confirm('Are you sure you want to delete this playfield?');">
               ✕
             </button>
 
@@ -157,34 +172,20 @@
 
           <!-- PLAYFIELD CARD -->
           <a href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}"
-            class="playfield-card group relative block rounded-2xl overflow-hidden transition-all border
-                   hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(52,199,89,0.25)]">
+             class="playfield-card">
 
-            <div class="absolute inset-0 p-6 flex flex-col justify-between">
+            <div class="playfield-content">
+              <div class="playfield-icon">🍃</div>
 
-              <div class="flex flex-col items-center text-center space-y-3">
+              <h3 class="playfield-title">{{ zone.robot_name }}</h3>
 
-                <div class="playfield-icon">🍃</div>
-
-                <h3 class="playfield-title">{{ zone.robot_name }}</h3>
-
-                <div class="flex flex-wrap justify-center items-center gap-2 text-sm text-gray-300">
-                  <span>
-                    {% if zone.area_playfield %}
-                    {{ zone.area_playfield }} m²
-                    {% else %}
-                    Size unknown
-                    {% endif %}
-                  </span>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- Hover border -->
-            <div
-              class="absolute inset-0 border-2 border-transparent group-hover:border-[#34C759]
-                      group-hover:brightness-110 rounded-2xl transition-all pointer-events-none">
+              <p class="playfield-area">
+                {% if zone.area_playfield %}
+                  {{ zone.area_playfield }} m²
+                {% else %}
+                  Size unknown
+                {% endif %}
+              </p>
             </div>
 
           </a>
@@ -193,7 +194,7 @@
         {% endfor %}
 
         {% if robot_zones|length == 0 %}
-        <p class="col-span-full text-center text-gray-400 mt-8">
+        <p class="empty-state">
           No playfields yet for this garden.<br>
           Click <strong>Add Playfield</strong> to create your first one.
         </p>

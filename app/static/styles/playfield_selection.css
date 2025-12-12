@@ -28,17 +28,50 @@ body{
   padding:24px;
 }
 
+.page-container{
+  max-width:1400px;
+  margin:0 auto;
+}
+
 /* ============================
    TOP BAR (logo + right buttons)
 ============================ */
 
 .topbar{
   width:100%;
-  max-width:1400px;
-  margin:0 auto;
   display:flex;
   justify-content:space-between;
   align-items:center;
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+/* Back button */
+.back-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#1E1E1E;
+  border:1px solid #374151;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ffffff;
+  text-decoration:none;
+  transition:0.2s ease;
+}
+
+.back-btn span{
+  font-size:20px;
+  line-height:1;
+}
+
+.back-btn:hover{
+  border-color:var(--accent);
 }
 
 /* LOGO LINKS */
@@ -51,7 +84,7 @@ body{
 }
 
 .brand-img{
-  height:150px;       /* zelfde als Garden */
+  height:150px;
   width:auto;
   filter:drop-shadow(0 0 12px rgba(52,199,89,0.4));
 }
@@ -120,38 +153,55 @@ body{
 .wrap{
   max-width:1100px;
   margin:0 auto;
-  margin-top:-105px;        /* blijft goed zoals je wou */
+  margin-top:-105px;        /* zelfde “til” als garden selection */
   text-align:center;
 }
 
-/* Slogan bovenaan: iets dichter bij titel, maar niet te dicht */
 .slogan{
-  margin-top:-38px;        /* was -50 → te hoog → nu visueel juist */
-  margin-bottom:0px;
+  margin-top:-38px;
+  margin-bottom:0;
   font-size:20px;
   color:#b8b8b8;
 }
 
-/* Titel: nu correct uitgebalanceerd tussen slogan en adres */
 .page-title{
   font-size:42px;
   font-weight:700;
-  margin-top:0px;          /* geen negatieve offset → veel cleaner */
-  margin-bottom:0px;
+  margin-top:0;
+  margin-bottom:0;
 }
 
-/* Adres onderaan: subtiele spacing */
 .garden-address{
   color:#6b7280;
   margin-top:4px;
 }
 
 /* ============================
-   PLAYFIELD CARDS
+   PLAYFIELD GRID & CARDS
 ============================ */
 
+.playfields-grid-wrapper{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:24px;
+  margin-top:20px;
+}
+
+.playfields-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:24px;
+}
+
+.playfield-card-container{
+  position:relative;
+}
+
+/* ✅ Extra top-padding zodat knoppen nooit de inhoud raken */
 .playfield-card{
-  width:260px;                      /* vierkant zoals Garden */
+  width:260px;
   height:260px;
   border-radius:24px;
   border:1px solid var(--accent);
@@ -160,6 +210,19 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:56px 24px 24px;   /* veel ruimte bovenaan */
+  text-decoration:none;
+  color:white;
+  transition:0.25s;
+}
+
+.playfield-card:hover{
+  transform:scale(1.03);
+  box-shadow:0 0 25px rgba(52,199,89,0.25);
+}
+
+.playfield-content{
+  text-align:center;
 }
 
 .playfield-icon{
@@ -180,16 +243,22 @@ body{
   font-weight:700;
 }
 
-/* ============================
-   RESPONSIVE
-============================ */
+.playfield-area{
+  font-size:14px;
+  color:#d1d5db;
+  margin-top:6px;
+}
+
+/* Empty state */
+.empty-state{
+  margin-top:20px;
+  color:var(--muted);
+  text-align:center;
+}
+
 /* ============================
    DELETE PLAYFIELD BUTTON
 ============================ */
-
-.playfield-card-container{
-  position:relative;
-}
 
 .delete-form{
   position:absolute;
@@ -224,7 +293,7 @@ body{
    EDIT PLAYFIELD BUTTON
 ============================ */
 
-.edit-btn {
+.edit-btn{
   position:absolute;
   top:12px;
   left:12px;
@@ -252,109 +321,129 @@ body{
 }
 
 /* ============================
-   PLAYFIELD — RESPONSIVE CARD SIZES
+   CARD SIZES PER COUNT (DESKTOP)
 ============================ */
 
 /* 1 playfield → huge */
-.playfields-grid.single-playfield .playfield-card {
-  width: 450px;
-  height: 450px;
+.playfields-grid.single-playfield .playfield-card{
+  width:450px;
+  height:450px;
 }
 
 /* 2 playfields → medium-large */
-.playfields-grid.two-playfields .playfield-card {
-  width: 340px;
-  height: 340px;
+.playfields-grid.two-playfields .playfield-card{
+  width:340px;
+  height:340px;
 }
 
 /* 3 playfields → medium */
-.playfields-grid.three-playfields .playfield-card {
-  width: 300px;
-  height: 300px;
+.playfields-grid.three-playfields .playfield-card{
+  width:300px;
+  height:300px;
 }
 
-/* 4+ playfields → base size (compact) */
-.playfields-grid.many-playfields .playfield-card {
-  width: 260px;
-  height: 260px;
+/* 4+ playfields → compact */
+.playfields-grid.many-playfields .playfield-card{
+  width:260px;
+  height:260px;
 }
 
-/* Optional: icon/text scaling for beauty */
-.playfields-grid.single-playfield .playfield-icon {
-  font-size: 60px;
+/* Icon/text scaling */
+.playfields-grid.single-playfield .playfield-icon{
+  font-size:60px;
 }
 
-.playfields-grid.single-playfield .playfield-title {
-  font-size: 28px;
+.playfields-grid.single-playfield .playfield-title{
+  font-size:28px;
 }
 
 /* ============================
-   CENTERING LIKE GARDENS
+   RESPONSIVE
 ============================ */
 
-/* Wrapper = flex container zoals gardens-grid */
-.playfields-grid-wrapper {
-  display: flex;
-  justify-content: center;   /* centreert alles */
-  flex-wrap: wrap;           /* meerdere rijen */
-  gap: 24px;                 /* zelfde spacing */
-  margin-top: 10px;
+/* Tablets & kleinere schermen */
+@media (max-width: 992px){
+  body{
+    padding:20px;
+  }
+
+  .brand-img{
+    height:130px;
+  }
+
+  .wrap{
+    margin-top:-80px;
+  }
+
+  .slogan{
+    margin-top:-25px;
+  }
 }
 
-/* De grid zelf is nu onze card-container */
-.playfields-grid {
-  display: contents; 
-  /* Hierdoor gedraagt de inhoud zich zoals losse kaarten,
-     maar we behouden de algemene wrapper spacing */
+/* Smartphones */
+@media (max-width: 768px){
+  body{
+    padding:16px;
+  }
+
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .topbar-right{
+    align-self:stretch;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .brand-img{
+    height:110px;
+  }
+
+  .wrap{
+    margin-top:24px;      /* geen negatieve offset op gsm */
+  }
+
+  .slogan{
+    margin-top:0;
+    font-size:18px;
+  }
+
+  .page-title{
+    font-size:32px;
+  }
+
+  .playfields-grid{
+    gap:16px;
+  }
+
+  /* Op gsm: kaarten full-width + hoge top-padding */
+  .playfields-grid.single-playfield .playfield-card,
+  .playfields-grid.two-playfields .playfield-card,
+  .playfields-grid.three-playfields .playfield-card,
+  .playfields-grid.many-playfields .playfield-card,
+  .playfield-card{
+    width:100%;
+    max-width:360px;
+    height:auto;
+    padding:56px 20px 20px;
+  }
 }
 
-/* === GRID WRAPPER — IDENTIEK AAN GARDENS === */
-.playfields-grid-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 20px;
+/* Hele kleine smartphones */
+@media (max-width: 480px){
+  .brand-img{
+    height:90px;
+  }
+
+  .page-title{
+    font-size:26px;
+  }
+
+  .playfield-card{
+    padding:56px 16px 20px;  /* top blijft 56px, zijkanten iets kleiner */
+  }
 }
-
-/* De grid zelf bevat geen layout — kaarten gedragen zich los */
-.playfields-grid {
-  display: contents;
-}
-
-/* === KAART GROOTTES (zelfde als garden) === */
-
-/* 1 playfield → huge */
-.playfields-grid.single-playfield .playfield-card {
-  width: 400px;
-  height: 400px;
-}
-
-/* 2 playfields → medium-large */
-.playfields-grid.two-playfields .playfield-card {
-  width: 340px;
-  height: 340px;
-}
-
-/* 3 playfields → medium */
-.playfields-grid.three-playfields .playfield-card {
-  width: 300px;
-  height: 300px;
-}
-
-/* 4+ playfields → small */
-.playfields-grid.many-playfields .playfield-card {
-  width: 260px;
-  height: 260px;
-}
-
-/* icon scaling */
-.playfields-grid.single-playfield .playfield-icon {
-  font-size: 60px;
-}
-
-.playfields-grid.single-playfield .playfield-title {
-  font-size: 28px;
-}
-
-

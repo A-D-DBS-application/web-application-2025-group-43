@@ -12,16 +12,16 @@
   <link rel="stylesheet"
         href="{{ url_for('static', filename='styles/globals.css') }}">
 
-  <!-- Basisfont -->
+  <!-- Basisfont + background fallback -->
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
                    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  
       background-color: #020817;
       color: #e2e8f0d4;
-  }
-</style>
+      margin: 0;
+    }
+  </style>
 
 </head>
 <body class="bg-[#020817] text-slate-100">

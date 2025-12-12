@@ -47,7 +47,7 @@ body{
 }
 
 .brand-img{
-  height:150px;       /* 🔥 DUBBEL ZO GROOT */
+  height:150px;
   width:auto;
   filter:drop-shadow(0 0 12px rgba(52,199,89,0.4));
 }
@@ -62,7 +62,7 @@ body{
 .topbar-right{
   display:flex;
   align-items:center;
-  gap:16px;           /* 🔥 Add Garden naast logout */
+  gap:16px;
 }
 
 /* LOGOUT BUTTON */
@@ -122,12 +122,12 @@ body{
 .wrap{
   max-width:1100px;
   margin:0 auto;
-  margin-top: -20px; /* 🔥 tilt volledige sectie omhoog */
+  margin-top:-70px;   /* tilt sectie omhoog (desktop) */
   text-align:center;
 }
 
 .slogan{
-  margin-top:-20px; /* 🔥 maakt slogan even hoog als logout */
+  margin-top:-35px;
   margin-bottom:8px;
   font-size:20px;
   color:#b8b8b8;
@@ -151,6 +151,7 @@ body{
   margin-top:10px;
 }
 
+/* ✅ EXTRA TOP-PADDING ZODAT KNOPPEN NOOIT TEKST RAKEN */
 .garden-card{
   width:260px;
   height:260px;
@@ -161,7 +162,7 @@ body{
   flex-direction:column;
   justify-content:space-between;
   align-items:center;
-  padding:24px;
+  padding:56px 24px 24px;   /* <– hier: véél ruimte bovenaan */
   text-decoration:none;
   color:white;
   transition:0.25s;
@@ -198,7 +199,9 @@ body{
 .empty-state{
   margin-top:20px;
   color:var(--muted);
+  text-align:center;
 }
+
 /* ============================
    REMOVE GARDEN BUTTON
 ============================ */
@@ -231,22 +234,6 @@ body{
   background:rgba(255,50,50,0.22);
   transform:scale(1.08);
   border-color:#ff6b6b;
-}
-/* responsive */
-@media(max-width:768px){
-  .brand-img{height:110px;}
-}
-
-.brand-subtitle {
-  margin-top:-60px;   /* trek de tekst 40px omhoog */
-}
-
-.wrap{
-  margin-top:-70px;
-}
-
-.slogan{
-  margin-top:-35px;
 }
 
 /* ============================
@@ -284,49 +271,127 @@ body{
    DYNAMIC CARD SIZE — 1 GARDEN
 ============================ */
 
-/* Als er maar 1 child in .gardens-grid zit → maak de kaart groter */
 .gardens-grid:has(> *:only-child) .garden-card {
   width:340px;
   height:340px;
 }
 
 /* ============================
-   SINGLE GARDEN – GROTERE KAART
+   RESPONSIVE SIZES PER COUNT (DESKTOP)
 ============================ */
 
+/* 1 garden → huge */
 .gardens-grid.single-garden .garden-card {
   width:450px;
   height:450px;
 }
 
-.gardens-grid.single-garden .garden-name {
-  font-size:28px;
-}
-
-/* ============================
-   RESPONSIVE SIZES PER COUNT
-============================ */
-
-/* 1 garden → huge */
-.gardens-grid.single-garden .garden-card {
-  width: 450px;
-  height: 450px;
-}
-
 /* 2 gardens → medium-large */
 .gardens-grid.two-gardens .garden-card {
-  width: 340px;
-  height: 340px;
+  width:340px;
+  height:340px;
 }
 
 /* 3 gardens → medium */
 .gardens-grid.three-gardens .garden-card {
-  width: 300px;
-  height: 300px;
+  width:300px;
+  height:300px;
 }
 
 /* 4+ gardens → default smaller grid */
 .gardens-grid.many-gardens .garden-card {
-  width: 260px;
-  height: 260px;
+  width:260px;
+  height:260px;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+/* Tablets & kleinere schermen */
+@media (max-width: 992px) {
+  body{
+    padding:20px;
+  }
+
+  .brand-img{
+    height:130px;
+  }
+
+  .wrap{
+    margin-top:-40px;
+  }
+
+  .slogan{
+    margin-top:-20px;
+  }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+  body{
+    padding:16px;
+  }
+
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .topbar-right{
+    align-self:stretch;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .brand-img{
+    height:110px;
+  }
+
+  .wrap{
+    margin-top:24px;      /* geen negatieve offset op gsm */
+  }
+
+  .slogan{
+    margin-top:0;
+    font-size:18px;
+  }
+
+  .title-main{
+    font-size:32px;
+  }
+
+  .gardens-grid{
+    gap:16px;
+  }
+
+  /* Op gsm: kaarten full-width + nog steeds hoge top-padding */
+  .gardens-grid.single-garden .garden-card,
+  .gardens-grid.two-gardens .garden-card,
+  .gardens-grid.three-gardens .garden-card,
+  .gardens-grid.many-gardens .garden-card,
+  .gardens-grid:has(> *:only-child) .garden-card,
+  .garden-card{
+    width:100%;
+    max-width:360px;
+    height:auto;
+    padding:56px 20px 20px;   /* zelfde grote ruimte bovenaan */
+  }
+}
+
+/* Hele kleine smartphones */
+@media (max-width: 480px) {
+  .brand-img{
+    height:90px;
+  }
+
+  .title-main{
+    font-size:26px;
+  }
+
+  .garden-card{
+    padding:56px 16px 20px;  /* top 56px houden, zijkanten iets kleiner */
+  }
 }

@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Capenta – {{ t('login') }}</title>
 
+  <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- External CSS -->
+  <!-- EXTERNE CSS voor alle styling -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
-  
-  <!-- Global Language Switcher Styles -->
+
+  <!-- Taal-switcher (klein beetje inline CSS, rest zit in login.css) -->
   <style>
     .language-switcher {
       position: fixed;
@@ -50,16 +51,26 @@
       background: #30B24F;
       border-color: #30B24F;
     }
+
+    @media (max-width: 576px) {
+      .language-switcher {
+        top: 12px;
+        right: 12px;
+      }
+      .lang-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- Global Language Switcher -->
+  <!-- Language Switcher -->
   <div class="language-switcher">
     <button 
       class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
-      onclick="setLanguage('en')"
-      style="margin-right: 0;">
+      onclick="setLanguage('en')">
       EN
     </button>
     <button 
