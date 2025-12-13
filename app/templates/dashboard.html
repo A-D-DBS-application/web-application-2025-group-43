@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="nl" data-theme="dark">
+<html lang="{{ lang or 'en' }}" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Playfield Dashboard — Capenta</title>
+  <title>{{ t('playfield_dashboard') }}</title>
 
   <!-- Chart.js voor de grafieken -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -27,7 +27,7 @@
         <section class="sidebar-section">
           <button class="data-toggle" type="button" id="gardensToggleBtn">
             <span class="garden-chevron" id="gardensToggleIcon">▼</span>
-            <span>Gardens &amp; Playfields</span>
+            <span>{{ t('gardens_playfields') }}</span>
           </button>
           <div class="data-list" id="gardensList">
             {% for item in sidebar_gardens %}
@@ -62,31 +62,31 @@
         <section class="sidebar-section">
           <button class="data-toggle" type="button" id="dataToggleBtn">
             <span class="garden-chevron" id="dataToggleIcon">▼</span>
-            <span>Data variabelen</span>
+            <span>{{ t('data_variables') }}</span>
           </button>
           <div class="data-list" id="dataList">
             <div class="data-btn-wrapper">
-              <button class="data-btn active" type="button" data-target="#sensor-moisture">Soil Moisture</button>
+              <button class="data-btn active" type="button" data-target="#sensor-moisture">{{ t('soil_moisture') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-temperature">Temperature</button>
+              <button class="data-btn" type="button" data-target="#sensor-temperature">{{ t('temperature') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-humidity">Humidity</button>
+              <button class="data-btn" type="button" data-target="#sensor-humidity">{{ t('humidity') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-rain">Rainfall (Water Needs)</button>
+              <button class="data-btn" type="button" data-target="#sensor-rain">{{ t('rainfall_water_needs') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-light">Light</button>
+              <button class="data-btn" type="button" data-target="#sensor-light">{{ t('light') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
             <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-co2">CO₂ Niveau</button>
+              <button class="data-btn" type="button" data-target="#sensor-co2">{{ t('co2_level') }}</button>
               <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
             </div>
           </div>
@@ -123,12 +123,12 @@
       <!-- top bar -->
       <header class="topbar">
         <form method="get" action="{{ url_for('playfield.playfield_selection', garden_id=robot.garden.garden_id) }}">
-          <button class="topbar-back" type="submit" title="Back to playfields">
+          <button class="topbar-back" type="submit" title="{{ t('back_to_playfields') }}">
             ←
           </button>
         </form>
         <h1 class="topbar-title">
-          {{ robot.robot_name or 'Playfield' }}{% if robot.plant_profile %} - {{ robot.plant_profile.display_name }}{% endif %}
+          {{ robot.robot_name or 'Playfield' }}{% if robot.plant_profile %} - {{ t(robot.plant_profile.display_name) }}{% endif %}
         </h1>
         <div class="topbar-language">
           <button 
@@ -155,19 +155,19 @@
               <div class="score-circle-wrap">
                 {% if health_score < 30 %}
                   {% set circle_color = '#dc3545' %}
-                  {% set score_label = 'Critical' if lang == 'en' else 'Kritiek' %}
+                  {% set score_label = t('critical') %}
                 {% elif health_score < 50 %}
                   {% set circle_color = '#fd7e14' %}
-                  {% set score_label = 'Poor' if lang == 'en' else 'Slecht' %}
+                  {% set score_label = t('poor') %}
                 {% elif health_score < 70 %}
                   {% set circle_color = '#ffc107' %}
-                  {% set score_label = 'Fair' if lang == 'en' else 'Gemiddeld' %}
+                  {% set score_label = t('fair') %}
                 {% elif health_score < 85 %}
                   {% set circle_color = '#90ee90' %}
-                  {% set score_label = 'Good' if lang == 'en' else 'Goed' %}
+                  {% set score_label = t('good') %}
                 {% else %}
                   {% set circle_color = '#28a745' %}
-                  {% set score_label = 'Excellent' if lang == 'en' else 'Uitstekend' %}
+                  {% set score_label = t('excellent') %}
                 {% endif %}
 
                 <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
@@ -210,7 +210,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>Soil Moisture</span>
+                        <span>{{ t('soil_moisture') }}</span>
                       </div>
                       <div>
                         {{ m_moist.value|round(1) if m_moist else '–' }}%
@@ -232,7 +232,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>Temperature</span>
+                        <span>{{ t('temperature') }}</span>
                       </div>
                       <div>
                         {{ m_temp.value|round(1) if m_temp else '–' }}°C
@@ -254,7 +254,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>Humidity</span>
+                        <span>{{ t('humidity') }}</span>
                       </div>
                       <div>
                         {{ m_hum.value|round(1) if m_hum else '–' }}%
@@ -276,7 +276,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>Rainfall</span>
+                        <span>{{ t('rainfall_water_needs') }}</span>
                       </div>
                       <div>
                         {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
@@ -298,7 +298,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>Light</span>
+                        <span>{{ t('light') }}</span>
                       </div>
                       <div>
                         {{ m_light.value|round(1) if m_light else '–' }}<span style="margin-left: 4px; font-size: 0.85em; opacity: 0.7;">PPFD</span>
@@ -320,7 +320,7 @@
                   <div class="factor-item">
                     <div class="factor-row-top">
                       <div class="factor-name">
-                        <span>CO₂</span>
+                        <span>{{ t('co2') }}</span>
                       </div>
                       <div>
                         {{ m_co2.value|round(1) if m_co2 else '–' }} ppm
@@ -341,14 +341,14 @@
             <!-- Right -->
             <div class="health-right">
               <div class="health-right-header">
-                <div class="health-right-title">Overall Playfield Health</div>
+                <div class="health-right-title">{{ t('overall_playfield_health') }}</div>
                 <p class="health-right-sub">{{ health_label }}</p>
               </div>
 
               <div class="trend-card">
                 <div class="trend-header">
                   <div>
-                    <div class="trend-title">Health Trend</div>
+                    <div class="trend-title">{{ t('health_trend') }}</div>
                     <div class="trend-muted" id="trend-period-label">{{ trend_data.period_label }}</div>
                   </div>
                   <div class="trend-pill" id="trend-pill">
@@ -359,10 +359,10 @@
 
                 <!-- Period selector -->
                 <div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 12px;">
-                  <button class="period-btn" data-period="week">7d</button>
-                  <button class="period-btn active" data-period="month">30d</button>
-                  <button class="period-btn" data-period="quarter">3m</button>
-                  <button class="period-btn" data-period="year">1y</button>
+                  <button class="period-btn" data-period="week">{{ t('7d') }}</button>
+                  <button class="period-btn active" data-period="month">{{ t('30d') }}</button>
+                  <button class="period-btn" data-period="quarter">{{ t('3m') }}</button>
+                  <button class="period-btn" data-period="year">{{ t('1y') }}</button>
                 </div>
 
                 <div class="trend-chart">
@@ -375,11 +375,11 @@
                   <div class="trend-legend">
                     <div class="legend-item">
                       <span class="legend-dot"></span>
-                      <span id="trend-prev-avg">Start: {{ trend_data.previous_avg }}%</span>
+                      <span id="trend-prev-avg">{{ t('start') }}: {{ trend_data.previous_avg }}%</span>
                     </div>
                     <div class="legend-item">
                       <span class="legend-dot legend-dot-pulse"></span>
-                      <span id="trend-current-avg">Now: {{ trend_data.current_avg }}%</span>
+                      <span id="trend-current-avg">{{ t('now') }}: {{ trend_data.current_avg }}%</span>
                     </div>
                   </div>
                   <span id="trend-duration">30d</span>
@@ -412,7 +412,7 @@
                 </div>
               </div>
               <div class="recommendation-rank {% if loop.index == 1 %}rank-first{% elif loop.index == 2 %}rank-second{% else %}rank-other{% endif %}">
-                {% if loop.index == 1 %}Top{% elif loop.index == 2 %}2e{% else %}{{ loop.index }}{% endif %}
+                {% if loop.index == 1 %}{{ t('top_recommendation') }}{% elif loop.index == 2 %}{{ t('2nd_recommendation') }}{% else %}{{ loop.index }}{% endif %}
               </div>
             </div>
             {% endfor %}
@@ -465,7 +465,7 @@
             <article class="sensor-card" id="sensor-moisture">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Soil Moisture</div>
+                  <div class="sensor-name">{{ t('soil_moisture') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_moist.value|round(1) if m_moist else '–' }}
@@ -480,12 +480,12 @@
                 <canvas id="chart-moisture"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['moisture']['optimal_mean'] is not none %}Ideal: {{ sensor_data['moisture']['optimal_mean']|round(1) }}{% if sensor_data['moisture']['optimal_std'] is not none %} ± {{ sensor_data['moisture']['optimal_std']|round(1) }}{% endif %}%{% else %}{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}{% endif %}</span>
+                <span>{% if sensor_data['moisture']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['moisture']['optimal_mean']|round(1) }}{% if sensor_data['moisture']['optimal_std'] is not none %} ± {{ sensor_data['moisture']['optimal_std']|round(1) }}{% endif %}%{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_moist and m_moist.time_m %}
                     {{ m_moist.time_m.strftime('%H:%M') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -497,7 +497,7 @@
             <article class="sensor-card" id="sensor-temperature">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Temperature</div>
+                  <div class="sensor-name">{{ t('temperature') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_temp.value|round(1) if m_temp else '–' }}
@@ -512,12 +512,12 @@
                 <canvas id="chart-temperature"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['temperature']['optimal_mean'] is not none %}Ideal: {{ sensor_data['temperature']['optimal_mean']|round(1) }}{% if sensor_data['temperature']['optimal_std'] is not none %} ± {{ sensor_data['temperature']['optimal_std']|round(1) }}{% endif %}°C{% else %}{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}{% endif %}</span>
+                <span>{% if sensor_data['temperature']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['temperature']['optimal_mean']|round(1) }}{% if sensor_data['temperature']['optimal_std'] is not none %} ± {{ sensor_data['temperature']['optimal_std']|round(1) }}{% endif %}°C{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_temp and m_temp.time_m %}
                     {{ m_temp.time_m.strftime('%H:%M') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -529,7 +529,7 @@
             <article class="sensor-card" id="sensor-humidity">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Humidity</div>
+                  <div class="sensor-name">{{ t('humidity') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_hum.value|round(1) if m_hum else '–' }}
@@ -544,12 +544,12 @@
                 <canvas id="chart-humidity"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['humidity']['optimal_mean'] is not none %}Ideal: {{ sensor_data['humidity']['optimal_mean']|round(1) }}{% if sensor_data['humidity']['optimal_std'] is not none %} ± {{ sensor_data['humidity']['optimal_std']|round(1) }}{% endif %}%{% else %}{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}{% endif %}</span>
+                <span>{% if sensor_data['humidity']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['humidity']['optimal_mean']|round(1) }}{% if sensor_data['humidity']['optimal_std'] is not none %} ± {{ sensor_data['humidity']['optimal_std']|round(1) }}{% endif %}%{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_hum and m_hum.time_m %}
                     {{ m_hum.time_m.strftime('%H:%M') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -561,7 +561,7 @@
             <article class="sensor-card" id="sensor-rain">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Rainfall (Water Needs)</div>
+                  <div class="sensor-name">{{ t('rainfall_water_needs') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_rain.value|round(1) if m_rain else '–' }}
@@ -576,12 +576,12 @@
                 <canvas id="chart-rain"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['rain']['optimal_mean'] is not none %}Ideal: {{ sensor_data['rain']['optimal_mean']|round(1) }}{% if sensor_data['rain']['optimal_std'] is not none %} ± {{ sensor_data['rain']['optimal_std']|round(1) }}{% endif %} mm/week{% else %}{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}{% endif %}</span>
+                <span>{% if sensor_data['rain']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['rain']['optimal_mean']|round(1) }}{% if sensor_data['rain']['optimal_std'] is not none %} ± {{ sensor_data['rain']['optimal_std']|round(1) }}{% endif %} mm/week{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_rain and m_rain.time_m %}
                     {{ m_rain.time_m.strftime('%d/%m') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -593,7 +593,7 @@
             <article class="sensor-card" id="sensor-light">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">Light</div>
+                  <div class="sensor-name">{{ t('light') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_light.value|round(1) if m_light else '–' }}
@@ -608,12 +608,12 @@
                 <canvas id="chart-light"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['light']['optimal_mean'] is not none %}Ideal: {{ sensor_data['light']['optimal_mean']|round(1) }}{% if sensor_data['light']['optimal_std'] is not none %} ± {{ sensor_data['light']['optimal_std']|round(1) }}{% endif %} µmol/m²/s{% else %}{{ 'Ideal: plant profile-dependent (PPFD)' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk (PPFD)' }}{% endif %}</span>
+                <span>{% if sensor_data['light']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['light']['optimal_mean']|round(1) }}{% if sensor_data['light']['optimal_std'] is not none %} ± {{ sensor_data['light']['optimal_std']|round(1) }}{% endif %} µmol/m²/s{% else %}{{ t('ideal_plant_dependent_ppfd') }}{% endif %}</span>
                 <span>
                   {% if m_light and m_light.time_m %}
                     {{ m_light.time_m.strftime('%d/%m') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -625,7 +625,7 @@
             <article class="sensor-card" id="sensor-co2">
               <div class="sensor-header">
                 <div>
-                  <div class="sensor-name">CO₂</div>
+                  <div class="sensor-name">{{ t('co2') }}</div>
                   <div>
                     <span class="sensor-value-main">
                       {{ m_co2.value|round(1) if m_co2 else '–' }}
@@ -640,12 +640,12 @@
                 <canvas id="chart-co2"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['co2']['optimal_mean'] is not none %}Ideal: {{ sensor_data['co2']['optimal_mean']|round(1) }}{% if sensor_data['co2']['optimal_std'] is not none %} ± {{ sensor_data['co2']['optimal_std']|round(1) }}{% endif %} ppm{% else %}{{ 'Ideal: plant profile-dependent' if lang == 'en' else 'Ideaal: plantprofiel-afhankelijk' }}{% endif %}</span>
+                <span>{% if sensor_data['co2']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['co2']['optimal_mean']|round(1) }}{% if sensor_data['co2']['optimal_std'] is not none %} ± {{ sensor_data['co2']['optimal_std']|round(1) }}{% endif %} ppm{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_co2 and m_co2.time_m %}
                     {{ m_co2.time_m.strftime('%d/%m') }}
                   {% else %}
-                    {{ 'no data' if lang == 'en' else 'geen data' }}
+                    {{ t('no_data') }}
                   {% endif %}
                 </span>
               </div>
@@ -659,13 +659,13 @@
     <div class="fab-wrap">
       <div class="fab-actions" id="fabActions">
         <button class="fab-action-btn" type="button">
-          💧 Water Plants
+          💧 {{ t('water_plants') }}
         </button>
         <button class="fab-action-btn" type="button">
-          🧹 Remove Weeds
+          🧹 {{ t('remove_weeds') }}
         </button>
       </div>
-      <button class="fab-main" type="button" id="fabMain" aria-label="Manual action">
+      <button class="fab-main" type="button" id="fabMain" aria-label="{{ t('manual_action') }}">
         🤖
       </button>
     </div>
