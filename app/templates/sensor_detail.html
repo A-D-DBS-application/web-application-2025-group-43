@@ -86,6 +86,53 @@
       font-size: 18px;
       font-weight: 600;
       flex: 1;
+<<<<<<< HEAD
+=======
+      text-align: center;
+      order: 2;
+    }
+
+    .topbar-language {
+      display: flex;
+      gap: 0px;
+      flex-shrink: 0;
+      order: 3;
+    }
+
+    .lang-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.6);
+      border-radius: 0;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      margin-left: -1px;
+    }
+
+    .lang-btn:first-child {
+      border-radius: 6px 0 0 6px;
+      margin-left: 0;
+    }
+
+    .lang-btn:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+
+    .lang-btn:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+>>>>>>> 616014c9c140de2838747d5686674bd5408a2e08
     }
 
     .topbar-subtitle {
