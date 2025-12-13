@@ -134,6 +134,69 @@ def _resolve_lang():
         lang = request.accept_languages.best_match(["nl", "en"])
     return lang or "nl"
 
+
+def _get_or_create_daily_health_score(robot, sensor_data):
+    """
+    Get existing health score for the measurement date, or create one if it doesn't exist.
+    The health score date must match the date of the measurements used to calculate it.
+    Ensures at most 1 score per playfield per measurement date (idempotent).
+    
+    Returns: HealthScore object (either existing or newly created), or None
+    """
+    serial_number = robot.serial_number
+    
+    # Determine the date of the measurements
+    # Find the most recent measurement across all sensors
+    measurement_date = None
+    for key in SENSOR_KEYS:
+        meas = sensor_data[key]["measurement"]
+        if meas is not None and meas.time_m is not None:
+            meas_date = meas.time_m.date()
+            if measurement_date is None or meas_date > measurement_date:
+                measurement_date = meas_date
+    
+    if measurement_date is None:
+        # No measurements available
+        return None
+    
+    # Check if score already exists for this measurement date
+    existing_score = HealthScore.query.filter(
+        HealthScore.serial_number == serial_number,
+        func.date(HealthScore.calculated_at) == measurement_date
+    ).first()
+    
+    if existing_score:
+        return existing_score  # Reuse existing score from this measurement date
+    
+    # Compute new score only if none exists for this measurement date
+    calculated_health_score = _calculate_daily_health_score(robot, sensor_data)
+    
+    if calculated_health_score is None:
+        return None
+    
+    # Set calculated_at to the measurement date at midnight
+    calculated_at = datetime.combine(measurement_date, datetime.min.time())
+    
+    # Try to insert new score
+    try:
+        new_health_score = HealthScore(
+            serial_number=serial_number,
+            score=calculated_health_score,
+            calculated_at=calculated_at,
+        )
+        db.session.add(new_health_score)
+        db.session.commit()
+        return new_health_score
+    except Exception as e:
+        # Race condition: another request already inserted this date's score
+        # Rollback and fetch the existing one
+        db.session.rollback()
+        existing_score = HealthScore.query.filter(
+            HealthScore.serial_number == serial_number,
+            func.date(HealthScore.calculated_at) == measurement_date
+        ).first()
+        return existing_score
+
 def _classify_status(value, mean, std, lang="nl"):
     """
     Geeft (severity, status_text, z-score) terug.
@@ -186,20 +249,20 @@ def _calculate_quality_score(value, mean, std):
         std (float): Standard deviation (tolerance)
     
     Returns:
-        float: Quality score 0-100, or None if invalid data
+        float: Quality score 0-100, or 0 if invalid data (always returns a number, never None)
     """
     if value is None or mean is None or std is None:
-        return None
+        return 0  # Return 0 instead of None for invalid data
     
     try:
         v = float(value)
         m = float(mean)
         s = float(std)
     except Exception:
-        return None
+        return 0  # Return 0 instead of None
     
     if s == 0:
-        return None
+        return 0  # Return 0 instead of None for zero standard deviation
     
     # Calculate deviation in standard deviations
     x = abs((v - m) / s)
@@ -531,19 +594,9 @@ def dashboard(serial_number):
                 }
             )
 
-    # 5.5) Bereken nieuwe health score op basis van formule
-    calculated_health_score = _calculate_daily_health_score(robot, sensor_data)
-    
-    # Sla health score op (altijd een nieuwe record met huidy calculated_at)
-    if calculated_health_score is not None:
-        # Maak nieuwe health score record aan met current timestamp
-        new_health_score = HealthScore(
-            serial_number=serial_number,
-            score=calculated_health_score,
-            calculated_at=datetime.now(),
-        )
-        db.session.add(new_health_score)
-        db.session.commit()
+    # 5.5) Bereken/haal health score op (idempotent: max 1 per dag)
+    health_score_record = _get_or_create_daily_health_score(robot, sensor_data)
+    calculated_health_score = health_score_record.score if health_score_record else None
 
     # 6) Health score uit database
     if calculated_health_score is not None:

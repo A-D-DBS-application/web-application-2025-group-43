@@ -1202,3 +1202,11 @@ a:focus-visible, button:focus-visible{
   border-color: var(--accent);
 }
 
+#trend-duration {
+  display: inline-block !important;
+  visibility: visible !important;
+  min-height: 16px;
+  padding: 0;
+}
+
+
