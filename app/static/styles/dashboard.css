@@ -1202,3 +1202,33 @@ a:focus-visible, button:focus-visible{
   border-color: var(--accent);
 }
 
+/* ======================================
+   MOBILE FIX: topbar title + EN/NL
+   ====================================== */
+@media (max-width: 640px) {
+  .topbar {
+    height: auto;             /* geen geforceerde 64px */
+    padding: 10px 16px 12px;  /* iets compacter */
+    flex-wrap: wrap;          /* items mogen naar volgende regel */
+    gap: 8px;
+  }
+
+  .topbar-title {
+    flex: 1 0 100%;           /* titel pakt volledige breedte */
+    text-align: center;       /* mooi gecentreerd */
+    font-size: 18px;
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+
+  .topbar-back {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* algemene tuning voor eventuele taal-knoppen in de topbar */
+  .topbar .lang-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
