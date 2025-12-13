@@ -159,10 +159,10 @@ def _get_or_create_daily_health_score(robot, sensor_data):
         # No measurements available
         return None
     
-    # Check if score already exists for this measurement date using score_date column
+    # Check if score already exists for this measurement date
     existing_score = HealthScore.query.filter(
         HealthScore.serial_number == serial_number,
-        HealthScore.score_date == measurement_date
+        func.date(HealthScore.calculated_at) == measurement_date
     ).first()
     
     if existing_score:
@@ -174,8 +174,7 @@ def _get_or_create_daily_health_score(robot, sensor_data):
     if calculated_health_score is None:
         return None
     
-    # Set calculated_at to the measurement date at a standard time (e.g., midnight)
-    # This ensures the timestamp is on the same date as the measurements
+    # Set calculated_at to the measurement date at midnight
     calculated_at = datetime.combine(measurement_date, datetime.min.time())
     
     # Try to insert new score
@@ -183,7 +182,6 @@ def _get_or_create_daily_health_score(robot, sensor_data):
         new_health_score = HealthScore(
             serial_number=serial_number,
             score=calculated_health_score,
-            score_date=measurement_date,  # Store the measurement date
             calculated_at=calculated_at,
         )
         db.session.add(new_health_score)
@@ -195,7 +193,7 @@ def _get_or_create_daily_health_score(robot, sensor_data):
         db.session.rollback()
         existing_score = HealthScore.query.filter(
             HealthScore.serial_number == serial_number,
-            HealthScore.score_date == measurement_date
+            func.date(HealthScore.calculated_at) == measurement_date
         ).first()
         return existing_score
 
@@ -389,9 +387,9 @@ def _get_health_trend_data(serial_number, period='month'):
     start_date = today - timedelta(days=days)
     current_scores = (
         HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.score_date >= start_date)
-        .filter(HealthScore.score_date <= today)
-        .order_by(HealthScore.score_date.asc())
+        .filter(HealthScore.calculated_at >= datetime.combine(start_date, datetime.min.time()))
+        .filter(HealthScore.calculated_at <= datetime.combine(today, datetime.max.time()))
+        .order_by(HealthScore.calculated_at.asc())
         .all()
     )
     
@@ -400,9 +398,9 @@ def _get_health_trend_data(serial_number, period='month'):
     prev_start_date = prev_end_date - timedelta(days=compare_days)
     previous_scores = (
         HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.score_date >= prev_start_date)
-        .filter(HealthScore.score_date <= prev_end_date)
-        .order_by(HealthScore.score_date.asc())
+        .filter(HealthScore.calculated_at >= datetime.combine(prev_start_date, datetime.min.time()))
+        .filter(HealthScore.calculated_at <= datetime.combine(prev_end_date, datetime.max.time()))
+        .order_by(HealthScore.calculated_at.asc())
         .all()
     )
     
@@ -426,7 +424,7 @@ def _get_health_trend_data(serial_number, period='month'):
     
     # Formatteer data voor grafiek met intelligent label spacing
     values = [float(s.score) for s in current_scores]
-    all_dates = [s.score_date for s in current_scores if s.score_date]
+    all_dates = [s.calculated_at.date() for s in current_scores if s.calculated_at]
     
     # Create labels with intelligent spacing based on period
     labels = []
@@ -638,7 +636,7 @@ def dashboard(serial_number):
         if row.score is not None
     ]
     health_trend_labels = [
-        row.score_date.strftime("%d/%m") if row.score_date is not None else ""
+        row.calculated_at.strftime("%d/%m") if row.calculated_at is not None else ""
         for row in trend_rows
     ]
 
