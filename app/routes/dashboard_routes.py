@@ -141,12 +141,18 @@ def _get_or_create_daily_health_score(robot, sensor_data):
     The health score date must match the date of the measurements used to calculate it.
     Ensures at most 1 score per playfield per measurement date (idempotent).
     
+    Algorithm:
+    1. Bepaal de datum van de LAATSTE meting
+    2. Controleer of er al een score voor DIE DAG bestaat
+    3. Zo ja: return bestaande score (idempotent)
+    4. Zo nee: bereken score en sla op MET DE DATUM VAN DE METING (niet huiding datum)
+    
     Returns: HealthScore object (either existing or newly created), or None
     """
     serial_number = robot.serial_number
     
-    # Determine the date of the measurements
-    # Find the most recent measurement across all sensors
+    # 1) Bepaal de datum van de LAATSTE meting
+    # Zoek de meest recente meting op alle sensoren
     measurement_date = None
     for key in SENSOR_KEYS:
         meas = sensor_data[key]["measurement"]
@@ -156,25 +162,38 @@ def _get_or_create_daily_health_score(robot, sensor_data):
                 measurement_date = meas_date
     
     if measurement_date is None:
-        # No measurements available
+        # Geen metingen beschikbaar
         return None
     
-    # Check if score already exists for this measurement date
+    # 2) Controleer of score al bestaat voor DEZE DAG
+    # Eerst proberen via score_date (nieuwe kolom)
     existing_score = HealthScore.query.filter(
         HealthScore.serial_number == serial_number,
-        func.date(HealthScore.calculated_at) == measurement_date
+        HealthScore.score_date == measurement_date
     ).first()
     
-    if existing_score:
-        return existing_score  # Reuse existing score from this measurement date
+    # Fallback: als score_date nog niet bestaat in database, zoeken via calculated_at
+    if existing_score is None:
+        try:
+            existing_score = HealthScore.query.filter(
+                HealthScore.serial_number == serial_number,
+                func.date(HealthScore.calculated_at) == measurement_date
+            ).first()
+        except Exception:
+            pass
     
-    # Compute new score only if none exists for this measurement date
+    # 3) Als score al bestaat: return hem (idempotent)
+    if existing_score:
+        return existing_score
+    
+    # 4) Score bestaat niet: bereken hem
     calculated_health_score = _calculate_daily_health_score(robot, sensor_data)
     
     if calculated_health_score is None:
         return None
     
     # Set calculated_at to the measurement date at midnight
+    # (Dit is de datum van de meting, NIET de huidige datum)
     calculated_at = datetime.combine(measurement_date, datetime.min.time())
     
     # Try to insert new score
@@ -182,19 +201,31 @@ def _get_or_create_daily_health_score(robot, sensor_data):
         new_health_score = HealthScore(
             serial_number=serial_number,
             score=calculated_health_score,
+            score_date=measurement_date,  # BELANGRIJK: opslaan met METING-datum
             calculated_at=calculated_at,
         )
         db.session.add(new_health_score)
         db.session.commit()
         return new_health_score
     except Exception as e:
-        # Race condition: another request already inserted this date's score
-        # Rollback and fetch the existing one
+        # Race condition: request voegde al een score toe voor deze dag
+        # Rollback en fetch de bestaande
         db.session.rollback()
         existing_score = HealthScore.query.filter(
             HealthScore.serial_number == serial_number,
-            func.date(HealthScore.calculated_at) == measurement_date
+            HealthScore.score_date == measurement_date
         ).first()
+        
+        # Fallback
+        if existing_score is None:
+            try:
+                existing_score = HealthScore.query.filter(
+                    HealthScore.serial_number == serial_number,
+                    func.date(HealthScore.calculated_at) == measurement_date
+                ).first()
+            except Exception:
+                pass
+        
         return existing_score
 
 def _classify_status(value, mean, std, lang="nl"):

@@ -188,6 +188,7 @@ class HealthScore(db.Model):
 
     hid = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     score = db.Column(db.Float, nullable=False)
+    score_date = db.Column(db.Date)  # Datum van de metingen (niet van berekening)
     calculated_at = db.Column(db.DateTime(timezone=True))
     serial_number = db.Column(
         db.String,
@@ -198,4 +199,4 @@ class HealthScore(db.Model):
     robot_zone = db.relationship("RobotZone", back_populates="health_scores")
 
     def __repr__(self):
-        return f"<HealthScore {self.serial_number} {self.calculated_at}: {self.score}>"
+        return f"<HealthScore {self.serial_number} {self.score_date or self.calculated_at}: {self.score}>"
