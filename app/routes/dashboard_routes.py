@@ -23,6 +23,7 @@ from ..plant_recommendation_engine import (
     calculate_plant_health_score,
     validate_playfield_access,
     SENSOR_WEIGHTS,
+    SENSOR_KEYS as RECOMMENDATION_SENSOR_KEYS,
 )
 from ..translations import get_translation
 
@@ -304,9 +305,12 @@ def _calculate_quality_score(value, mean, std):
 
 def _calculate_daily_health_score(robot, sensor_data):
     """
-    Berekent de dagelijkse gezondheidsscore volgens de formule:
+    Berekent de dagelijkse gezondheidsscore met DEZELFDE formule als calculate_plant_health_score.
+    Dit zorgt ervoor dat de dashboard score EXACT hetzelfde is als de recommended plants scores.
     
-    HealthScore = round(100 * sum(w_v * max(0, 1 - (|m_v - opt_v| / dev_v)^2)) / sum(w_v))
+    Gebruikt get_average_measurements (gemiddelde van afgelopen 5 dagen) zodat beide scores identiek zijn.
+    
+    HealthScore = (sum(w_v * max(0, 1 - (|m_v - opt_v| / dev_v)^2)) / sum(w_v)) * 100
     
     Returns: float (0-100) of None als onvoldoende data
     """
@@ -314,57 +318,30 @@ def _calculate_daily_health_score(robot, sensor_data):
     if plant_profile is None:
         return None
     
-    scores = {}
-    total_weight = 0
-    weighted_sum = 0
+    # Converteer ORM object naar dict (exact zoals in calculate_plant_health_score)
+    plant_data = {
+        'moisture_mean': plant_profile.soil_moisture_mean,
+        'moisture_std': plant_profile.soil_moisture_std,
+        'temperature_mean': plant_profile.temperature_mean,
+        'temperature_std': plant_profile.temperature_std,
+        'humidity_mean': plant_profile.humidity_mean,
+        'humidity_std': plant_profile.humidity_std,
+        'rain_mean': plant_profile.rain_mm_week_mean,
+        'rain_std': plant_profile.rain_mm_week_std,
+        'light_mean': plant_profile.ppfd_mean,
+        'light_std': plant_profile.ppfd_std,
+        'co2_mean': plant_profile.co2_mean,
+        'co2_std': plant_profile.co2_std,
+    }
     
-    for key in SENSOR_KEYS:
-        cfg = ALERT_CONFIG.get(key)
-        meas = sensor_data[key]["measurement"]
-        
-        if meas is None:
-            continue
-        
-        try:
-            m_v = float(meas.value)  # meetwaarde
-        except:
-            continue
-        
-        # Haal optimale waarde (opt_v) en tolerantie (dev_v) op
-        opt_v = getattr(plant_profile, cfg["mean_attr"], None)
-        dev_v = getattr(plant_profile, cfg["std_attr"], None)
-        
-        if opt_v is None or dev_v is None or dev_v == 0:
-            continue
-        
-        try:
-            opt_v = float(opt_v)
-            dev_v = float(dev_v)
-        except:
-            continue
-        
-        # Berekening:
-        # d_v = |m_v - opt_v|  (afstand tot optimale waarde)
-        # x_v = d_v / dev_v    (genormaliseerde afwijking)
-        # s_v = max(0, 1 - x_v^2)  (score met quadratische straf)
-        
-        d_v = abs(m_v - opt_v)
-        x_v = d_v / dev_v
-        s_v = max(0, 1 - (x_v ** 2))
-        
-        scores[key] = s_v
-        weight = 1.0  # MVP: alle gewichten 1.0
-        weighted_sum += weight * s_v
-        total_weight += weight
+    # Gebruik AVERAGE measurements (exact zoals calculate_plant_rankings doet)
+    # Dit zorgt ervoor dat dashboard en recommended plants dezelfde input hebben
+    measurements = get_average_measurements(robot.serial_number, days=5)
     
-    if total_weight == 0:
-        return None
+    # Gebruik exact dezelfde algoritme als calculate_plant_health_score
+    score = calculate_plant_health_score(measurements, plant_data)
     
-    # Gemiddelde score normaliseren naar 0-100
-    s_raw = weighted_sum / total_weight
-    health_score = round(100 * s_raw)
-    
-    return health_score
+    return score
 
 
 def _get_health_trend_data(serial_number, period='month'):
@@ -625,15 +602,21 @@ def dashboard(serial_number):
                 }
             )
 
-    # 5.5) Bereken/haal health score op (idempotent: max 1 per dag)
-    health_score_record = _get_or_create_daily_health_score(robot, sensor_data)
-    calculated_health_score = health_score_record.score if health_score_record else None
+    # 5.5) ALTIJD health score berekenen op basis van huidige plant_profile
+    # Dit zorgt ervoor dat als je een andere plant kiest, de score meteen verandert
+    calculated_health_score = _calculate_daily_health_score(robot, sensor_data)
 
-    # 6) Health score uit database
+    # 6) Health score uit berekening (niet uit database)
     if calculated_health_score is not None:
         health_score = int(calculated_health_score)
     else:
         health_score = 0
+    
+    # Sla ook op in database voor historische data (maar laat niet de view blokkeren)
+    try:
+        _get_or_create_daily_health_score(robot, sensor_data)
+    except:
+        pass  # Negeer database fouten, we hebben al de berekende score
 
     if health_score >= 90:
         health_label = get_translation("excellent_growth_conditions", lang)
