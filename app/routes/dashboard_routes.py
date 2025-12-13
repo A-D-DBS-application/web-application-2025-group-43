@@ -126,23 +126,13 @@ def _get_current_user():
         return None
     return User.query.filter_by(uemail=user_email).first()
 
-
 def _resolve_lang():
-    """
-    Resolves language in order: request args, session, accept_languages.
-    Falls back to 'nl'.
-    """
     lang = request.args.get("lang")
-    if lang:
-        return lang
-    lang = session.get("lang")
-    if lang:
-        return lang
-    lang = request.accept_languages.best_match(["nl", "en"])
-    if lang:
-        return lang
-    return "nl"
-
+    if not lang:
+        lang = session.get("lang")
+    if not lang:
+        lang = request.accept_languages.best_match(["nl", "en"])
+    return lang or "nl"
 
 def _classify_status(value, mean, std, lang="nl"):
     """
