@@ -33,87 +33,87 @@ SENSOR_KEYS = ["moisture", "temperature", "humidity", "rain", "light", "co2"]
 # mapping sensor_key -> plant_profile kolommen + labels + tips
 ALERT_CONFIG = {
     "moisture": {
-        "label": "Bodemvochtigheid",
+        "label": "moisture",
         "unit": "%",
         "mean_attr": "soil_moisture_mean",
         "std_attr": "soil_moisture_std",
         "icon": "💧",
         "tips": [
-            "Controleer of de druppelirrigatie correct werkt",
-            "Zorg voor goede drainage in het plantbed",
-            "Verhoog watergift in droge periodes",
-            "Verlaag watergift in regenperiodes",
-            "Compactie in de grond kan wateropname belemmeren",
+            "tip_moisture_drip_irrigation",
+            "tip_moisture_good_drainage",
+            "tip_moisture_increase_watering_dry",
+            "tip_moisture_decrease_watering_rain",
+            "tip_moisture_soil_compaction",
         ]
     },
     "temperature": {
-        "label": "Temperatuur",
+        "label": "temperature",
         "unit": "°C",
         "mean_attr": "temperature_mean",
         "std_attr": "temperature_std",
         "icon": "🌡️",
         "tips": [
-            "Pas ventilatie aan om temperatuur te reguleren",
-            "Toename in verwarming in koude nacht",
-            "Zorg voor goede luchtcirculatie",
-            "Controleer isolatie van de kas/serre",
-            "Extreme temperatuurschommelingen schaden plantgroei",
+            "tip_temp_adjust_ventilation",
+            "tip_temp_increase_heating_cold_night",
+            "tip_temp_good_air_circulation",
+            "tip_temp_check_greenhouse_insulation",
+            "tip_temp_extreme_fluctuations_harm",
         ]
     },
     "humidity": {
-        "label": "Luchtvochtigheid",
+        "label": "humidity",
         "unit": "%",
         "mean_attr": "humidity_mean",
         "std_attr": "humidity_std",
         "icon": "💨",
         "tips": [
-            "Verhoog luchtvochtigheid via vernevelingen",
-            "Verbeter ventilatie als luchtvochtigheid te hoog",
-            "Ziekten gedijen bij hoge luchtvochtigheid (>80%)",
-            "Te lage luchtvochtigheid (<40%) belemmert groei",
-            "Controleer HVAC (Heating, Ventilation, Air Conditioning) systeem",
+            "tip_humidity_increase_misting",
+            "tip_humidity_improve_ventilation_high",
+            "tip_humidity_diseases_thrive_high",
+            "tip_humidity_low_hinders_growth",
+            "tip_humidity_check_hvac",
         ]
     },
     "rain": {
-        "label": "Regenval (Waterbehoefte)",
+        "label": "rain",
         "unit": "mm/week",
         "mean_attr": "rain_mm_week_mean",
         "std_attr": "rain_mm_week_std",
         "icon": "🌧️",
         "tips": [
-            "Pas irrigatie aan op basis van natuurlijke regenval",
-            "Gebruik regenwater harvesting systems",
-            "Controleer waterafvoer na zware regenval",
-            "Voorkom waterstagnatie en wortelrot",
-            "Monitor weersverwachtingen voor irrigatieplanning",
+            "tip_rain_adjust_irrigation_natural",
+            "tip_rain_use_rainwater_harvesting",
+            "tip_rain_check_drainage_heavy_rain",
+            "tip_rain_prevent_stagnation_root_rot",
+            "tip_rain_monitor_weather_irrigation",
         ]
     },
     "light": {
-        "label": "Licht (PPFD)",
+        "label": "light",
         "unit": "µmol/m²/s",
         "mean_attr": "ppfd_mean",
         "std_attr": "ppfd_std",
         "icon": "☀️",
         "tips": [
-            "Verhoog lichtintensiteit met extra grow lights",
-            "PPFD is belangrijker dan duur - intensiteit primair",
-            "Controleer hoogte van LED-lampen",
-            "Reinig lensen/reflectoren voor optimale lichtopbrengst",
-            "Seizoensverandering beïnvloedt natuurlijke lichtinval",
+            "tip_light_increase_intensity_grow_lights",
+            "tip_light_ppfd_more_important_duration",
+            "tip_light_check_led_height",
+            "tip_light_clean_reflectors_optimal_output",
+            "tip_light_seasonal_change_natural_light",
         ]
     },
     "co2": {
-        "label": "CO₂",
+        "label": "co2",
         "unit": "ppm",
         "mean_attr": "co2_mean",
         "std_attr": "co2_std",
         "icon": "🌿",
         "tips": [
-            "CO₂ concentratie: laag (<300) = groeibeperking",
-            "Optimaal bereik: 400-1000 ppm (planttype afhankelijk)",
-            "Verbeter ventilatie om CO₂ aan te vullen",
-            "CO₂ bronnen: compost, decomposeren, CO₂ generatoren",
-            "Hoge CO₂ (>1500 ppm) kan negatief zijn zonder meer licht",
+            "tip_co2_low_growth_limitation",
+            "tip_co2_optimal_range",
+            "tip_co2_improve_ventilation_supplement",
+            "tip_co2_sources",
+            "tip_co2_high_negative_without_light",
         ]
     },
 }
@@ -160,6 +160,17 @@ def _classify_status(value, mean, std, lang="nl"):
         return "warning", get_translation("slight_deviation", lang), z
     else:
         return "critical", get_translation("strong_deviation", lang), z
+
+def _get_translated_tips(sensor_type, lang):
+    """
+    Haalt de tips voor een specifieke sensortype op en vertaalt ze.
+    """
+    cfg = ALERT_CONFIG.get(sensor_type)
+    if not cfg or "tips" not in cfg:
+        return []
+    
+    translated_tips = [get_translation(tip_key, lang) for tip_key in cfg["tips"]]
+    return translated_tips
 
 
 def _calculate_quality_score(value, mean, std):
@@ -804,10 +815,12 @@ def sensor_detail(serial_number, sensor_type):
     if severity in ("warning", "critical"):
         if current_value is not None and target_mean is not None:
             direction = "hoger" if current_value > target_mean else "lager"
+            direction_key = "higher_than_ideal" if current_value > target_mean else "lower_than_ideal"
         else:
             direction = "afwijkend"
+            direction_key = "lower_than_ideal"
 
-        msg = f"{direction.capitalize()} dan ideaal."
+        msg = get_translation(direction_key, lang)
 
         alerts.append({
             "severity": severity,
@@ -825,8 +838,36 @@ def sensor_detail(serial_number, sensor_type):
             "std": target_std,
         })
 
+    # 12b) Build factor_states for all sensors
+    factor_states = {}
+    for key in SENSOR_KEYS:
+        sensor_cfg = ALERT_CONFIG.get(key)
+        sensor_obj = Sensor.query.filter_by(
+            serial_number=serial_number,
+            sensor_type=key
+        ).first()
+        
+        if sensor_obj is not None and sensor_obj.measurements:
+            meas_val = float(sensor_obj.measurements[0].value)
+        else:
+            meas_val = None
+        
+        mean = getattr(plant_profile, sensor_cfg["mean_attr"], None) if plant_profile else None
+        std = getattr(plant_profile, sensor_cfg["std_attr"], None) if plant_profile else None
+        
+        sev, stat_txt, z = _classify_status(meas_val, mean, std, lang)
+        
+        factor_states[key] = {
+            "severity": sev,
+            "status_text": stat_txt,
+            "z": z,
+            "mean": mean,
+            "std": std,
+            "current_value": meas_val,
+        }
+
     # 13) Get tips for this sensor
-    tips = cfg.get("tips", [])
+    tips = _get_translated_tips(sensor_type, lang)
 
     # 14) Statistics
     if chart_values and any(v is not None for v in chart_values):
@@ -854,6 +895,7 @@ def sensor_detail(serial_number, sensor_type):
         chart_values=chart_values,
         chart_labels=chart_labels,
         alerts=alerts,
+        factor_states=factor_states,
         tips=tips,
         min_value=min_value,
         max_value=max_value,

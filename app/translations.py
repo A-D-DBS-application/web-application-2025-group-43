@@ -148,6 +148,21 @@ TRANSLATIONS = {
         "en": "English",
         "nl": "Nederlands",
 
+        # Sensor Detail Page specific
+        "chart": "Chart",
+        "target_value": "Target value",
+        "statistics": "Statistics",
+        "status": "Status",
+        "everything_running_optimally": "Everything is running optimally!",
+        "advice_tips": "Advice & Tips",
+        "current_reading": "Current reading",
+        "current_value": "Current value",
+        "target": "Target",
+        "z_score": "Z-Score",
+        "playfield": "Playfield", # Added as a general term
+        "unknown": "Unknown", # Added for unknown plant profile
+        "ideal_values": "Ideal Values", # Added for target values section
+        
         # Crops
         "Beans": "Beans",
         "Carrot": "Carrot",
@@ -160,6 +175,48 @@ TRANSLATIONS = {
         "Tomato": "Tomato",
         "Zucchini": "Zucchini",
         "Plant": "Plant",
+
+        # Tips (Moisture)
+        "tip_moisture_drip_irrigation": "Check if drip irrigation works correctly",
+        "tip_moisture_good_drainage": "Ensure good drainage in the plant bed",
+        "tip_moisture_increase_watering_dry": "Increase watering in dry periods",
+        "tip_moisture_decrease_watering_rain": "Decrease watering in rainy periods",
+        "tip_moisture_soil_compaction": "Soil compaction can hinder water absorption",
+
+        # Tips (Temperature)
+        "tip_temp_adjust_ventilation": "Adjust ventilation to regulate temperature",
+        "tip_temp_increase_heating_cold_night": "Increase heating in cold nights",
+        "tip_temp_good_air_circulation": "Ensure good air circulation",
+        "tip_temp_check_greenhouse_insulation": "Check insulation of the greenhouse/conservatory",
+        "tip_temp_extreme_fluctuations_harm": "Extreme temperature fluctuations harm plant growth",
+
+        # Tips (Humidity)
+        "tip_humidity_increase_misting": "Increase humidity via misting",
+        "tip_humidity_improve_ventilation_high": "Improve ventilation if humidity is too high",
+        "tip_humidity_diseases_thrive_high": "Diseases thrive in high humidity (>80%)",
+        "tip_humidity_low_hinders_growth": "Too low humidity (<40%) hinders growth",
+        "tip_humidity_check_hvac": "Check HVAC (Heating, Ventilation, Air Conditioning) system",
+
+        # Tips (Rain)
+        "tip_rain_adjust_irrigation_natural": "Adjust irrigation based on natural rainfall",
+        "tip_rain_use_rainwater_harvesting": "Use rainwater harvesting systems",
+        "tip_rain_check_drainage_heavy_rain": "Check water drainage after heavy rainfall",
+        "tip_rain_prevent_stagnation_root_rot": "Prevent water stagnation and root rot",
+        "tip_rain_monitor_weather_irrigation": "Monitor weather forecasts for irrigation planning",
+
+        # Tips (Light)
+        "tip_light_increase_intensity_grow_lights": "Increase light intensity with extra grow lights",
+        "tip_light_ppfd_more_important_duration": "PPFD is more important than duration - intensity primary",
+        "tip_light_check_led_height": "Check height of LED lamps",
+        "tip_light_clean_reflectors_optimal_output": "Clean lenses/reflectors for optimal light output",
+        "tip_light_seasonal_change_natural_light": "Seasonal change affects natural light incidence",
+
+        # Tips (CO2)
+        "tip_co2_low_growth_limitation": "CO₂ concentration: low (<300) = growth limitation",
+        "tip_co2_optimal_range": "Optimal range: 400-1000 ppm (plant type dependent)",
+        "tip_co2_improve_ventilation_supplement": "Improve ventilation to supplement CO₂",
+        "tip_co2_sources": "CO₂ sources: compost, decomposition, CO₂ generators",
+        "tip_co2_high_negative_without_light": "High CO₂ (>1500 ppm) can be negative without more light",
     },
     "nl": {
         # Dashboard
@@ -307,7 +364,22 @@ TRANSLATIONS = {
         "language": "Taal",
         "en": "English",
         "nl": "Nederlands",
-        
+
+        # Sensor Detail Page specific
+        "chart": "Grafiek",
+        "target_value": "Doelwaarde",
+        "statistics": "Statistieken",
+        "status": "Status",
+        "everything_running_optimally": "Alles draait optimaal!",
+        "advice_tips": "Advies & Tips",
+        "current_reading": "Huidige meting",
+        "current_value": "Huidige waarde",
+        "target": "Doel",
+        "z_score": "Z-Score",
+        "playfield": "Speelveld", # Added as a general term
+        "unknown": "Onbekend", # Added for unknown plant profile
+        "ideal_values": "Ideale waarden", # Added for target values section
+
         # Crops
         "Beans": "Bonen",
         "Carrot": "Wortel",
@@ -320,6 +392,48 @@ TRANSLATIONS = {
         "Tomato": "Tomaat",
         "Zucchini": "Courgette",
         "Plant": "Plant",
+        
+        # Tips (Moisture)
+        "tip_moisture_drip_irrigation": "Controleer of de druppelirrigatie correct werkt",
+        "tip_moisture_good_drainage": "Zorg voor goede drainage in het plantbed",
+        "tip_moisture_increase_watering_dry": "Verhoog watergift in droge periodes",
+        "tip_moisture_decrease_watering_rain": "Verlaag watergift in regenperiodes",
+        "tip_moisture_soil_compaction": "Compactie in de grond kan wateropname belemmeren",
+
+        # Tips (Temperature)
+        "tip_temp_adjust_ventilation": "Pas ventilatie aan om temperatuur te reguleren",
+        "tip_temp_increase_heating_cold_night": "Toename in verwarming in koude nacht",
+        "tip_temp_good_air_circulation": "Zorg voor goede luchtcirculatie",
+        "tip_temp_check_greenhouse_insulation": "Controleer isolatie van de kas/serre",
+        "tip_temp_extreme_fluctuations_harm": "Extreme temperatuurschommelingen schaden plantgroei",
+
+        # Tips (Humidity)
+        "tip_humidity_increase_misting": "Verhoog luchtvochtigheid via vernevelingen",
+        "tip_humidity_improve_ventilation_high": "Verbeter ventilatie als luchtvochtigheid te hoog",
+        "tip_humidity_diseases_thrive_high": "Ziekten gedijen bij hoge luchtvochtigheid (>80%)",
+        "tip_humidity_low_hinders_growth": "Te lage luchtvochtigheid (<40%) belemmert groei",
+        "tip_humidity_check_hvac": "Controleer HVAC (Heating, Ventilation, Air Conditioning) systeem",
+
+        # Tips (Rain)
+        "tip_rain_adjust_irrigation_natural": "Pas irrigatie aan op basis van natuurlijke regenval",
+        "tip_rain_use_rainwater_harvesting": "Gebruik regenwater harvesting systems",
+        "tip_rain_check_drainage_heavy_rain": "Controleer waterafvoer na zware regenval",
+        "tip_rain_prevent_stagnation_root_rot": "Voorkom waterstagnatie en wortelrot",
+        "tip_rain_monitor_weather_irrigation": "Monitor weersverwachtingen voor irrigatieplanning",
+
+        # Tips (Light)
+        "tip_light_increase_intensity_grow_lights": "Verhoog lichtintensiteit met extra grow lights",
+        "tip_light_ppfd_more_important_duration": "PPFD is belangrijker dan duur - intensiteit primair",
+        "tip_light_check_led_height": "Controleer hoogte van LED-lampen",
+        "tip_light_clean_reflectors_optimal_output": "Reinig lensen/reflectoren voor optimale lichtopbrengst",
+        "tip_light_seasonal_change_natural_light": "Seizoensverandering beïnvloedt natuurlijke lichtinval",
+
+        # Tips (CO2)
+        "tip_co2_low_growth_limitation": "CO₂ concentratie: laag (<300) = groeibeperking",
+        "tip_co2_optimal_range": "Optimaal bereik: 400-1000 ppm (planttype afhankelijk)",
+        "tip_co2_improve_ventilation_supplement": "Verbeter ventilatie om CO₂ aan te vullen",
+        "tip_co2_sources": "CO₂ bronnen: compost, decomposeren, CO₂ generatoren",
+        "tip_co2_high_negative_without_light": "Hoge CO₂ (>1500 ppm) kan negatief zijn zonder meer licht",
     }
 }
 
