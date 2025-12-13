@@ -641,19 +641,57 @@ body{
   color:#e5e7eb;
 }
 
-.factor-bar{
-  height:8px;
-  border-radius:999px;
-  background:#0b0d12;
-  overflow:hidden;
+.factor-bar-container{
+  display:flex;
+  align-items:center;
+  gap:8px;
   margin-top:4px;
+}
+
+.factor-bar-label-left,
+.factor-bar-label-right{
+  font-size:11px;
+  color:var(--muted);
+  min-width:50px;
+  flex-shrink:0;
+}
+
+.factor-bar-label-left{
+  text-align:right;
+}
+
+.factor-bar-label-right{
+  text-align:left;
+}
+
+.factor-bar{
+  flex:1;
+  height:12px;
+  border-radius:6px;
+  background:linear-gradient(90deg, var(--border-soft) 0%, var(--border) 50%, var(--border-soft) 100%);
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+/* Ideale waarde in het midden */
+.factor-bar-ideal{
+  position:absolute;
+  left:50%;
+  width:2px;
+  height:100%;
+  background:rgba(255,255,255,0.4);
+  transform:translateX(-50%);
+  z-index:1;
 }
 
 .factor-bar-fill{
   height:100%;
-  border-radius:999px;
-  background:var(--accent);
+  border-radius:6px;
   transition:width 0.3s ease, background-color 0.3s ease;
+  position:relative;
+  margin-left:0;
 }
 
 .factor-bar-fill.status-ok{ background:#34C759; }

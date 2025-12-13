@@ -225,9 +225,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -247,9 +249,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -269,9 +273,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -291,9 +297,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -313,9 +321,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>
@@ -335,9 +345,11 @@
                         </span>
                       </div>
                     </div>
-                    <div class="factor-bar">
-                      <div class="factor-bar-fill status-{{ f.severity }}"
-                           style="width: {{ (f.quality_score if f.quality_score is not none else 50) }}%;"></div>
+                    <div class="factor-bar-container">
+                      <div class="factor-bar" data-deviation="{{ f.deviation if f.deviation else 0 }}">
+                        <div class="factor-bar-ideal"></div>
+                        <div class="factor-bar-fill status-{{ f.severity }}" style="width: {{ f.invulling_percentage }}%;"></div>
+                      </div>
                     </div>
                   </div>
                 </a>

@@ -563,6 +563,22 @@ def dashboard(serial_number):
 
         severity, status_text, z = _classify_status(value, mean, std, lang)
         quality_score = _calculate_quality_score(value, mean, std)
+        
+        # Bereken invulling percentage voor gecentreerde balk
+        # Balk loopt van 0 tot 2*mean, met mean in het midden (50%)
+        # invulling = (value / (2 * mean)) * 100
+        if value is not None and mean is not None and mean > 0:
+            invulling_percentage = (float(value) / (2 * float(mean))) * 100
+            # Clip tussen 0-100% voor visuele weergave
+            invulling_percentage = max(0, min(100, invulling_percentage))
+        else:
+            invulling_percentage = 50  # Default naar midden als geen data
+        
+        # Bereken deviation (aantal standaardafwijkingen) voor kleuring
+        if value is not None and mean is not None and std is not None and std > 0:
+            deviation = abs(float(value) - float(mean)) / float(std)
+        else:
+            deviation = None
 
         factor_states[key] = {
             "severity": severity,
@@ -570,7 +586,10 @@ def dashboard(serial_number):
             "z": z,
             "mean": mean,
             "std": std,
+            "value": value,
             "quality_score": quality_score,
+            "invulling_percentage": invulling_percentage,
+            "deviation": deviation,  # aantal σ
         }
 
         if severity in ("warning", "critical"):
