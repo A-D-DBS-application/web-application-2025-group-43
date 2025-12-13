@@ -65,30 +65,36 @@
             <span>{{ t('data_variables') }}</span>
           </button>
           <div class="data-list" id="dataList">
-            <div class="data-btn-wrapper">
-              <button class="data-btn active" type="button" data-target="#sensor-moisture">{{ t('soil_moisture') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
-            <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-temperature">{{ t('temperature') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
-            <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-humidity">{{ t('humidity') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
-            <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-rain">{{ t('rainfall_water_needs') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
-            <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-light">{{ t('light') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
-            <div class="data-btn-wrapper">
-              <button class="data-btn" type="button" data-target="#sensor-co2">{{ t('co2_level') }}</button>
-              <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" class="data-btn-link" title="{{ t('view_details') }}">→</a>
-            </div>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'moisture' %}active{% endif %}">
+              <span>{{ t('soil_moisture') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'temperature' %}active{% endif %}">
+              <span>{{ t('temperature') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'humidity' %}active{% endif %}">
+              <span>{{ t('humidity') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'rain' %}active{% endif %}">
+              <span>{{ t('rainfall_water_needs') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'light' %}active{% endif %}">
+              <span>{{ t('light') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
+            <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" 
+               class="data-btn-wrapper data-btn {% if sensor_type == 'co2' %}active{% endif %}">
+              <span>{{ t('co2') }}</span>
+              <span class="data-btn-link-arrow" title="{{ t('view_details') }}">→</span>
+            </a>
           </div>
         </section>
       </div>
