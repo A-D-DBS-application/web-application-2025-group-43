@@ -197,12 +197,14 @@
     /* ========= CHART ========= */
     .chart-container {
       position: relative;
-      height: 250px;
+      height: 300px;
+      width: 100%;
       margin-bottom: 16px;
     }
 
     .chart-container canvas {
-      max-height: 250px;
+      width: 100% !important;
+      height: 300px !important;
     }
 
     /* ========= STATISTICS ========= */
@@ -309,6 +311,35 @@
     }
 
     /* ========= SIDEBAR ========= */
+    .sidebar-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-logo-img {
+      width: auto;
+      height: auto;
+    }
+
+    .sidebar-logo-img img {
+      max-width: 48px;
+      max-height: 48px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #34C759, #30B24F);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     .sidebar-logo {
       font-size: 16px;
       font-weight: 700;
@@ -328,6 +359,71 @@
       text-transform: uppercase;
       padding: 8px 0;
       margin-bottom: 8px;
+    }
+
+    .data-toggle {
+      width: 100%;
+      border: 0;
+      background: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.15s ease;
+    }
+
+    .data-toggle:hover {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .chevron {
+      flex: 0 0 10px;
+      width: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      opacity: 0.8;
+      transition: opacity 0.15s ease;
+    }
+
+    .data-list {
+      margin-top: 6px;
+      padding: 0 16px;
+    }
+
+    .data-item {
+      width: 100%;
+      border: 0;
+      background: none;
+      text-align: left;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      display: block;
+      text-decoration: none;
+      margin-bottom: 2px;
+    }
+
+    .data-item:hover {
+      background: rgba(52, 199, 89, 0.08);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .data-item.active {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--accent);
+      font-weight: 500;
+      box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.18) inset, 0 0 22px rgba(52, 199, 89, 0.1);
     }
 
     .sidebar-subsection {
@@ -404,50 +500,45 @@
   <div class="container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <div class="sidebar-logo">🌱 Capenta</div>
-
-      <!-- Sensor Navigation -->
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">Data Variabelen</div>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" 
-           class="sidebar-item {% if sensor_type == 'moisture' %}active{% endif %}">
-          💧 Bodemvochtigheid
-        </a>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" 
-           class="sidebar-item {% if sensor_type == 'temperature' %}active{% endif %}">
-          🌡️ Temperatuur
-        </a>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" 
-           class="sidebar-item {% if sensor_type == 'humidity' %}active{% endif %}">
-          💨 Luchtvochtigheid
-        </a>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" 
-           class="sidebar-item {% if sensor_type == 'rain' %}active{% endif %}">
-          🌧️ Regenval
-        </a>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" 
-           class="sidebar-item {% if sensor_type == 'light' %}active{% endif %}">
-          ☀️ Licht
-        </a>
-        <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" 
-           class="sidebar-item {% if sensor_type == 'co2' %}active{% endif %}">
-          🪴 CO₂
-        </a>
+      <div class="sidebar-header">
+        <div class="sidebar-logo-img">
+          <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Capenta logo">
+        </div>
+        <div class="sidebar-title">Capenta</div>
       </div>
 
-      <!-- Playfields Navigation -->
+      <!-- Data Variabelen -->
       <div class="sidebar-section">
-        <div class="sidebar-section-title">Gardens & Playfields</div>
-        {% for item in sidebar_gardens %}
-          <div class="sidebar-subsection">
-            <div class="sidebar-subsection-title">{{ item.garden.garden_name }}</div>
-            {% for zone in item.zones %}
-              <a href="{{ url_for('dashboard.dashboard', serial_number=zone.serial_number) }}" class="sidebar-item">
-                {{ zone.robot_name or 'Veld' }}
-              </a>
-            {% endfor %}
-          </div>
-        {% endfor %}
+        <button class="data-toggle" type="button" id="dataToggleBtn">
+          <span class="chevron" id="dataToggleIcon">▼</span>
+          <span>Data Variabelen</span>
+        </button>
+        <div class="data-list" id="dataList">
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" 
+             class="data-item {% if sensor_type == 'moisture' %}active{% endif %}">
+            Bodemvochtigheid
+          </a>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" 
+             class="data-item {% if sensor_type == 'temperature' %}active{% endif %}">
+            Temperatuur
+          </a>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" 
+             class="data-item {% if sensor_type == 'humidity' %}active{% endif %}">
+            Luchtvochtigheid
+          </a>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" 
+             class="data-item {% if sensor_type == 'rain' %}active{% endif %}">
+            Regenval
+          </a>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" 
+             class="data-item {% if sensor_type == 'light' %}active{% endif %}">
+            Licht
+          </a>
+          <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" 
+             class="data-item {% if sensor_type == 'co2' %}active{% endif %}">
+            CO₂
+          </a>
+        </div>
       </div>
     </div>
 
@@ -573,6 +664,17 @@
   </div>
 
   <script>
+    // Data toggle functionality
+    const dataToggleBtn = document.getElementById('dataToggleBtn');
+    const dataToggleIcon = document.getElementById('dataToggleIcon');
+    const dataList = document.getElementById('dataList');
+
+    dataToggleBtn?.addEventListener('click', () => {
+      const isHidden = dataList.style.display === 'none';
+      dataList.style.display = isHidden ? 'block' : 'none';
+      dataToggleIcon.textContent = isHidden ? '▼' : '▶';
+    });
+
     // Chart.js initialization
     const chartCtx = document.getElementById('chart-sensor').getContext('2d');
     const chartValues = {{ chart_values | tojson }};
