@@ -766,6 +766,10 @@
       const data = CHART_DATA[key];
       if (!data || !data.values || !data.values.length) return;
 
+      const yMin = Math.min(...data.values);
+      const yMax = Math.max(...data.values);
+      const yPadding = (yMax - yMin) * 0.1; // 10% padding
+
       new Chart(ctx, {
         type: 'line',
         data: {
@@ -788,6 +792,9 @@
               ticks: { maxTicksLimit: 6 }
             },
             y: {
+              beginAtZero: false,
+              suggestedMin: yMin - yPadding,
+              suggestedMax: yMax + yPadding,
               title: {
                 display: true,
                 text: yLabel
@@ -854,8 +861,6 @@
                 display: true,
                 text: 'Health Score'
               },
-              min: 0,
-              max: 100,
               ticks: {
                 color: 'rgba(255,255,255,0.5)',
                 font: { size: 10 }
@@ -963,8 +968,6 @@
                   }
                 },
                 y: {
-                  min: 0,
-                  max: 100,
                   ticks: {
                     color: 'rgba(255,255,255,0.5)',
                     font: { size: 10 }
