@@ -24,6 +24,7 @@ from ..plant_recommendation_engine import (
     validate_playfield_access,
     SENSOR_WEIGHTS,
 )
+from ..translations import get_translation
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -126,32 +127,49 @@ def _get_current_user():
     return User.query.filter_by(uemail=user_email).first()
 
 
-def _classify_status(value, mean, std):
+def _resolve_lang():
+    """
+    Resolves language in order: request args, session, accept_languages.
+    Falls back to 'nl'.
+    """
+    lang = request.args.get("lang")
+    if lang:
+        return lang
+    lang = session.get("lang")
+    if lang:
+        return lang
+    lang = request.accept_languages.best_match(["nl", "en"])
+    if lang:
+        return lang
+    return "nl"
+
+
+def _classify_status(value, mean, std, lang="nl"):
     """
     Geeft (severity, status_text, z-score) terug.
     severity: 'ok', 'warning', 'critical', 'unknown'
     """
     if value is None or mean is None or std is None:
-        return "unknown", "No data", None
+        return "unknown", get_translation("no_data", lang), None
 
     try:
         v = float(value)
         m = float(mean)
         s = float(std)
     except Exception:
-        return "unknown", "No data", None
+        return "unknown", get_translation("no_data", lang), None
 
     if s == 0:
-        return "unknown", "No reference", None
+        return "unknown", get_translation("no_reference", lang), None
 
     z = abs((v - m) / s)
 
     if z < 1:
-        return "ok", "Optimal", z
+        return "ok", get_translation("optimal", lang), z
     elif z < 2:
-        return "warning", "Minor deviation", z
+        return "warning", get_translation("slight_deviation", lang), z
     else:
-        return "critical", "Strong deviation", z
+        return "critical", get_translation("strong_deviation", lang), z
 
 
 def _calculate_quality_score(value, mean, std):
@@ -365,6 +383,9 @@ def _get_health_trend_data(serial_number, period='month'):
 
 @dashboard_bp.route("/<serial_number>")
 def dashboard(serial_number):
+    # 0) Resolve language
+    lang = _resolve_lang()
+
     # 1) User check
     current_user = _get_current_user()
     if current_user is None:
@@ -468,7 +489,7 @@ def dashboard(serial_number):
         mean = getattr(plant_profile, cfg["mean_attr"], None) if plant_profile else None
         std = getattr(plant_profile, cfg["std_attr"], None) if plant_profile else None
 
-        severity, status_text, z = _classify_status(value, mean, std)
+        severity, status_text, z = _classify_status(value, mean, std, lang)
         quality_score = _calculate_quality_score(value, mean, std)
 
         factor_states[key] = {
@@ -482,19 +503,21 @@ def dashboard(serial_number):
 
         if severity in ("warning", "critical"):
             if value is not None and mean is not None:
-                direction = "hoger" if value > mean else "lager"
+                direction = "higher" if value > mean else "lower"
             else:
-                direction = "afwijkend"
+                direction = "deviating"
 
-            if z is not None:
-                msg = f"{direction.capitalize()} dan ideaal."
+            if direction == "higher":
+                msg = get_translation("higher_than_ideal", lang)
+            elif direction == "lower":
+                msg = get_translation("lower_than_ideal", lang)
             else:
-                msg = f"{direction.capitalize()} dan ideaal."
+                msg = get_translation("deviating_from_ideal", lang)
 
             alerts.append(
                 {
                     "severity": severity,
-                    "variable": cfg["label"],
+                    "variable": get_translation(key, lang),
                     "unit": cfg["unit"],
                     "value": round(value, 1) if value is not None else None,
                     "target": (
@@ -528,13 +551,13 @@ def dashboard(serial_number):
         health_score = 0
 
     if health_score >= 90:
-        health_label = "Uitstekende groeiomstandigheden"
+        health_label = get_translation("excellent_growth_conditions", lang)
     elif health_score >= 70:
-        health_label = "Goede groeiomstandigheden"
+        health_label = get_translation("good_growth_conditions", lang)
     elif health_score >= 50:
-        health_label = "Matige groeiomstandigheden"
+        health_label = get_translation("fair_growth_conditions", lang)
     else:
-        health_label = "Aandacht vereist"
+        health_label = get_translation("attention_required", lang)
 
     r = 52
     circumference = 2 * pi * r
@@ -679,6 +702,9 @@ def sensor_detail(serial_number, sensor_type):
     Detailpagina voor een specifieke sensor met uitgebreide grafiek, 
     alerts en advies.
     """
+    # 0) Resolve language
+    lang = _resolve_lang()
+
     # 1) User check
     current_user = _get_current_user()
     if current_user is None:
@@ -773,7 +799,7 @@ def sensor_detail(serial_number, sensor_type):
     target_std = getattr(plant_profile, cfg["std_attr"], None) if plant_profile else None
 
     # 10) Classify status
-    severity, status_text, z_score = _classify_status(current_value, target_mean, target_std)
+    severity, status_text, z_score = _classify_status(current_value, target_mean, target_std, lang)
 
     # 11) Get all measurements for this sensor (extended history for alerts)
     all_measurements = (
