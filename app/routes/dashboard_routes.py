@@ -32,73 +32,73 @@ SENSOR_KEYS = ["moisture", "temperature", "humidity", "rain", "light", "co2"]
 # mapping sensor_key -> plant_profile kolommen + labels + tips
 ALERT_CONFIG = {
     "moisture": {
-        "label": "Bodemvochtigheid",
+        "label": "Soil Moisture",
         "unit": "%",
         "mean_attr": "soil_moisture_mean",
         "std_attr": "soil_moisture_std",
         "icon": "💧",
         "tips": [
-            "Controleer of de druppelirrigatie correct werkt",
-            "Zorg voor goede drainage in het plantbed",
-            "Verhoog watergift in droge periodes",
-            "Verlaag watergift in regenperiodes",
-            "Compactie in de grond kan wateropname belemmeren",
+            "Check if drip irrigation is functioning correctly",
+            "Ensure good drainage in the plant bed",
+            "Increase watering during dry periods",
+            "Decrease watering during rainy periods",
+            "Soil compaction can hinder water absorption",
         ]
     },
     "temperature": {
-        "label": "Temperatuur",
+        "label": "Temperature",
         "unit": "°C",
         "mean_attr": "temperature_mean",
         "std_attr": "temperature_std",
         "icon": "🌡️",
         "tips": [
-            "Pas ventilatie aan om temperatuur te reguleren",
-            "Toename in verwarming in koude nacht",
-            "Zorg voor goede luchtcirculatie",
-            "Controleer isolatie van de kas/serre",
-            "Extreme temperatuurschommelingen schaden plantgroei",
+            "Adjust ventilation to regulate temperature",
+            "Increase heating during cold nights",
+            "Ensure good air circulation",
+            "Check insulation of the greenhouse/nursery",
+            "Extreme temperature fluctuations damage plant growth",
         ]
     },
     "humidity": {
-        "label": "Luchtvochtigheid",
+        "label": "Humidity",
         "unit": "%",
         "mean_attr": "humidity_mean",
         "std_attr": "humidity_std",
         "icon": "💨",
         "tips": [
-            "Verhoog luchtvochtigheid via vernevelingen",
-            "Verbeter ventilatie als luchtvochtigheid te hoog",
-            "Ziekten gedijen bij hoge luchtvochtigheid (>80%)",
-            "Te lage luchtvochtigheid (<40%) belemmert groei",
-            "Controleer HVAC (Heating, Ventilation, Air Conditioning) systeem",
+            "Increase humidity through misting systems",
+            "Improve ventilation if humidity is too high",
+            "Diseases thrive at high humidity (>80%)",
+            "Low humidity (<40%) hinders growth",
+            "Check HVAC (Heating, Ventilation, Air Conditioning) system",
         ]
     },
     "rain": {
-        "label": "Regenval (Waterbehoefte)",
+        "label": "Rainfall (Water requirement)",
         "unit": "mm/week",
         "mean_attr": "rain_mm_week_mean",
         "std_attr": "rain_mm_week_std",
         "icon": "🌧️",
         "tips": [
-            "Pas irrigatie aan op basis van natuurlijke regenval",
-            "Gebruik regenwater harvesting systems",
-            "Controleer waterafvoer na zware regenval",
-            "Voorkom waterstagnatie en wortelrot",
-            "Monitor weersverwachtingen voor irrigatieplanning",
+            "Adjust irrigation based on natural rainfall",
+            "Use rainwater harvesting systems",
+            "Check water drainage after heavy rainfall",
+            "Prevent water stagnation and root rot",
+            "Monitor weather forecasts for irrigation planning",
         ]
     },
     "light": {
-        "label": "Licht (PPFD)",
+        "label": "Light (PPFD)",
         "unit": "µmol/m²/s",
         "mean_attr": "ppfd_mean",
         "std_attr": "ppfd_std",
         "icon": "☀️",
         "tips": [
-            "Verhoog lichtintensiteit met extra grow lights",
-            "PPFD is belangrijker dan duur - intensiteit primair",
-            "Controleer hoogte van LED-lampen",
-            "Reinig lensen/reflectoren voor optimale lichtopbrengst",
-            "Seizoensverandering beïnvloedt natuurlijke lichtinval",
+            "Increase light intensity with additional grow lights",
+            "PPFD is more important than duration - intensity is primary",
+            "Check height of LED lights",
+            "Clean lenses/reflectors for optimal light output",
+            "Seasonal changes affect natural light intake",
         ]
     },
     "co2": {
@@ -108,11 +108,11 @@ ALERT_CONFIG = {
         "std_attr": "co2_std",
         "icon": "🌿",
         "tips": [
-            "CO₂ concentratie: laag (<300) = groeibeperking",
-            "Optimaal bereik: 400-1000 ppm (planttype afhankelijk)",
-            "Verbeter ventilatie om CO₂ aan te vullen",
-            "CO₂ bronnen: compost, decomposeren, CO₂ generatoren",
-            "Hoge CO₂ (>1500 ppm) kan negatief zijn zonder meer licht",
+            "CO₂ concentration: low (<300) = growth limitation",
+            "Optimal range: 400-1000 ppm (plant type dependent)",
+            "Improve ventilation to replenish CO₂",
+            "CO₂ sources: compost, decomposition, CO₂ generators",
+            "High CO₂ (>1500 ppm) can be negative without more light",
         ]
     },
 }
@@ -132,26 +132,26 @@ def _classify_status(value, mean, std):
     severity: 'ok', 'warning', 'critical', 'unknown'
     """
     if value is None or mean is None or std is None:
-        return "unknown", "Geen data", None
+        return "unknown", "No data", None
 
     try:
         v = float(value)
         m = float(mean)
         s = float(std)
     except Exception:
-        return "unknown", "Geen data", None
+        return "unknown", "No data", None
 
     if s == 0:
-        return "unknown", "Geen referentie", None
+        return "unknown", "No reference", None
 
     z = abs((v - m) / s)
 
     if z < 1:
-        return "ok", "Optimaal", z
+        return "ok", "Optimal", z
     elif z < 2:
-        return "warning", "Lichte afwijking", z
+        return "warning", "Minor deviation", z
     else:
-        return "critical", "Sterke afwijking", z
+        return "critical", "Strong deviation", z
 
 
 def _calculate_quality_score(value, mean, std):

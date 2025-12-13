@@ -61,21 +61,24 @@
     .topbar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 16px;
       padding: 12px 24px;
       border-bottom: 1px solid var(--border-soft);
       background: var(--bg-2);
-      height: 56px;
+      height: 64px;
     }
 
     .topbar-back {
       background: transparent;
       border: none;
       color: var(--accent);
-      font-size: 20px;
+      font-size: 24px;
       cursor: pointer;
       padding: 4px 8px;
       transition: opacity 0.2s;
+      flex-shrink: 0;
+      order: 1;
     }
 
     .topbar-back:hover {
@@ -83,9 +86,43 @@
     }
 
     .topbar-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
       flex: 1;
+      text-align: center;
+      order: 2;
+    }
+
+    .topbar-language {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      order: 3;
+    }
+
+    .lang-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.6);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .lang-btn:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
     }
 
     .topbar-subtitle {
@@ -197,14 +234,14 @@
     /* ========= CHART ========= */
     .chart-container {
       position: relative;
-      height: 300px;
+      height: 200px;
       width: 100%;
       margin-bottom: 16px;
     }
 
     .chart-container canvas {
       width: 100% !important;
-      height: 300px !important;
+      height: 200px !important;
     }
 
     /* ========= STATISTICS ========= */
@@ -326,8 +363,8 @@
     }
 
     .sidebar-logo-img img {
-      max-width: 48px;
-      max-height: 48px;
+      max-width: 64px;
+      max-height: 64px;
     }
 
     .sidebar-title {
@@ -393,6 +430,28 @@
       transition: opacity 0.15s ease;
     }
 
+    .chevron {
+      flex: 0 0 10px;
+      width: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      opacity: 0.8;
+      transition: opacity 0.15s ease;
+    }
+
+    .garden-chevron {
+      flex: 0 0 10px;
+      width: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      opacity: 0.8;
+      transition: opacity 0.15s ease;
+    }
+
     .data-list {
       margin-top: 6px;
       padding: 0 16px;
@@ -424,6 +483,36 @@
       color: var(--accent);
       font-weight: 500;
       box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.18) inset, 0 0 22px rgba(52, 199, 89, 0.1);
+    }
+
+    .data-btn {
+      width: 100%;
+      border: 1px solid rgba(52, 199, 89, 0.2);
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: block;
+      text-decoration: none;
+      font-size: 12px;
+      margin-bottom: 6px;
+      font-family: inherit;
+    }
+
+    .data-btn:hover {
+      background: rgba(52, 199, 89, 0.08);
+      color: rgba(255, 255, 255, 0.85);
+      border-color: rgba(52, 199, 89, 0.4);
+    }
+
+    .data-btn.active {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 500;
+      box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.3) inset, 0 0 22px rgba(52, 199, 89, 0.1);
     }
 
     .sidebar-subsection {
@@ -507,35 +596,35 @@
         <div class="sidebar-title">Capenta</div>
       </div>
 
-      <!-- Data Variabelen -->
+      <!-- Data Variables -->
       <div class="sidebar-section">
         <button class="data-toggle" type="button" id="dataToggleBtn">
-          <span class="chevron" id="dataToggleIcon">▼</span>
-          <span>Data Variabelen</span>
+          <span class="garden-chevron" id="dataToggleIcon">▼</span>
+          <span>Data Variables</span>
         </button>
         <div class="data-list" id="dataList">
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='moisture') }}" 
-             class="data-item {% if sensor_type == 'moisture' %}active{% endif %}">
-            Bodemvochtigheid
+             class="data-btn {% if sensor_type == 'moisture' %}active{% endif %}">
+            Soil Moisture
           </a>
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}" 
-             class="data-item {% if sensor_type == 'temperature' %}active{% endif %}">
-            Temperatuur
+             class="data-btn {% if sensor_type == 'temperature' %}active{% endif %}">
+            Temperature
           </a>
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}" 
-             class="data-item {% if sensor_type == 'humidity' %}active{% endif %}">
-            Luchtvochtigheid
+             class="data-btn {% if sensor_type == 'humidity' %}active{% endif %}">
+            Humidity
           </a>
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}" 
-             class="data-item {% if sensor_type == 'rain' %}active{% endif %}">
-            Regenval
+             class="data-btn {% if sensor_type == 'rain' %}active{% endif %}">
+            Rainfall
           </a>
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}" 
-             class="data-item {% if sensor_type == 'light' %}active{% endif %}">
-            Licht
+             class="data-btn {% if sensor_type == 'light' %}active{% endif %}">
+            Light
           </a>
           <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}" 
-             class="data-item {% if sensor_type == 'co2' %}active{% endif %}">
+             class="data-btn {% if sensor_type == 'co2' %}active{% endif %}">
             CO₂
           </a>
         </div>
@@ -546,12 +635,24 @@
     <div class="main">
       <!-- Topbar -->
       <header class="topbar">
-        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="{{ t('back_to_dashboard') }}">
+        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="Back to dashboard">
           ←
         </a>
-        <div>
-          <div class="topbar-title">{{ sensor_config.label }}</div>
-          <div class="topbar-subtitle">{{ robot.robot_name or 'Playfield' }}</div>
+        <h1 class="topbar-title">
+          {{ robot.robot_name or 'Playfield' }}{% if robot.plant_profile %} - {{ robot.plant_profile.display_name }}{% endif %}
+        </h1>
+        <div class="topbar-language">
+          <button 
+            class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
+            onclick="setLanguage('en')"
+            style="margin-right: 8px;">
+            EN
+          </button>
+          <button 
+            class="lang-btn lang-btn-nl {% if lang == 'nl' %}active{% endif %}"
+            onclick="setLanguage('nl')">
+            NL
+          </button>
         </div>
       </header>
 
@@ -563,7 +664,7 @@
             <div class="sensor-icon">{{ sensor_config.icon }}</div>
             <div class="sensor-header-info">
               <h1>{{ sensor_config.label }}</h1>
-              <p>Huidige meting: {{ current_measurement.time_m.strftime('%d/%m %H:%M') if current_measurement and current_measurement.time_m else 'Geen data' }}</p>
+              <p>Current reading: {{ current_measurement.time_m.strftime('%d/%m %H:%M') if current_measurement and current_measurement.time_m else 'No data' }}</p>
             </div>
           </div>
           <div class="sensor-value-display">
@@ -579,19 +680,20 @@
 
         <!-- Chart -->
         <div class="card">
-          <div class="card-title">📈 Grafiek (30 dagen)</div>
+          <div class="card-title">Chart (30 days)</div>
           <div class="chart-container">
             <canvas id="chart-sensor"></canvas>
           </div>
         </div>
 
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <!-- Statistics -->
         <div class="card">
-          <div class="card-title">📊 Statistieken</div>
+          <div class="card-title">Statistics</div>
           <div class="stats-grid">
             <div class="stat-box">
               <div class="stat-value">{{ "%0.1f" | format(avg_value) if avg_value is not none else '–' }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
-              <div class="stat-label">Gemiddelde</div>
+              <div class="stat-label">Average</div>
             </div>
             <div class="stat-box">
               <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
@@ -607,15 +709,15 @@
         <!-- Target Values -->
         {% if target_mean and target_std %}
         <div class="card">
-          <div class="card-title">🎯 Doelwaarden ({{ t(robot.plant_profile.display_name) if robot.plant_profile else t('Plant') }})</div>
+          <div class="card-title">Target Values ({{ t(robot.plant_profile.display_name) if robot.plant_profile else t('Plant') }})</div>
           <div class="stats-grid">
             <div class="stat-box">
               <div class="stat-value">{{ "%0.1f" | format(target_mean) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
-              <div class="stat-label">Optimaal</div>
+              <div class="stat-label">Optimal</div>
             </div>
             <div class="stat-box">
               <div class="stat-value">± {{ "%0.1f" | format(target_std) }} <span class="stat-unit">{{ sensor_config.unit }}</span></div>
-              <div class="stat-label">Tolerantie</div>
+              <div class="stat-label">Tolerance</div>
             </div>
             {% if z_score is not none %}
             <div class="stat-box">
@@ -626,11 +728,12 @@
           </div>
         </div>
         {% endif %}
+        </div>
 
         <!-- Alerts -->
         {% if alerts %}
         <div class="card alerts-section" id="alerts-section">
-          <div class="card-title">⚠️ {{ t('warnings') }}</div>
+          <div class="card-title">{{ t('warnings') }}</div>
           {% for alert in alerts %}
           <div class="alert-item {{ alert.severity }}">
             <div class="alert-title">
@@ -639,22 +742,22 @@
             </div>
             <div class="alert-message">{{ alert.message }}</div>
             <div class="alert-meta">
-              <span>Huidigewaarde: <strong>{{ "%0.1f" | format(alert.value) if alert.value else '–' }} {{ alert.unit }}</strong></span>
-              <span>Doel: {{ alert.target }}</span>
+              <span>Current value: <strong>{{ "%0.1f" | format(alert.value) if alert.value else '–' }} {{ alert.unit }}</strong></span>
+              <span>Target: {{ alert.target }}</span>
             </div>
           </div>
           {% endfor %}
         </div>
         {% else %}
         <div class="card">
-          <div class="card-title">✅ Status</div>
-          <p style="color: var(--accent); font-weight: 500;">Alles verloopt optimaal!</p>
+          <div class="card-title">Status</div>
+          <p style="color: var(--accent); font-weight: 500;">Everything is running optimally!</p>
         </div>
         {% endif %}
 
         <!-- Tips -->
         <div class="card tips-section">
-          <div class="card-title">📚 Adviezen & Tips</div>
+          <div class="card-title">Advice & Tips</div>
           {% for tip in tips %}
           <div class="tip-item">{{ tip }}</div>
           {% endfor %}
@@ -750,9 +853,10 @@
           x: {
             ticks: {
               color: 'rgba(255,255,255,0.5)',
-              font: { size: 10 },
-              maxRotation: 45,
+              font: { size: 9 },
+              maxRotation: 0,
               minRotation: 0,
+              maxTicksLimit: 5,
             },
             grid: {
               display: false,
