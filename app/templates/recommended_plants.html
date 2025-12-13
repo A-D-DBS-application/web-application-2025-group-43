@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="{{ lang or 'en' }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{ t('recommended_plants') }} — Capenta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}">
+    <style>
+        .recommendation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+        }
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            background-color: #1a1c23;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #252934;
+            transition: all 0.2s ease;
+        }
+        .recommendation-item.current {
+            border-color: #34C759;
+            box-shadow: 0 0 15px rgba(52, 199, 89, 0.3);
+        }
+        .rec-icon {
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        .rec-details {
+            flex-grow: 1;
+        }
+        .rec-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: #fff;
+        }
+        .rec-score-bar {
+            height: 8px;
+            background-color: #2a2d35;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .rec-score-fill {
+            height: 100%;
+            background-color: #34C759;
+            border-radius: 4px;
+        }
+        .rec-score-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #34C759;
+            margin-left: 24px;
+        }
+    </style>
+</head>
+<body style="background: #0b1115;">
+    <main class="main" style="margin-left: 0;">
+        <header class="topbar">
+            <a href="{{ url_for('dashboard.dashboard', serial_number=serial_number) }}" class="topbar-back" title="{{ t('back_to_dashboard') }}">
+                ←
+            </a>
+            <h1 class="topbar-title">{{ t('recommended_plants') }}</h1>
+            <div class="topbar-language">
+              {% include '_language_switcher.html' %}
+            </div>
+        </header>
+
+        <div class="main-scroll">
+            <div class="recommendation-list">
+                {% for plant in plant_rankings %}
+                    <div class="recommendation-item {% if plant.key == current_plant_name %}current{% endif %}">
+                        <div class="rec-icon">{{ icon_for_plant(plant.key) }}</div>
+                        <div class="rec-details">
+                            <div class="rec-name">{{ t(plant.name) }}</div>
+                            <div class="rec-score-bar">
+                                <div class="rec-score-fill" style="width: {{ plant.score }}%;"></div>
+                            </div>
+                        </div>
+                        <div class="rec-score-value">{{ plant.score|round(1) }}%</div>
+                    </div>
+                {% else %}
+                    <p>{{ t('no_recommendations') }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <script>
+      function setLanguage(language) {
+        fetch(`/set-language/${language}`)
+          .then(() => {
+            location.reload();
+          });
+      }
+    </script>
+</body>
+</html>

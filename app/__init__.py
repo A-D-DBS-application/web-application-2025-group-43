@@ -20,6 +20,7 @@ def create_app():
     from .routes.playfield_routes import playfield_bp
     from .routes.dashboard_routes import dashboard_bp
     from .routes.profile_routes import profile_bp
+    from .routes.recommendation_routes import recommendation_bp
 
     # ✅ Blueprints registreren
     app.register_blueprint(auth_bp)
@@ -27,6 +28,7 @@ def create_app():
     app.register_blueprint(playfield_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(profile_bp)
+    app.register_blueprint(recommendation_bp)
 
     # ✅ Taal context processor voor templates
     @app.context_processor

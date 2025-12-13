@@ -19,6 +19,8 @@ TRANSLATIONS = {
         "profile_settings": "Profile & Settings",
         "logout": "Logout",
         "view_details": "View details",
+        "view_all": "View all",
+        "no_recommendations": "No recommendations available at the moment.",
         
         # Sensor names
         "moisture": "Moisture",
@@ -146,6 +148,8 @@ TRANSLATIONS = {
         "profile_settings": "Profiel & Instellingen",
         "logout": "Uitloggen",
         "view_details": "Details bekijken",
+        "view_all": "Bekijk alles",
+        "no_recommendations": "Geen aanbevelingen beschikbaar op dit moment.",
         
         # Sensor names
         "moisture": "Vochtigheid",

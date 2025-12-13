@@ -392,15 +392,20 @@
         <!-- Plant Recommendations -->
         {% if plant_recommendations and plant_recommendations|length > 0 %}
         <section class="recommendations-section">
-          <div class="recommendations-title">{{ t('recommended_plants') }}</div>
+          <div class="recommendations-header">
+            <div class="recommendations-title">{{ t('recommended_plants') }}</div>
+            <a href="{{ url_for('recommendation.recommended_plants', serial_number=robot.serial_number) }}" class="view-all-btn">
+              {{ t('view_all') }} →
+            </a>
+          </div>
           <div class="recommendations-grid">
             {% for rec in plant_recommendations %}
             <div class="recommendation-card">
-              <div class="recommendation-icon">{{ rec.icon }}</div>
+              <div class="recommendation-icon">{{ icon_for_plant(rec.key) }}</div>
               <div class="recommendation-content">
-                <div class="recommendation-name">{{ rec.name }}</div>
+                <div class="recommendation-name">{{ t(rec.name) }}</div>
                 <div class="recommendation-score">
-                  <span class="score-value">{{ rec.score }}%</span>
+                  <span class="score-value">{{ rec.score|round(1) }}%</span>
                   <div class="score-bar">
                     <div class="score-bar-fill" style="width: {{ rec.score }}%;"></div>
                   </div>
