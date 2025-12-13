@@ -46,6 +46,7 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:16px;
     }
 
     /* Back arrow */
@@ -81,6 +82,21 @@
       font-weight:600;
       text-align:center;
       flex:1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* container rechts: taal-switcher + logout */
+    .topbar-controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-left:16px;
+    }
+    /* taal-switcher van _language_switcher.html */
+    .topbar-controls .topbar-language{
+      margin:0;
     }
 
     .logout-btn{
@@ -237,11 +253,26 @@
 
     @media (max-width:640px){
       .top-bar{
-        gap:12px;
+        gap:8px;
+        align-items:flex-start;
+        flex-wrap:wrap;
       }
       .top-title{
         font-size:20px;
+        text-align:left;
       }
+      .topbar-controls{
+        margin-left:auto;
+        flex-direction:column;
+        align-items:flex-end;
+        gap:6px;
+      }
+      .topbar-controls .logout-btn{
+        padding:6px 12px;
+        height:auto;
+        font-size:12px;
+      }
+
       .card{
         padding:24px 18px 22px;
       }
@@ -260,8 +291,6 @@
 </head>
 
 <body>
-  {% include '_language_switcher.html' %}
-
   <div class="page">
     <!-- Top bar -->
     <header class="top-bar">
@@ -272,11 +301,15 @@
 
       <div class="top-title">{{ t('add_garden') }}</div>
 
-      <!-- Logout -->
-      <a href="{{ url_for('auth.logout') }}" class="logout-btn">
-        <span class="logout-icon"></span>
-        <span>{{ t('logout') }}</span>
-      </a>
+      <!-- Rechts: taal-switcher + logout -->
+      <div class="topbar-controls">
+        {% include '_language_switcher.html' %}
+
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+          <span class="logout-icon"></span>
+          <span>{{ t('logout') }}</span>
+        </a>
+      </div>
     </header>
 
     <main class="content">

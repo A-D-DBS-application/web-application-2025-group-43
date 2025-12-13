@@ -1,5 +1,5 @@
 <!-- Global Language Switcher -->
-<div class="language-switcher" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+<div class="language-switcher">
   <button 
     class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
     onclick="setLanguage('en')"
@@ -15,6 +15,10 @@
 
 <style>
   .language-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
     display: flex;
     gap: 0;
   }
@@ -45,6 +49,37 @@
   .lang-btn.active:hover {
     background: #30B24F;
     border-color: #30B24F;
+  }
+
+  /* Responsive: op mobiel horizontaal en gecentreerd */
+  @media (max-width: 640px) {
+    .language-switcher {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      z-index: 999;
+      gap: 6px;
+      flex-direction: row;
+    }
+    
+    .lang-btn {
+      padding: 6px 12px;
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .language-switcher {
+      top: 68px;
+      gap: 5px;
+    }
+    
+    .lang-btn {
+      padding: 5px 10px;
+      font-size: 10px;
+    }
   }
 </style>
 
