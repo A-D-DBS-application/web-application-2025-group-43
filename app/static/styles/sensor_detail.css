@@ -716,34 +716,85 @@ body {
   margin-right: 4px;
 }
 
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-  }
+/* =========================================
+   RESPONSIVE
+   ========================================= */
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
+/* Tablet: cards onder elkaar, sidebar blijft zichtbaar */
+@media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .target-grid {
+  .target-section {
     grid-template-columns: 1fr;
   }
 
+  .sensor-header-card {
+    gap: 12px;
+  }
+
+  .sensor-value-box {
+    max-width: 100%;
+  }
+}
+
+/* Mobiel: sidebar verbergen, topbar sticky, alles full-width */
+@media (max-width: 700px) {
+  body {
+    display: block;
+  }
+
+  .layout {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* 👉 Capenta-sidebar volledig verbergen op gsm */
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    width: 100%;
+  }
+
+  /* 👉 Robot-topbar blijft bovenaan plakken tijdens scrollen */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 0 16px;
+  }
+
+  .main-scroll {
+    padding: 16px;
+  }
+
+  /* headercard netjes onder elkaar op smalle schermen */
   .sensor-header-card {
     flex-direction: column;
     align-items: flex-start;
   }
 
+  .sensor-value-inline {
+    margin-top: 8px;
+  }
+
   .sensor-value-box {
     align-items: flex-start;
     width: 100%;
-    margin-top: 12px;
+    max-width: 100%;
+    margin-top: 10px;
+  }
+
+  .alert-block {
+    width: 100%;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
   }
 }
