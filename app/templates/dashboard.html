@@ -369,8 +369,8 @@
                     <div class="trend-title">{{ t('health_trend') }}</div>
                     <div class="trend-muted" id="trend-period-label">{{ trend_data.period_label }}</div>
                   </div>
-                  <div class="trend-pill" id="trend-pill">
-                    <span id="trend-arrow">{% if trend_data.trend_direction == 'up' %}▲{% elif trend_data.trend_direction == 'down' %}▼{% else %}→{% endif %}</span>
+                  <div class="trend-pill {% if trend_data.trend_direction == 'up' %}trend-pill-up{% elif trend_data.trend_direction == 'down' %}trend-pill-down{% else %}trend-pill-neutral{% endif %}" id="trend-pill">
+                    <span id="trend-arrow">{% if trend_data.trend_direction == 'up' %}&uarr;{% elif trend_data.trend_direction == 'down' %}&darr;{% else %}&rarr;{% endif %}</span>
                     <span id="trend-percent">{% if trend_data.trend_direction == 'up' %}+{% elif trend_data.trend_direction == 'down' %}-{% endif %}{{ trend_data.trend_percent }}%</span>
                   </div>
                 </div>
@@ -393,11 +393,11 @@
                   <div class="trend-legend">
                     <div class="legend-item">
                       <span class="legend-dot"></span>
-                      <span id="trend-prev-avg">{{ t('start') }}: {{ trend_data.previous_avg }}%</span>
+                      <span id="trend-prev-avg">{{ t('start') }}: {{ trend_data.start_score }}</span>
                     </div>
                     <div class="legend-item">
                       <span class="legend-dot legend-dot-pulse"></span>
-                      <span id="trend-current-avg">{{ t('now') }}: {{ trend_data.current_avg }}%</span>
+                      <span id="trend-current-avg">{{ t('now') }}: {{ trend_data.end_score }}</span>
                     </div>
                   </div>
                   <span id="trend-duration">30d</span>
@@ -694,6 +694,9 @@
     const CHART_DATA = {{ chart_data|tojson }};
     const HEALTH_TREND_VALUES = {{ health_trend_values|tojson }};
     const HEALTH_TREND_LABELS = {{ health_trend_labels|tojson }};
+    const TREND_DATA_INITIAL = {{ trend_data|tojson }};
+    const LABEL_START = "{{ t('start') }}";
+    const LABEL_NOW = "{{ t('now') }}";
 
     // toggle data variabelen
     const dataToggleBtn = document.getElementById('dataToggleBtn');
@@ -805,11 +808,37 @@
       });
     }
 
-    function makeHealthTrendChart() {
-      const canvas = document.getElementById('chart-health-trend');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!HEALTH_TREND_VALUES.length) return;
+    function applyTrendMeta(data, period) {
+      const pill = document.getElementById('trend-pill');
+      const arrowEl = document.getElementById('trend-arrow');
+      const percentEl = document.getElementById('trend-percent');
+      const startEl = document.getElementById('trend-prev-avg');
+      const nowEl = document.getElementById('trend-current-avg');
+      if (!pill || !arrowEl || !percentEl || !startEl || !nowEl) return;
+
+      const trendData = data || {};
+      const direction = trendData.trend_direction || 'neutral';
+      pill.classList.remove('trend-pill-up', 'trend-pill-down', 'trend-pill-neutral');
+      pill.classList.add(`trend-pill-${direction}`);
+
+      const arrow = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '→';
+      const sign = direction === 'down' ? '-' : direction === 'up' ? '+' : '';
+      arrowEl.textContent = arrow;
+      percentEl.textContent = `${sign}${trendData.trend_percent}%`;
+      const startScore = trendData.start_score ?? trendData.previous_avg ?? 0;
+      const endScore = trendData.end_score ?? trendData.current_avg ?? 0;
+      startEl.textContent = `${LABEL_START}: ${startScore}`;
+      nowEl.textContent = `${LABEL_NOW}: ${endScore}`;
+      document.getElementById('trend-duration').textContent =
+        period === 'week' ? '7d' : period === 'month' ? '30d' : period === 'quarter' ? '3m' : '1y';
+    }
+
+    function buildHealthTrendChart(ctx, labels, values) {
+      if (!values || !values.length) return;
+
+      const yMin = Math.min(...values);
+      const yMax = Math.max(...values);
+      const yPadding = (yMax - yMin || 1) * 0.1;
 
       if (healthTrendChart) {
         healthTrendChart.destroy();
@@ -818,9 +847,10 @@
       healthTrendChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: HEALTH_TREND_LABELS,
+          labels,
           datasets: [{
-            data: HEALTH_TREND_VALUES,
+            label: 'Health Score',
+            data: values,
             borderColor: '#34C759',
             backgroundColor: 'rgba(52, 199, 89, 0.1)',
             borderWidth: 2,
@@ -843,13 +873,12 @@
                 color: 'rgba(255,255,255,0.5)',
                 font: { size: 10 },
                 maxRotation: 0,
-                autoSkipPadding: 50,
-                callback: function(value, index, values) {
-                  const totalLabels = values.length;
-                  if (totalLabels > 20) {
-                    return (index % Math.ceil(totalLabels / 6) === 0) ? this.getLabelForValue(value) : '';
-                  }
-                  return this.getLabelForValue(value);
+                autoSkip: false,
+                autoSkipPadding: 10,
+                maxTicksLimit: 10,
+                callback: function(value) {
+                    const label = this.getLabelForValue(value);
+                    return label || '';
                 }
               },
               grid: {
@@ -857,10 +886,9 @@
               }
             },
             y: {
-              title: {
-                display: true,
-                text: 'Health Score'
-              },
+              beginAtZero: false,
+              suggestedMin: yMin - yPadding,
+              suggestedMax: yMax + yPadding,
               ticks: {
                 color: 'rgba(255,255,255,0.5)',
                 font: { size: 10 }
@@ -874,6 +902,13 @@
       });
     }
 
+    function makeHealthTrendChart(labels = HEALTH_TREND_LABELS, values = HEALTH_TREND_VALUES) {
+      const canvas = document.getElementById('chart-health-trend');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      buildHealthTrendChart(ctx, labels, values);
+    }
+
     // Sensor charts
     makeSensorChart('chart-moisture', 'moisture', 'Soil Moisture', '%');
     makeSensorChart('chart-temperature', 'temperature', 'Temperature', '°C');
@@ -885,6 +920,7 @@
     // Health trend chart
     let healthTrendChart = null;
     makeHealthTrendChart();
+    applyTrendMeta(TREND_DATA_INITIAL, 'month');
 
     // Period selector for health trend
     const serialNumber = window.location.pathname.split('/').pop();
@@ -905,80 +941,10 @@
           if (!response.ok) throw new Error(data.error);
 
           document.getElementById('trend-period-label').textContent = data.period_label;
-          document.getElementById('trend-duration').textContent =
-            period === 'week' ? '7d' : period === 'month' ? '30d' : period === 'quarter' ? '3m' : '1y';
-
-          const arrow = data.trend_direction === 'up' ? '▲' : data.trend_direction === 'down' ? '▼' : '→';
-          const sign = data.trend_direction === 'down' ? '-' : data.trend_direction === 'up' ? '+' : '';
-          document.getElementById('trend-arrow').textContent = arrow;
-          document.getElementById('trend-percent').textContent = sign + data.trend_percent + '%';
-
-          document.getElementById('trend-prev-avg').textContent = `Start: ${data.previous_avg}%`;
-          document.getElementById('trend-current-avg').textContent = `Now: ${data.current_avg}%`;
+          applyTrendMeta(data, period);
 
           const ctx = document.getElementById('chart-health-trend');
-          if (healthTrendChart) {
-            healthTrendChart.destroy();
-          }
-
-          healthTrendChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: data.labels,
-              datasets: [
-                {
-                  label: 'Health Score',
-                  data: data.values,
-                  borderColor: '#34C759',
-                  backgroundColor: 'rgba(52, 199, 89, 0.1)',
-                  borderWidth: 2,
-                  pointRadius: 3,
-                  pointBackgroundColor: '#34C759',
-                  fill: true,
-                  tension: 0.4,
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: false
-                }
-              },
-              scales: {
-                x: {
-                  type: 'category',
-                  ticks: {
-                    color: 'rgba(255,255,255,0.5)',
-                    font: { size: 10 },
-                    maxRotation: 0,
-                    autoSkipPadding: 50,
-                    callback: function(value, index, values) {
-                      const totalLabels = values.length;
-                      if (totalLabels > 20) {
-                        return (index % Math.ceil(totalLabels / 6) === 0) ? this.getLabelForValue(value) : '';
-                      }
-                      return this.getLabelForValue(value);
-                    }
-                  },
-                  grid: {
-                    display: false
-                  }
-                },
-                y: {
-                  ticks: {
-                    color: 'rgba(255,255,255,0.5)',
-                    font: { size: 10 }
-                  },
-                  grid: {
-                    color: 'rgba(255,255,255,0.05)'
-                  }
-                }
-              }
-            }
-          });
+          buildHealthTrendChart(ctx.getContext('2d'), data.labels, data.values);
         } catch (error) {
           console.error('Error loading trend data:', error);
         }

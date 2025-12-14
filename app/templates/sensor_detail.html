@@ -123,7 +123,7 @@
 
           <div class="sensor-value-inline">
             <span class="value-main">{{ "%0.1f" | format(current_value) if current_value is not none else '–' }}</span>
-            <span class="value-unit">{{ sensor_config.unit }}</span>
+            <span class="value-unit">{% if sensor_type == 'rain' %}mm{% else %}{{ sensor_config.unit }}{% endif %}</span>
           </div>
 
           <div class="sensor-value-box">
@@ -170,12 +170,12 @@
               <div class="stat-box">
                 <div class="stat-label">{{ t('minimum') }}</div>
                 <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }}</div>
-                <div class="stat-unit">{% if sensor_type == 'rain' %}mm/day{% else %}{{ sensor_config.unit }}{% endif %}</div>
+                <div class="stat-unit">{% if sensor_type == 'rain' %}mm{% else %}{{ sensor_config.unit }}{% endif %}</div>
               </div>
               <div class="stat-box">
                 <div class="stat-label">{{ t('maximum') }}</div>
                 <div class="stat-value">{{ "%0.1f" | format(max_value) if max_value is not none else '–' }}</div>
-                <div class="stat-unit">{% if sensor_type == 'rain' %}mm/day{% else %}{{ sensor_config.unit }}{% endif %}</div>
+                <div class="stat-unit">{% if sensor_type == 'rain' %}mm{% else %}{{ sensor_config.unit }}{% endif %}</div>
               </div>
             </div>
           </div>

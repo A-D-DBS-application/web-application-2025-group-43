@@ -1,5 +1,5 @@
 # app/routes/dashboard_routes.py
-from math import pi
+from math import pi, ceil
 from datetime import datetime, date, timedelta
 from sqlalchemy import func
 
@@ -363,33 +363,29 @@ def _get_health_trend_data(serial_number, period='month'):
     # Bepaal date range en label format
     if period == 'week':
         days = 7
-        compare_days = 7
         period_label = "Laatste 7 dagen"
         fmt = "%d/%m"  # Day/Month
-        label_step = 1  # Show every day
+        desired_ticks = 7
     elif period == 'month':
         days = 30
-        compare_days = 30
         period_label = "Laatste 30 dagen"
         fmt = "%d/%m"  # Day/Month
-        label_step = 5  # Show every 5 days
+        desired_ticks = 5  # ongeveer elke 6 dagen
     elif period == 'quarter':
         days = 90
-        compare_days = 90
         period_label = "Laatste 3 maanden"
-        fmt = "%d/%m"  # Day/Month
-        label_step = 10  # Show every 10 days
+        fmt = "%d %b"  # Dag + maandkort
+        desired_ticks = 3  # 1 per maand
     elif period == 'year':
         days = 365
-        compare_days = 365
         period_label = "Afgelopen jaar"
-        fmt = "%d/%m"  # Day/Month
-        label_step = 30  # Show every 30 days (monthly)
+        fmt = "%b %y"  # Wordt overschreven voor labeling met dag (1 May 25)
+        desired_ticks = 4  # 1 per kwartaal
     else:
         days = 30
         period_label = "Laatste 30 dagen"
         fmt = "%d/%m"
-        label_step = 5
+        desired_ticks = 7
     
     # Haal huidige periode op
     start_date = today - timedelta(days=days)
@@ -401,46 +397,51 @@ def _get_health_trend_data(serial_number, period='month'):
         .all()
     )
     
-    # Haal vorige periode op (voor trend berekening)
-    prev_end_date = start_date - timedelta(days=1)
-    prev_start_date = prev_end_date - timedelta(days=compare_days)
-    previous_scores = (
-        HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.calculated_at >= datetime.combine(prev_start_date, datetime.min.time()))
-        .filter(HealthScore.calculated_at <= datetime.combine(prev_end_date, datetime.max.time()))
-        .order_by(HealthScore.calculated_at.asc())
-        .all()
-    )
-    
-    # Bereken gemiddelden
-    current_avg = (
-        sum(s.score for s in current_scores) / len(current_scores)
-        if current_scores else None
-    )
-    previous_avg = (
-        sum(s.score for s in previous_scores) / len(previous_scores)
-        if previous_scores else None
-    )
-    
-    # Bereken trend percentage
-    if current_avg is not None and previous_avg is not None and previous_avg != 0:
-        trend_percent = round(((current_avg - previous_avg) / previous_avg) * 100)
-        trend_direction = "up" if trend_percent > 0 else "down"
+    # Formatteer data voor grafiek met intelligente label spacing
+    values = [float(s.score) for s in current_scores]
+    all_dates = [s.calculated_at.date() for s in current_scores if s.calculated_at]
+
+    labels = []
+    if all_dates:
+        first_date = all_dates[0]
+        last_idx = len(all_dates) - 1
+
+        for i, dt in enumerate(all_dates):
+            add_label = False
+
+            if period == 'week':
+                add_label = True  # alle 7 dagen tonen
+            elif period == 'month':
+                add_label = ((dt - first_date).days % 7 == 0) or (i == last_idx)
+            elif period == 'quarter':
+                add_label = ((dt - first_date).days % 14 == 0) or (i == last_idx)
+            elif period == 'year':
+                add_label = (dt.day == 1 and dt.month in (1, 3, 5, 7, 9, 11)) or (i == last_idx)
+            else:
+                add_label = ((dt - first_date).days % 7 == 0) or (i == last_idx)
+
+            if add_label:
+                if period == 'year':
+                    # Toon "1 May 25" etc. voor eerste dag van de geselecteerde maanden
+                    label = dt.strftime("%d %b %y").lstrip("0")
+                else:
+                    label = dt.strftime(fmt)
+                labels.append(label)
+            else:
+                labels.append("")
+
+    # Start/nu voor deze grafiek (eerste en laatste datapunt)
+    start_score = round(values[0], 1) if values else 0
+    end_score = round(values[-1], 1) if values else 0
+
+    # Bereken trend percentage t.o.v. eerste zichtbare datapunt
+    if values and start_score != 0:
+        change = ((end_score - start_score) / start_score) * 100
+        trend_direction = "up" if change > 0 else "down" if change < 0 else "neutral"
+        trend_percent = abs(round(change, 1))
     else:
         trend_percent = 0
         trend_direction = "neutral"
-    
-    # Formatteer data voor grafiek met intelligent label spacing
-    values = [float(s.score) for s in current_scores]
-    all_dates = [s.calculated_at.date() for s in current_scores if s.calculated_at]
-    
-    # Create labels with intelligent spacing based on period
-    labels = []
-    for i, dt in enumerate(all_dates):
-        if i % label_step == 0 or i == len(all_dates) - 1:
-            labels.append(dt.strftime(fmt))
-        else:
-            labels.append("")
     
     return {
         'values': values,
@@ -448,8 +449,10 @@ def _get_health_trend_data(serial_number, period='month'):
         'trend_percent': abs(trend_percent),
         'trend_direction': trend_direction,
         'period_label': period_label,
-        'current_avg': round(current_avg) if current_avg else 0,
-        'previous_avg': round(previous_avg) if previous_avg else 0,
+        'current_avg': end_score,
+        'previous_avg': start_score,
+        'start_score': start_score,
+        'end_score': end_score,
     }
 
 
@@ -937,11 +940,13 @@ def sensor_detail(serial_number, sensor_type):
     # 12) Build alerts list
     alerts = []
     if severity in ("warning", "critical"):
-        if current_value is not None and target_mean is not None:
-            direction = "hoger" if current_value > target_mean else "lager"
+        # For rain alerts, compare weekly total against ideal (weekly) mean
+        if sensor_type == "rain" and target_mean is not None:
+            rain_total = sum(v for v in chart_values if v is not None)
+            direction_key = "higher_than_ideal" if rain_total > target_mean else "lower_than_ideal"
+        elif current_value is not None and target_mean is not None:
             direction_key = "higher_than_ideal" if current_value > target_mean else "lower_than_ideal"
         else:
-            direction = "afwijkend"
             direction_key = "lower_than_ideal"
 
         msg = get_translation(direction_key, lang)

@@ -764,6 +764,9 @@ body{
   font-size:13px;
   color:var(--accent);
 }
+.trend-pill-up{ background:var(--accent-soft); color:var(--accent); }
+.trend-pill-down{ background:rgba(251,113,133,0.14); color:#fb7185; }
+.trend-pill-neutral{ background:rgba(154,164,178,0.14); color:var(--muted); }
 
 .trend-chart{
   flex:1;
