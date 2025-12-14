@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ t(sensor_config.label) }} - Capenta</title>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/globals.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/sensor_detail.css') }}" />
@@ -34,26 +35,31 @@
               <span>{{ t('soil_moisture') }}</span>
               <span class="data-btn-link-arrow">→</span>
             </a>
+
             <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='temperature') }}"
                class="data-btn-wrapper data-btn {% if sensor_type == 'temperature' %}active{% endif %}">
               <span>{{ t('temperature') }}</span>
               <span class="data-btn-link-arrow">→</span>
             </a>
+
             <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='humidity') }}"
                class="data-btn-wrapper data-btn {% if sensor_type == 'humidity' %}active{% endif %}">
               <span>{{ t('humidity') }}</span>
               <span class="data-btn-link-arrow">→</span>
             </a>
+
             <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='rain') }}"
                class="data-btn-wrapper data-btn {% if sensor_type == 'rain' %}active{% endif %}">
               <span>{{ t('rainfall_water_needs') }}</span>
               <span class="data-btn-link-arrow">→</span>
             </a>
+
             <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='light') }}"
                class="data-btn-wrapper data-btn {% if sensor_type == 'light' %}active{% endif %}">
               <span>{{ t('light') }}</span>
               <span class="data-btn-link-arrow">→</span>
             </a>
+
             <a href="{{ url_for('dashboard.sensor_detail', serial_number=robot.serial_number, sensor_type='co2') }}"
                class="data-btn-wrapper data-btn {% if sensor_type == 'co2' %}active{% endif %}">
               <span>{{ t('co2') }}</span>
@@ -90,13 +96,18 @@
     <main class="main">
       <!-- top bar -->
       <header class="topbar">
-        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}" class="topbar-back" title="{{ t('back_to_dashboard') }}">
+        <a href="{{ url_for('dashboard.dashboard', serial_number=robot.serial_number) }}"
+           class="topbar-back"
+           title="{{ t('back_to_dashboard') }}">
           ←
         </a>
 
         <h1 class="topbar-title">{{ robot.robot_name }}</h1>
 
-        {% include '_language_switcher.html' %}
+        <!-- ✅ Wrap language switcher so mobile CSS can hide it reliably -->
+        <div class="topbar-lang">
+          {% include '_language_switcher.html' %}
+        </div>
       </header>
 
       <!-- scrollable content -->
@@ -105,7 +116,9 @@
         <section class="sensor-header-card">
           <div class="sensor-info">
             <div class="sensor-name">{{ t(sensor_config.label) }}</div>
-            <div class="sensor-time">{{ current_measurement.time_m.strftime('%d/%m %H:%M') if current_measurement and current_measurement.time_m else t('no_data') }}</div>
+            <div class="sensor-time">
+              {{ current_measurement.time_m.strftime('%d/%m %H:%M') if current_measurement and current_measurement.time_m else t('no_data') }}
+            </div>
           </div>
 
           <div class="sensor-value-inline">
@@ -123,12 +136,12 @@
                   </span>
                 {% endif %}
               </div>
-              
+
               {% if alerts %}
               <div class="alert-block-detail">
                 {% for alert in alerts %}
-                <div class="alert-message-text">{{ alert.message }}</div>
-                <div class="alert-target">{{ t('ideal') }}: {{ alert.target }}</div>
+                  <div class="alert-message-text">{{ alert.message }}</div>
+                  <div class="alert-target">{{ t('ideal') }}: {{ alert.target }}</div>
                 {% endfor %}
               </div>
               {% endif %}
@@ -190,7 +203,7 @@
         <section class="tips-section">
           <div class="tips-title">{{ t('advice_tips') }}</div>
           {% for tip in tips %}
-          <div class="tip-item">{{ tip }}</div>
+            <div class="tip-item">{{ tip }}</div>
           {% endfor %}
         </section>
       </div>
@@ -202,9 +215,7 @@
 
     function setLanguage(language) {
       fetch(`/set-language/${language}`)
-        .then(() => {
-          location.reload();
-        });
+        .then(() => location.reload());
     }
 
     // toggle data variabelen
@@ -226,7 +237,7 @@
       const chartLabels = {{ chart_labels | tojson }};
       const targetMean = {{ target_mean | tojson if target_mean else 'null' }};
       const sensorType = '{{ sensor_type }}';
-      
+
       // For rain: optimal line should be weekly optimal divided by 7
       const displayTargetMean = (sensorType === 'rain' && targetMean) ? targetMean / 7.0 : targetMean;
 
@@ -254,25 +265,34 @@
 
       new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: chartLabels,
-          datasets: datasets
-        },
+        data: { labels: chartLabels, datasets: datasets },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            x: {
-              ticks: { maxTicksLimit: 8 }
-            },
+            x: { ticks: { maxTicksLimit: 8 } },
             y: {
               grid: { color: 'rgba(255,255,255,0.05)' },
               beginAtZero: sensorType === 'rain' ? true : false
             }
           }
+        }
+      });
+    }
+
+    // Hide language switcher on scroll (only target the one in the topbar)
+    const mainScroll = document.querySelector('.main-scroll');
+    const languageSwitcher = document.querySelector('.topbar-lang .language-switcher');
+
+    if (mainScroll && languageSwitcher) {
+      mainScroll.addEventListener('scroll', () => {
+        if (mainScroll.scrollTop > 50) {
+          languageSwitcher.style.opacity = '0';
+          languageSwitcher.style.pointerEvents = 'none';
+        } else {
+          languageSwitcher.style.opacity = '1';
+          languageSwitcher.style.pointerEvents = 'auto';
         }
       });
     }

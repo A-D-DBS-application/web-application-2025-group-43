@@ -798,3 +798,9 @@ body {
     padding: 16px;
   }
 }
+/* Hide language switcher ONLY on mobile for sensor detail */
+@media (max-width: 700px) {
+  .topbar-lang {
+    display: none !important;
+  }
+}

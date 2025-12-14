@@ -286,6 +286,11 @@
         justify-content:center;
         text-align:center;
       }
+
+      /* Hide language switcher on mobile */
+      .lang-inline {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -303,7 +308,9 @@
 
       <!-- Rechts: taal-switcher + logout -->
       <div class="topbar-controls">
-        {% include '_language_switcher.html' %}
+        <div class="lang-inline">
+          {% include '_language_switcher.html' %}
+        </div>
 
         <a href="{{ url_for('auth.logout') }}" class="logout-btn">
           <span class="logout-icon"></span>

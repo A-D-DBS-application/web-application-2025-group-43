@@ -17,33 +17,77 @@
       background:#05060a;
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     }
+
+    /* ✅ Force language switcher inline next to logout */
+    .lang-inline,
+    .lang-inline *{
+      flex-shrink:0;
+    }
+    .lang-inline{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+    .lang-inline .language-switcher,
+    .lang-inline #language-switcher,
+    .lang-inline .lang-switcher,
+    .lang-inline [data-language-switcher]{
+      position:static !important;
+      inset:auto !important;
+      top:auto !important;
+      right:auto !important;
+      bottom:auto !important;
+      left:auto !important;
+      transform:none !important;
+      margin:0 !important;
+      display:flex !important;
+      align-items:center !important;
+      gap:10px !important;
+      white-space:nowrap !important;
+    }
+
+    /* Hide language switcher on mobile */
+    @media (max-width: 640px) {
+      .lang-inline {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
 <body class="min-h-screen text-white">
-  {% include '_language_switcher.html' %}
   <div class="max-w-7xl mx-auto px-6 py-6">
 
     <!-- Top bar -->
-    <header class="flex items-center justify-between mb-8">
+    <header class="grid grid-cols-[1fr_auto_1fr] items-center mb-8">
 
-      <!-- Back -->
-      <a href="{{ url_for('playfield.playfield_selection', garden_id=garden.garden_id) }}"
-         class="w-10 h-10 rounded-full bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all">
-        <span class="text-gray-400 text-xl">&lsaquo;</span>
-      </a>
+      <!-- Left: Back -->
+      <div class="flex items-center">
+        <a href="{{ url_for('playfield.playfield_selection', garden_id=garden.garden_id) }}"
+           class="w-10 h-10 rounded-full bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all">
+          <span class="text-gray-400 text-xl">&lsaquo;</span>
+        </a>
+      </div>
 
-      <h1 class="text-white text-2xl font-semibold">{{ t('edit_playfield') }}</h1>
+      <!-- Center: Title (always centered) -->
+      <h1 class="text-white text-2xl font-semibold text-center">{{ t('edit_playfield') }}</h1>
 
-      <!-- Logout -->
-      <a href="{{ url_for('auth.logout') }}"
-         class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E]
-                border border-gray-700 hover:border-[#34C759] transition-all group">
-        <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
-        <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-          {{ t('logout') }}
-        </span>
-      </a>
+      <!-- Right: Logout + Language switcher -->
+      <div class="flex items-center justify-end gap-3">
+        <a href="{{ url_for('auth.logout') }}"
+           class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E]
+                  border border-gray-700 hover:border-[#34C759] transition-all group whitespace-nowrap">
+          <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
+          <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
+            {{ t('logout') }}
+          </span>
+        </a>
+
+        <div class="lang-inline">
+          {% include '_language_switcher.html' %}
+        </div>
+      </div>
 
     </header>
 
