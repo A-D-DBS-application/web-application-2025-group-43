@@ -10,10 +10,9 @@ A structured Flask application for monitoring and managing plant growth in indoo
 - **GitHub Repository**: [INSERT REPOSITORY LINK HERE]
 
 ### Feedback Sessions
-#### Audio/Video Recordings with Partner
-- **Session 1**: [INSERT AUDIO/VIDEO LINK HERE]
-- **Session 2**: [INSERT AUDIO/VIDEO LINK HERE]
-- **Session 3**: [INSERT AUDIO/VIDEO LINK HERE]
+#### Audio/Video Recordings with Partner (Please Click on the link and download)
+- **Session 1**: https://1drv.ms/v/c/ab63c4fd72dee8ef/IQBgn0CorPyxS58X28CgcdtGAYq4jb-BkcTRxufID3lEtlc?e=l1rPpO
+- **Session 2**: (https://1drv.ms/v/c/ab63c4fd72dee8ef/IQDpmWv6lFd0T7pi0eFq_qGBAbNu5xnGcsMPgraputt4H_g?e=hocPfH)
 
 ### Additional Documentation
 - **Project Report**: [INSERT LINK IF AVAILABLE]
