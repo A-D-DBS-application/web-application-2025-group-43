@@ -80,7 +80,6 @@ def register():
             uname=name,
             phone=phone,
             adress=adress,
-            password=password,  # later kan je hier hashing aan toevoegen
         )
 
         db.session.add(new_user)
