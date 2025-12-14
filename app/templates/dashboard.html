@@ -196,7 +196,7 @@
                   />
                 </svg>
                 <div class="score-circle-text">
-                  <div>{{ health_score }}</div>
+                  <div>{{ (health_score|float)|round(0)|int }}</div>
                   <div class="score-circle-label">{{ score_label }}</div>
                 </div>
               </div>
@@ -291,7 +291,7 @@
                         <span>{{ t('rainfall_water_needs') }}</span>
                       </div>
                       <div>
-                        {{ m_rain.value|round(1) if m_rain else '–' }} mm/week
+                        {{ f.value|round(1) if f.value is not none else '–' }} mm/week
                         <span class="factor-tag factor-tag-{{ f.severity }}">
                           {{ f.status_text }}
                         </span>
@@ -582,7 +582,7 @@
                   <div class="sensor-name">{{ t('rainfall_water_needs') }}</div>
                   <div>
                     <span class="sensor-value-main">
-                      {{ m_rain.value|round(1) if m_rain else '–' }}
+                      {{ factor_states['rain']['value']|round(1) if factor_states['rain']['value'] is not none else '–' }}
                     </span>
                     <span class="sensor-value-unit">
                       {{ s_rain.unit if s_rain and s_rain.unit else 'mm/week' }}
@@ -594,7 +594,7 @@
                 <canvas id="chart-rain"></canvas>
               </div>
               <div class="sensor-footer">
-                <span>{% if sensor_data['rain']['optimal_mean'] is not none %}{{ t('ideal') }}: {{ sensor_data['rain']['optimal_mean']|round(1) }}{% if sensor_data['rain']['optimal_std'] is not none %} ± {{ sensor_data['rain']['optimal_std']|round(1) }}{% endif %} mm/week{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
+                <span>{% if sensor_data['rain']['optimal_mean_weekly'] is not none %}{{ t('ideal') }}: {{ sensor_data['rain']['optimal_mean_weekly']|round(1) }}{% if sensor_data['rain']['optimal_std_weekly'] is not none %} ± {{ sensor_data['rain']['optimal_std_weekly']|round(1) }}{% endif %} mm/week{% else %}{{ t('ideal_plant_dependent') }}{% endif %}</span>
                 <span>
                   {% if m_rain and m_rain.time_m %}
                     {{ m_rain.time_m.strftime('%d/%m') }}

@@ -150,19 +150,19 @@
             <div class="column-title">{{ t('statistics') }}</div>
             <div class="stats-grid">
               <div class="stat-box">
-                <div class="stat-label">{{ t('average') }}</div>
+                <div class="stat-label">{% if stat_type == 'total' %}{{ t('total') }}{% else %}{{ t('average') }}{% endif %}</div>
                 <div class="stat-value">{{ "%0.1f" | format(avg_value) if avg_value is not none else '–' }}</div>
-                <div class="stat-unit">{{ sensor_config.unit }}</div>
+                <div class="stat-unit">{% if sensor_type == 'rain' %}mm/week{% else %}{{ sensor_config.unit }}{% endif %}</div>
               </div>
               <div class="stat-box">
                 <div class="stat-label">{{ t('minimum') }}</div>
                 <div class="stat-value">{{ "%0.1f" | format(min_value) if min_value is not none else '–' }}</div>
-                <div class="stat-unit">{{ sensor_config.unit }}</div>
+                <div class="stat-unit">{% if sensor_type == 'rain' %}mm/day{% else %}{{ sensor_config.unit }}{% endif %}</div>
               </div>
               <div class="stat-box">
                 <div class="stat-label">{{ t('maximum') }}</div>
                 <div class="stat-value">{{ "%0.1f" | format(max_value) if max_value is not none else '–' }}</div>
-                <div class="stat-unit">{{ sensor_config.unit }}</div>
+                <div class="stat-unit">{% if sensor_type == 'rain' %}mm/day{% else %}{{ sensor_config.unit }}{% endif %}</div>
               </div>
             </div>
           </div>
@@ -225,6 +225,10 @@
       const chartValues = {{ chart_values | tojson }};
       const chartLabels = {{ chart_labels | tojson }};
       const targetMean = {{ target_mean | tojson if target_mean else 'null' }};
+      const sensorType = '{{ sensor_type }}';
+      
+      // For rain: optimal line should be weekly optimal divided by 7
+      const displayTargetMean = (sensorType === 'rain' && targetMean) ? targetMean / 7.0 : targetMean;
 
       const datasets = [{
         data: chartValues,
@@ -237,9 +241,9 @@
         tension: 0.4
       }];
 
-      if (targetMean) {
+      if (displayTargetMean) {
         datasets.push({
-          data: new Array(chartLabels.length).fill(targetMean),
+          data: new Array(chartLabels.length).fill(displayTargetMean),
           borderColor: '#facc15',
           borderDash: [5, 5],
           borderWidth: 1,
@@ -265,7 +269,8 @@
               ticks: { maxTicksLimit: 8 }
             },
             y: {
-              grid: { color: 'rgba(255,255,255,0.05)' }
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              beginAtZero: sensorType === 'rain' ? true : false
             }
           }
         }

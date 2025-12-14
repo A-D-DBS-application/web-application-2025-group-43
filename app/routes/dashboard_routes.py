@@ -535,9 +535,17 @@ def dashboard(serial_number):
         cfg = ALERT_CONFIG.get(key)
         optimal_mean = None
         optimal_std = None
+        optimal_mean_weekly = None
+        optimal_std_weekly = None
         if plant_profile and cfg:
             optimal_mean = getattr(plant_profile, cfg["mean_attr"], None)
             optimal_std = getattr(plant_profile, cfg["std_attr"], None)
+            # For rain: store both weekly and daily optimal values
+            if key == "rain" and optimal_mean is not None and optimal_std is not None:
+                optimal_mean_weekly = float(optimal_mean)
+                optimal_std_weekly = float(optimal_std)
+                optimal_mean = optimal_mean_weekly / 7.0
+                optimal_std = optimal_std_weekly / 7.0
 
         sensor_data[key] = {
             "sensor": sensor,
@@ -547,6 +555,8 @@ def dashboard(serial_number):
             "labels": labels,
             "optimal_mean": optimal_mean,
             "optimal_std": optimal_std,
+            "optimal_mean_weekly": optimal_mean_weekly,
+            "optimal_std_weekly": optimal_std_weekly,
         }
 
     # 5) Alerts & factor status op basis van PlantProfile
@@ -556,7 +566,25 @@ def dashboard(serial_number):
     for key in SENSOR_KEYS:
         cfg = ALERT_CONFIG.get(key)
         meas = sensor_data[key]["measurement"]
-        value = float(meas.value) if meas is not None else None
+        
+        # For rain: use sum of last 7 daily measurements (weekly total)
+        if key == "rain":
+            sensor = (
+                Sensor.query.filter_by(serial_number=serial_number, sensor_type=key)
+                .first()
+            )
+            if sensor:
+                rain_measurements = (
+                    Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
+                    .order_by(Measurement.time_m.desc())
+                    .limit(7)
+                    .all()
+                )
+                value = sum(float(m.value) if m.value else 0 for m in rain_measurements) if rain_measurements else None
+            else:
+                value = None
+        else:
+            value = float(meas.value) if meas is not None else None
 
         mean = getattr(plant_profile, cfg["mean_attr"], None) if plant_profile else None
         std = getattr(plant_profile, cfg["std_attr"], None) if plant_profile else None
@@ -840,28 +868,34 @@ def sensor_detail(serial_number, sensor_type):
     # Get period from query parameter (default: 7 days)
     period = request.args.get('period', '7d')
     
-    # Determine cutoff date and format based on period
-    today = datetime.utcnow()
+    # Determine number of measurements and time format based on sensor type and period
+    # Default behavior: 24 measurements for most sensors, 7 for rain and light
     if period == '30d':
-        cutoff_date = today - timedelta(days=30)
+        num_measurements = 30
         time_format = "%d/%m"
     elif period == '3m':
-        cutoff_date = today - timedelta(days=90)
+        num_measurements = 90
         time_format = "%d/%m"
     elif period == '1y':
-        cutoff_date = today - timedelta(days=365)
+        num_measurements = 365
         time_format = "%d/%m"
-    else:  # Default: 7d
-        cutoff_date = today - timedelta(days=7)
-        time_format = "%H:%M"
+    else:  # Default: use sensor type to determine
+        if sensor_type in ['rain', 'light']:
+            num_measurements = 7
+            time_format = "%d/%m"  # Show dates for rain and light
+        else:
+            num_measurements = 24
+            time_format = "%H:%M"  # Show times for other sensors
     
-    # Get measurements within the period
+    # Get the last N measurements ordered ascending (oldest to newest for chart display)
     measurements = (
         Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
-        .filter(Measurement.time_m >= cutoff_date)
-        .order_by(Measurement.time_m.asc())
+        .order_by(Measurement.time_m.desc())
+        .limit(num_measurements)
         .all()
     )
+    # Reverse to ascending order for chart display
+    measurements = list(reversed(measurements))
 
     # Extract values and labels for chart
     chart_values = []
@@ -876,8 +910,12 @@ def sensor_detail(serial_number, sensor_type):
         else:
             chart_labels.append("")
 
-    # 8) Current measurement & status
-    current_measurement = sensor.measurements[0] if sensor.measurements else None
+    # 8) Current measurement & status - Get the LATEST measurement (most recent)
+    current_measurement = (
+        Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
+        .order_by(Measurement.time_m.desc())
+        .first()
+    ) if sensor else None
     current_value = float(current_measurement.value) if current_measurement else None
 
     # 9) Get target values from plant profile
@@ -960,9 +998,17 @@ def sensor_detail(serial_number, sensor_type):
         valid_values = [v for v in chart_values if v is not None]
         min_value = min(valid_values)
         max_value = max(valid_values)
-        avg_value = sum(valid_values) / len(valid_values)
+        
+        # For rain: total (sum) instead of average
+        if sensor_type == "rain":
+            avg_value = sum(valid_values)
+            stat_type = "total"
+        else:
+            avg_value = sum(valid_values) / len(valid_values)
+            stat_type = "average"
     else:
         min_value = max_value = avg_value = None
+        stat_type = "average"
 
     return render_template(
         "sensor_detail.html",
@@ -986,6 +1032,7 @@ def sensor_detail(serial_number, sensor_type):
         min_value=min_value,
         max_value=max_value,
         avg_value=avg_value,
+        stat_type=stat_type,
         user_name=current_user.uname if current_user else "",
     )
 

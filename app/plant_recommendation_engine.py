@@ -34,6 +34,7 @@ Where:
 """
 
 from datetime import datetime, timedelta
+import math
 from app import db
 from app.models import Sensor, Measurement, PlantProfile, RobotZone
 from sqlalchemy import func
@@ -73,7 +74,7 @@ def calculate_plant_health_score(measurements_dict, plant_profile):
     """
     Calculate suitability score for a specific plant based on current measurements.
     
-    This is the CORE ALGORITHM - implements the quadratic penalty scoring method.
+    This is the CORE ALGORITHM - implements the Gaussian penalty scoring method.
     
     Args:
         measurements_dict (dict): Current average sensor measurements
@@ -93,7 +94,7 @@ def calculate_plant_health_score(measurements_dict, plant_profile):
     1. For each sensor type:
         - Get measurement and plant's optimal (mean, std)
         - Calculate deviation: x_v = |measurement - mean| / std
-        - Apply quadratic penalty: s_v = max(0, 1 - x_v²)
+        - Apply Gaussian penalty: s_v = exp(-(x_v² / 2))
         
     2. Calculate weighted average:
         final_score = (Σ weighted_scores) / (Σ weights) × 100
@@ -104,11 +105,11 @@ def calculate_plant_health_score(measurements_dict, plant_profile):
     --------
     If plant wants 50% moisture ±5%, and we have 52.5%:
         deviation = |52.5 - 50| / 5 = 0.5
-        score = 1 - (0.5)² = 1 - 0.25 = 0.75 (75% for this sensor)
+        score = exp(-(0.5²/2)) = exp(-0.125) = 0.88 (88% for this sensor)
         
     If we have 60% (way off):
         deviation = |60 - 50| / 5 = 2.0
-        score = max(0, 1 - 4) = 0 (0% - too wet)
+        score = exp(-(2.0²/2)) = exp(-2) = 0.135 (13.5% - still penalized but more forgiving)
     """
     
     if not measurements_dict or not plant_profile:
@@ -133,17 +134,20 @@ def calculate_plant_health_score(measurements_dict, plant_profile):
         if attr_mean is None or attr_std is None:
             continue
         
-        # Calculate quadratic penalty score
+        # Calculate Gaussian penalty score
         try:
             # Step 1: Calculate deviation in standard deviations
             deviation = abs(float(measurement) - float(attr_mean)) / float(attr_std)
             
-            # Step 2: Apply quadratic penalty function
+            # Step 2: Apply Gaussian penalty function (normal distribution bell curve)
+            # Uses bell curve (normal distribution) for forgiving scoring
             # Interpretation:
-            # - deviation 0-1: good (penalty is 0-0.75)
-            # - deviation 1-2: acceptable (penalty is 0.75-0.96)
-            # - deviation >2: poor (penalty is >0.96, score → 0)
-            sensor_score = max(0, 1 - (deviation ** 2))
+            # - deviation 0-0.5: excellent (score 88-100%)
+            # - deviation 0.5-1.0: good (score 61-88%)
+            # - deviation 1.0-1.5: acceptable (score 32-61%)
+            # - deviation 1.5-2.0: poor (score 14-32%)
+            # - deviation >2.0: very poor (<14%)
+            sensor_score = math.exp(-(deviation ** 2) / 2)
             
             # Step 3: Add weighted contribution
             weighted_sum += sensor_score * weight
@@ -166,6 +170,9 @@ def get_average_measurements(serial_number, days=5):
     """
     Retrieve average sensor measurements for the last N days.
     
+    Special handling for rain: sums last 7 daily measurements (weekly total)
+    instead of averaging, since rain optimal is weekly-based.
+    
     Since physical sensors may not take measurements daily, this function
     falls back to using the latest available measurements if no data exists
     within the specified time window.
@@ -180,7 +187,7 @@ def get_average_measurements(serial_number, days=5):
                 "moisture": 45.2,
                 "temperature": 23.1,
                 "humidity": 65.3,
-                "rain": 12.5,
+                "rain": 32.5,  (weekly total sum)
                 "light": 450.2,
                 "co2": 520.1
             }
@@ -200,24 +207,42 @@ def get_average_measurements(serial_number, days=5):
             measurements_avg[sensor_type] = None
             continue
         
-        # Calculate average for this sensor within the time window
-        avg_value = db.session.query(
-            func.avg(Measurement.value)
-        ).filter(
-            Measurement.srnr_sensor == sensor.srnr_sensor,
-            Measurement.time_m >= cutoff_date
-        ).scalar()
-        
-        # If no data within the time window, use the latest measurement
-        if avg_value is None:
-            latest_measurement = (
-                Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
-                .order_by(Measurement.time_m.desc())
-                .first()
-            )
-            avg_value = latest_measurement.value if latest_measurement else None
-        
-        measurements_avg[sensor_type] = float(avg_value) if avg_value else None
+        # Special handling for rain: sum last 7 daily measurements (weekly total)
+        if sensor_type == "rain":
+            rain_cutoff = datetime.utcnow() - timedelta(days=7)
+            rain_measurements = Measurement.query.filter(
+                Measurement.srnr_sensor == sensor.srnr_sensor,
+                Measurement.time_m >= rain_cutoff
+            ).all()
+            
+            if rain_measurements:
+                total_rain = sum(float(m.value) if m.value else 0 for m in rain_measurements)
+                measurements_avg[sensor_type] = total_rain
+            else:
+                # Fallback: get latest measurement
+                latest = Measurement.query.filter_by(
+                    srnr_sensor=sensor.srnr_sensor
+                ).order_by(Measurement.time_m.desc()).first()
+                measurements_avg[sensor_type] = float(latest.value) if latest and latest.value else None
+        else:
+            # For other sensors: calculate average within the time window
+            avg_value = db.session.query(
+                func.avg(Measurement.value)
+            ).filter(
+                Measurement.srnr_sensor == sensor.srnr_sensor,
+                Measurement.time_m >= cutoff_date
+            ).scalar()
+            
+            # If no data within the time window, use the latest measurement
+            if avg_value is None:
+                latest_measurement = (
+                    Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
+                    .order_by(Measurement.time_m.desc())
+                    .first()
+                )
+                avg_value = latest_measurement.value if latest_measurement else None
+            
+            measurements_avg[sensor_type] = float(avg_value) if avg_value else None
     
     return measurements_avg
 
