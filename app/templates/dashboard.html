@@ -833,12 +833,60 @@
         period === 'week' ? '7d' : period === 'month' ? '30d' : period === 'quarter' ? '3m' : '1y';
     }
 
-    function buildHealthTrendChart(ctx, labels, values) {
+    function buildHealthTrendChart(ctx, labels, values, period = 'month') {
       if (!values || !values.length) return;
 
       const yMin = Math.min(...values);
       const yMax = Math.max(...values);
       const yPadding = (yMax - yMin || 1) * 0.1;
+
+      // Reduce label density on small screens to avoid overlap
+      const isMobile = window.innerWidth <= 520;
+      let displayLabels = labels.slice();
+      if (isMobile) {
+        const nonEmpty = displayLabels
+          .map((l, idx) => ({ label: l, idx }))
+          .filter(x => x.label);
+
+        if (period === 'week') {
+          // Keep all 7 day labels on mobile
+          displayLabels = labels.slice();
+        } else if (nonEmpty.length > 0) {
+          if (period === 'quarter') {
+            // On mobile for 3m: show first, last, and two evenly spaced in-between labels
+            const first = nonEmpty[0];
+            const last = nonEmpty[nonEmpty.length - 1];
+            const mid1 = nonEmpty[Math.floor(nonEmpty.length / 3)];
+            const mid2 = nonEmpty[Math.floor((2 * nonEmpty.length) / 3)];
+            const keepIdx = new Set([first.idx, mid1.idx, mid2.idx, last.idx]);
+            displayLabels = displayLabels.map((lbl, idx) => (keepIdx.has(idx) ? lbl : ""));
+          } else {
+            // Adjust stride per period for mobile
+            const targetLabels =
+              period === 'year' ? 4 :
+              period === 'month' ? 5 : 4;
+
+            const stride = Math.max(1, Math.ceil(nonEmpty.length / targetLabels));
+            const lastIdx = nonEmpty[nonEmpty.length - 1].idx;
+            const firstIdx = nonEmpty[0].idx;
+
+            nonEmpty.forEach((entry, i) => {
+              const keep = (i % stride === 0) || entry.idx === lastIdx || entry.idx === firstIdx;
+              if (!keep) {
+                displayLabels[entry.idx] = "";
+              }
+            });
+
+            // If the last two labels are very close, drop the second-to-last
+            if (nonEmpty.length > 1) {
+              const secondLast = nonEmpty[nonEmpty.length - 2];
+              if ((lastIdx - secondLast.idx) <= 3) {
+                displayLabels[secondLast.idx] = "";
+              }
+            }
+          }
+        }
+      }
 
       if (healthTrendChart) {
         healthTrendChart.destroy();
@@ -846,8 +894,8 @@
 
       healthTrendChart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
+          data: {
+          labels: displayLabels,
           datasets: [{
             label: 'Health Score',
             data: values,
@@ -902,11 +950,11 @@
       });
     }
 
-    function makeHealthTrendChart(labels = HEALTH_TREND_LABELS, values = HEALTH_TREND_VALUES) {
+    function makeHealthTrendChart(labels = HEALTH_TREND_LABELS, values = HEALTH_TREND_VALUES, period = 'month') {
       const canvas = document.getElementById('chart-health-trend');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      buildHealthTrendChart(ctx, labels, values);
+      buildHealthTrendChart(ctx, labels, values, period);
     }
 
     // Sensor charts
@@ -919,7 +967,7 @@
 
     // Health trend chart
     let healthTrendChart = null;
-    makeHealthTrendChart();
+    makeHealthTrendChart(HEALTH_TREND_LABELS, HEALTH_TREND_VALUES, 'month');
     applyTrendMeta(TREND_DATA_INITIAL, 'month');
 
     // Period selector for health trend
@@ -944,7 +992,7 @@
           applyTrendMeta(data, period);
 
           const ctx = document.getElementById('chart-health-trend');
-          buildHealthTrendChart(ctx.getContext('2d'), data.labels, data.values);
+          buildHealthTrendChart(ctx.getContext('2d'), data.labels, data.values, period);
         } catch (error) {
           console.error('Error loading trend data:', error);
         }
