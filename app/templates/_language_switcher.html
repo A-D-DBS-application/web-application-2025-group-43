@@ -2,8 +2,7 @@
 <div class="language-switcher">
   <button 
     class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
-    onclick="setLanguage('en')"
-    style="margin-right: 8px;">
+    onclick="setLanguage('en')">
     EN
   </button>
   <button 
@@ -13,75 +12,7 @@
   </button>
 </div>
 
-<style>
-  .language-switcher {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    gap: 0;
-  }
-  
-  .lang-btn {
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-  }
-  
-  .lang-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .lang-btn.active {
-    background: #34C759;
-    color: white;
-    border-color: #34C759;
-  }
-  
-  .lang-btn.active:hover {
-    background: #30B24F;
-    border-color: #30B24F;
-  }
 
-  /* Responsive: op mobiel horizontaal en gecentreerd */
-  @media (max-width: 640px) {
-    .language-switcher {
-      position: fixed;
-      top: 70px;
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%);
-      z-index: 999;
-      gap: 6px;
-      flex-direction: row;
-    }
-    
-    .lang-btn {
-      padding: 6px 12px;
-      font-size: 11px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .language-switcher {
-      top: 68px;
-      gap: 5px;
-    }
-    
-    .lang-btn {
-      padding: 5px 10px;
-      font-size: 10px;
-    }
-  }
-</style>
 
 <script>
   function setLanguage(lang) {

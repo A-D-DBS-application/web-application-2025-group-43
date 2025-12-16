@@ -13,48 +13,8 @@
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-      body{
-        background:#05060a;
-        font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      }
-
-      /* ✅ Force language switcher inline next to logout */
-      .lang-inline,
-      .lang-inline *{
-        flex-shrink:0;
-      }
-      .lang-inline{
-        display:flex;
-        align-items:center;
-        gap:10px;
-        white-space:nowrap;
-      }
-      .lang-inline .language-switcher,
-      .lang-inline #language-switcher,
-      .lang-inline .lang-switcher,
-      .lang-inline [data-language-switcher]{
-        position:static !important;
-        inset:auto !important;
-        top:auto !important;
-        right:auto !important;
-        bottom:auto !important;
-        left:auto !important;
-        transform:none !important;
-        margin:0 !important;
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        white-space:nowrap !important;
-      }
-
-      /* Hide language switcher on mobile */
-      @media (max-width: 640px) {
-        .lang-inline {
-          display: none !important;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/add_playfield.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
   </head>
 
   <body class="min-h-screen text-white">
@@ -88,9 +48,7 @@
             </span>
           </a>
 
-          <div class="lang-inline">
-            {% include '_language_switcher.html' %}
-          </div>
+          {% include '_language_switcher.html' %}
         </div>
       </header>
 
@@ -171,15 +129,7 @@
                   <option value="{{ plant.plant_name }}">{{ t(plant.display_name) }}</option>
                 {% endfor %}
               </select>
-              <style>
-                select {
-                  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%9ca3af' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-                  background-repeat: no-repeat;
-                  background-position: right 0.75rem center;
-                  background-size: 1.5em 1.5em;
-                  padding-right: 2.5rem;
-                }
-              </style>
+              
             </div>
 
             <!-- Button row -->

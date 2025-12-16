@@ -11,48 +11,8 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    body{
-      background:#05060a;
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    }
-
-    /* ✅ Force language switcher inline next to logout (prevents overlap even if partial uses fixed/absolute) */
-    .lang-inline,
-    .lang-inline *{
-      flex-shrink:0;
-    }
-    .lang-inline{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      white-space:nowrap;
-    }
-    .lang-inline .language-switcher,
-    .lang-inline #language-switcher,
-    .lang-inline .lang-switcher,
-    .lang-inline [data-language-switcher]{
-      position:static !important;
-      inset:auto !important;
-      top:auto !important;
-      right:auto !important;
-      bottom:auto !important;
-      left:auto !important;
-      transform:none !important;
-      margin:0 !important;
-      display:flex !important;
-      align-items:center !important;
-      gap:10px !important;
-      white-space:nowrap !important;
-    }
-
-    /* Hide language switcher on mobile */
-    @media (max-width: 640px) {
-      .lang-inline {
-        display: none !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/add_garden.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
 </head>
 
 <body class="min-h-screen text-white">
@@ -86,9 +46,7 @@
           </span>
         </a>
 
-        <div class="lang-inline">
-          {% include '_language_switcher.html' %}
-        </div>
+        {% include '_language_switcher.html' %}
       </div>
     </header>
 

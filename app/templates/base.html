@@ -13,15 +13,10 @@
         href="{{ url_for('static', filename='styles/globals.css') }}">
 
   <!-- Basisfont + background fallback -->
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-      background-color: #020817;
-      color: #e2e8f0d4;
-      margin: 0;
-    }
-  </style>
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='styles/base.css') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='styles/language_switcher.css') }}">
 
 </head>
 <body class="bg-[#020817] text-slate-100">

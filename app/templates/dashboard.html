@@ -10,6 +10,7 @@
 
   <!-- Dashboard CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
 </head>
 <body>
   <div class="layout">
@@ -136,19 +137,7 @@
         <h1 class="topbar-title">
           {{ robot.robot_name or 'Playfield' }}{% if robot.plant_profile %} - {{ t(robot.plant_profile.display_name) }}{% endif %}
         </h1>
-        <div class="topbar-language">
-          <button 
-            class="lang-btn lang-btn-en {% if lang == 'en' %}active{% endif %}"
-            onclick="setLanguage('en')"
-            style="margin-right: 8px;">
-            EN
-          </button>
-          <button 
-            class="lang-btn lang-btn-nl {% if lang == 'nl' %}active{% endif %}"
-            onclick="setLanguage('nl')">
-            NL
-          </button>
-        </div>
+        {% include '_language_switcher.html' %}
       </header>
 
       <!-- scrollable content -->
@@ -1005,6 +994,22 @@
         .then(() => {
           location.reload();
         });
+    }
+
+    // Hide language switcher on scroll
+    const mainScroll = document.querySelector('.main-scroll');
+    const languageSwitcher = document.querySelector('.language-switcher');
+    
+    if (mainScroll && languageSwitcher) {
+      mainScroll.addEventListener('scroll', () => {
+        if (mainScroll.scrollTop > 50) {
+          languageSwitcher.style.opacity = '0';
+          languageSwitcher.style.pointerEvents = 'none';
+        } else {
+          languageSwitcher.style.opacity = '1';
+          languageSwitcher.style.pointerEvents = 'auto';
+        }
+      });
     }
   </script>
 </body>

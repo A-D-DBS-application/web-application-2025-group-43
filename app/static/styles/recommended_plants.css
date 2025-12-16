@@ -1,0 +1,49 @@
+.recommendation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+        }
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            background-color: #1a1c23;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #252934;
+            transition: all 0.2s ease;
+        }
+        .recommendation-item.current {
+            border-color: #34C759;
+            box-shadow: 0 0 15px rgba(52, 199, 89, 0.3);
+        }
+        .rec-icon {
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        .rec-details {
+            flex-grow: 1;
+        }
+        .rec-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: #fff;
+        }
+        .rec-score-bar {
+            height: 8px;
+            background-color: #2a2d35;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .rec-score-fill {
+            height: 100%;
+            background-color: #34C759;
+            border-radius: 4px;
+        }
+        .rec-score-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #34C759;
+            margin-left: 24px;
+        }
