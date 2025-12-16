@@ -1,13 +1,27 @@
+/* ====== Add Garden specifieke styling ====== */
+
 body{
-      background:#05060a;
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    }
+  background:#05060a;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
+               Roboto,"Helvetica Neue",Arial,sans-serif;
+}
 
-    .language-switcher {
-        position: static;
-        top: auto;
-        right: auto;
-        z-index: auto;
-    }
+/* Language switcher: inline naast logout op desktop */
+.language-switcher {
+  position: static;
+  top: auto;
+  right: auto;
+  z-index: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
 
-    
+/* Op kleine schermen (gsm) verbergen we de language switcher,
+   zodat hij niet over de Logout-knop valt */
+@media (max-width: 640px) {
+  .language-switcher {
+    display: none !important;
+  }
+}
