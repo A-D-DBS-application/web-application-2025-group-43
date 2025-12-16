@@ -18,15 +18,12 @@
     crossorigin="anonymous"
   >
 
-  <!-- Externe CSS voor garden selection -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/garden_selection.css') }}">
-  
+  <!-- ✅ Zet language switcher CSS eerst, page CSS erna -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/garden_selection.css') }}">
 </head>
 
 <body>
-  {% include '_language_switcher.html' %}
-
   <!-- TOP BAR -->
   <div class="topbar">
     <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
@@ -44,6 +41,9 @@
       <a class="logout-btn" href="{{ url_for('auth.logout') }}">
         {{ t('logout') }}
       </a>
+
+      <!-- ✅ Language switcher nu hier, zodat alles dezelfde hoogte heeft -->
+      {% include '_language_switcher.html' %}
     </div>
   </div>
 
@@ -114,7 +114,7 @@
       </p>
     {% endif %}
   </div>
-  
+
   <script>
     function setLanguage(lang) {
       fetch(`/set-language/${lang}`, {
