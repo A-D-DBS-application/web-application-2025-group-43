@@ -3,4 +3,11 @@ body{
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     }
 
+    .language-switcher {
+        position: static;
+        top: auto;
+        right: auto;
+        z-index: auto;
+    }
+
     

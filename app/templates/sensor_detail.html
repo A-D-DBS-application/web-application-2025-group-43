@@ -282,21 +282,7 @@
       });
     }
 
-    // Hide language switcher on scroll (only target the one in the topbar)
-    const mainScroll = document.querySelector('.main-scroll');
-    const languageSwitcher = document.querySelector('.topbar-lang .language-switcher');
 
-    if (mainScroll && languageSwitcher) {
-      mainScroll.addEventListener('scroll', () => {
-        if (mainScroll.scrollTop > 50) {
-          languageSwitcher.style.opacity = '0';
-          languageSwitcher.style.pointerEvents = 'none';
-        } else {
-          languageSwitcher.style.opacity = '1';
-          languageSwitcher.style.pointerEvents = 'auto';
-        }
-      });
-    }
   </script>
 </body>
 </html>
