@@ -1,16 +1,10 @@
-{% extends "base.html" %}
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Capenta – {{ t('playfields') }}</title>
 
-{% set title = t('playfields') ~ ' – ' ~ garden.garden_name %}
-{% set back_url = url_for('garden.garden_selection') %}
-{% set show_add_garden = False %}
-{% set show_logout = True %}
-{% set title = None %}
-{% set show_logo = True %}
-{% set add_playfield_url = url_for('playfield.add_playfield', garden_id=garden.garden_id) %}
-
-{% block title %}Capenta – {{ t('playfields') }}{% endblock %}
-
-{% block content %}
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +21,51 @@
   <!-- Eigen CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/playfield_selection.css') }}">
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
+</head>
+
+<body>
+  {% include '_language_switcher.html' %}
+  
   <div class="page-container">
+
+    <!-- TOP BAR -->
+    <header class="mb-8">
+      <div class="topbar">
+
+        <!-- Back + Logo -->
+        <div class="topbar-left">
+
+          <!-- Back button -->
+          <a href="{{ url_for('garden.garden_selection') }}"
+             class="back-btn"
+             aria-label="Back to gardens">
+            <span>&lsaquo;</span>
+          </a>
+
+          <!-- Logo -->
+          <a href="{{ url_for('garden.garden_selection') }}" class="brand" aria-label="Capenta">
+            <img class="brand-img"
+                 src="{{ url_for('static', filename='img/logo.png') }}"
+                 alt="Capenta logo">
+          </a>
+        </div>
+
+        <!-- Add Playfield + Logout -->
+        <div class="topbar-right">
+          <a href="{{ url_for('playfield.add_playfield', garden_id=garden.garden_id) }}"
+             class="add-playfield-btn">
+            <span class="add-playfield-icon">+</span>
+            {{ t('add_playfield') }}
+          </a>
+
+          <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+            {{ t('logout') }}
+          </a>
+        </div>
+
+      </div>
+    </header>
 
     <!-- SLOGAN + TITEL -->
     <section class="text-center mb-12 wrap">
@@ -113,7 +151,7 @@
     </section>
 
   </div>
-
+  
   <script>
     function setLanguage(lang) {
       fetch(`/set-language/${lang}`, {
@@ -124,4 +162,5 @@
       });
     }
   </script>
-{% endblock %}
+</body>
+</html>

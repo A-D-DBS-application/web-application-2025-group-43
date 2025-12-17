@@ -17,20 +17,12 @@
         href="{{ url_for('static', filename='styles/base.css') }}">
   <link rel="stylesheet"
         href="{{ url_for('static', filename='styles/language_switcher.css') }}">
-  <link rel="stylesheet"
-        href="{{ url_for('static', filename='styles/topbar.css') }}">
 
 </head>
 <body class="bg-[#020817] text-slate-100">
-  <!-- Global Topbar (Language + Logout/Add/Back/Title) -->
-  {% set title = title if title is defined else None %}
-  {% set back_url = back_url if back_url is defined else None %}
-  {% set show_add_garden = show_add_garden if show_add_garden is defined else False %}
-  {% set show_logout = show_logout if show_logout is defined else True %}
-
-  {% include "_topbar.html" %}
-  <div class="cap-topbar-spacer"></div>
-
+  <!-- Global Language Switcher -->
+  {% include '_language_switcher.html' %}
+  
   {% block content %}{% endblock %}
 </body>
 </html>

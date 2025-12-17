@@ -459,7 +459,3 @@ body{
     padding:56px 16px 20px;  /* top blijft 56px, zijkanten iets kleiner */
   }
 }
-/* Force same logo size as garden selection */
-.cap-brand-img{
-  height:150px !important;
-}
