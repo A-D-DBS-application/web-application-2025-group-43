@@ -21,7 +21,7 @@
         href="{{ url_for('static', filename='styles/topbar.css') }}">
 
 </head>
-<body class="bg-[#020817] text-slate-100">
+<body class="bg-[#020817] text-slate-100 min-h-screen">
   <!-- Global Topbar (Language + Logout/Add/Back/Title) -->
   {% set title = title if title is defined else None %}
   {% set back_url = back_url if back_url is defined else None %}
