@@ -1,0 +1,39 @@
+<div class="cap-topbar">
+  <div class="cap-topbar-inner">
+    <div class="cap-topbar-left">
+      {% if back_url %}
+        <a class="cap-icon-btn" href="{{ back_url }}" aria-label="{{ t('back') }}">‹</a>
+      {% endif %}
+
+      {% if show_logo is not defined or show_logo %}
+        <a class="cap-brand" href="{{ url_for('garden.garden_selection') }}" aria-label="Capenta">
+          <img class="cap-brand-img"
+               src="{{ url_for('static', filename='img/logo.png') }}"
+               alt="Capenta logo">
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="cap-topbar-center">
+      {% if title %}
+        <h1 class="cap-title">{{ title }}</h1>
+      {% endif %}
+    </div>
+
+    <div class="cap-topbar-right">
+      {% if show_add_garden %}
+        <a class="cap-pill cap-pill-green" href="{{ url_for('garden.add_garden') }}">+ {{ t('add_garden') }}</a>
+      {% endif %}
+
+      {% if add_playfield_url %}
+        <a class="cap-pill cap-pill-green" href="{{ add_playfield_url }}">+ {{ t('add_playfield') }}</a>
+      {% endif %}
+      
+      {% if show_logout %}
+        <a class="cap-pill cap-pill-dark" href="{{ url_for('auth.logout') }}">{{ t('logout') }}</a>
+      {% endif %}
+
+      {% include "_language_switcher.html" %}
+    </div>
+  </div>
+</div>

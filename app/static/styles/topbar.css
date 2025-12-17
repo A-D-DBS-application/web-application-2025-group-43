@@ -1,0 +1,161 @@
+:root{
+  --cap-topbar-spacer: 160px; /* ruimte onder de fixed topbar */
+}
+
+.cap-topbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  pointer-events: none; /* alleen inner krijgt clicks */
+}
+
+.cap-topbar-inner{
+  pointer-events: auto;
+  max-width:1400px;
+  margin:0 auto;
+
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+
+  /* ✅ KEY: niet verticaal centreren, maar bovenaan uitlijnen */
+  align-items:flex-start;
+
+  gap:16px;
+  padding:24px;
+}
+
+/* ✅ elke kolom echt bovenaan in de grid-cel */
+.cap-topbar-left,
+.cap-topbar-center,
+.cap-topbar-right{
+  align-self:flex-start;
+}
+
+.cap-topbar-left{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.cap-topbar-center{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+.cap-topbar-right{
+  display:flex;
+  justify-content:flex-end;
+
+  /* ✅ KEY: knoppen bovenaan */
+  align-items:flex-start;
+
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.cap-title{
+  margin:0;
+  font-size:28px;
+  font-weight:700;
+  color:#fff;
+  text-align:center;
+}
+
+.cap-brand{
+  display:flex;
+  align-items:flex-start;
+  text-decoration:none;
+}
+
+.cap-brand-img{
+  height:90px;
+  width:auto;
+  filter:drop-shadow(0 0 12px rgba(52,199,89,0.4));
+}
+
+.cap-icon-btn{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#cbd5e1;
+  background:#1E1E1E;
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.cap-icon-btn:hover{
+  border-color:#34C759;
+}
+
+.cap-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:10px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  border:1px solid rgba(255,255,255,0.14);
+  white-space:nowrap;
+}
+
+.cap-pill-dark{
+  background:#272727;
+  color:#e5e7eb;
+}
+
+.cap-pill-dark:hover{
+  border-color:#34C759;
+}
+
+.cap-pill-green{
+  background:#1F3C26;
+  color:#fff;
+}
+
+.cap-pill-green:hover{
+  filter:brightness(1.08);
+}
+
+/* language switcher netjes in de rij */
+.cap-topbar-right .language-switcher{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  z-index:auto !important;
+  display:flex !important;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+
+.cap-topbar-spacer{
+  height: var(--cap-topbar-spacer);
+}
+
+@media (max-width: 768px){
+  :root{ --cap-topbar-spacer: 140px; }
+
+  .cap-topbar-inner{
+    grid-template-columns: 1fr;
+    padding:16px;
+  }
+
+  .cap-topbar-center{
+    justify-content:flex-start;
+  }
+
+  .cap-title{
+    text-align:left;
+  }
+
+  .cap-brand-img{
+    height:70px;
+  }
+}

@@ -1,155 +1,115 @@
-<!doctype html>
-<html lang="{{ lang or 'en' }}">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{{ t('add_playfield') }} – Capenta</title>
+{% extends "base.html" %}
 
-    <!-- Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% set title = t('add_playfield') %}
+{% set back_url = url_for('playfield.playfield_selection', garden_id=garden.garden_id) %}
+{% set show_logo = False %}
+{% set show_logout = True %}
+{% set show_add_garden = False %}
+{% set add_playfield_url = None %}
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+{% block title %}{{ t('add_playfield') }} – Capenta{% endblock %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/add_playfield.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
-  </head>
+{% block content %}
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <body class="min-h-screen text-white">
-    <div class="max-w-7xl mx-auto px-6 py-6">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-      <!-- Top bar -->
-      <header class="grid grid-cols-[1fr_auto_1fr] items-center mb-8">
-        <!-- Left: Back button -->
-        <div class="flex items-center">
-          <a
-            href="{{ url_for('playfield.playfield_selection', garden_id=garden.garden_id) }}"
-            class="w-10 h-10 rounded-full bg-[#1E1E1E] border border-gray-700 flex items-center justify-center hover:border-[#34C759] transition-all"
-            aria-label="{{ t('back') }}"
-          >
-            <span class="text-gray-400 text-xl">&lsaquo;</span>
-          </a>
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/add_playfield.css') }}">
+
+  <div class="max-w-7xl mx-auto px-6 py-6">
+
+    <!-- Main card -->
+    <main class="max-w-xl mx-auto">
+      <div class="bg-[#1E1E1E] rounded-2xl p-8 border border-gray-800">
+        <div class="mb-8">
+          <h2 class="text-white mb-2" style="font-size:28px;font-weight:700;">
+            {{ t('new_playfield') }}
+          </h2>
+          <p class="text-gray-400">
+            {{ t('playfield_details_subtitle') }}
+          </p>
         </div>
 
-        <!-- Center: Title (always perfectly centered) -->
-        <h1 class="text-white text-center" style="font-size:24px;font-weight:700;">
-          {{ t('add_playfield') }}
-        </h1>
-
-        <!-- Right: Logout + Language switcher -->
-        <div class="flex items-center justify-end gap-3">
-          <a href="{{ url_for('auth.logout') }}"
-             class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E] border border-gray-700 hover:border-[#34C759] transition-all group whitespace-nowrap">
-            <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
-            <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-              {{ t('logout') }}
-            </span>
-          </a>
-
-          {% include '_language_switcher.html' %}
-        </div>
-      </header>
-
-      <!-- Main card -->
-      <main class="max-w-xl mx-auto">
-        <div class="bg-[#1E1E1E] rounded-2xl p-8 border border-gray-800">
-          <!-- Card header -->
-          <div class="mb-8">
-            <h2 class="text-white mb-2" style="font-size:28px;font-weight:700;">
-              {{ t('new_playfield') }}
-            </h2>
-            <p class="text-gray-400">
-              {{ t('playfield_details_subtitle') }}
-            </p>
+        <form method="post" class="space-y-6">
+          <div>
+            <label class="block text-gray-300 mb-2">{{ t('playfield_name') }}</label>
+            <input
+              type="text"
+              name="robot_name"
+              placeholder="{{ t('playfield_name_placeholder') }}"
+              required
+              class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-white placeholder-gray-500
+                     focus:outline-none focus:border-[#34C759] focus:ring-2 focus:ring-[#34C759]/20 transition-all"
+            />
           </div>
 
-          <!-- FORM -->
-          <form method="post" class="space-y-6">
-            <!-- Playfield name -->
-            <div>
-              <label class="block text-gray-300 mb-2">
-                {{ t('playfield_name') }}
-              </label>
-              <input
-                type="text"
-                name="robot_name"
-                placeholder="{{ t('playfield_name_placeholder') }}"
-                required
-                class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#34C759] focus:ring-2 focus:ring-[#34C759]/20 transition-all"
-              />
-            </div>
+          <div>
+            <label class="block text-gray-300 mb-2">{{ t('garden_name') }}</label>
+            <input
+              type="text"
+              value="{{ garden.garden_name }}"
+              readonly
+              class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
+            />
+          </div>
 
-            <!-- Garden (read-only) -->
-            <div>
-              <label class="block text-gray-300 mb-2">
-                {{ t('garden_name') }}
-              </label>
+          <div>
+            <label class="block text-gray-300 mb-2">{{ t('size_of_playfield') }}</label>
+            <div class="relative">
               <input
-                type="text"
-                value="{{ garden.garden_name }}"
+                type="number"
+                step="0.1"
+                min="0"
+                name="area_playfield"
+                value="1"
                 readonly
-                class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
+                class="w-full px-4 py-3 pr-12 bg-[#0F1116] border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
               />
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">m²</span>
             </div>
+          </div>
 
-            <!-- Size: vast 1 m², niet aanpasbaar -->
-            <div>
-              <label class="block text-gray-300 mb-2">
-                {{ t('size_of_playfield') }}
-              </label>
-              <div class="relative">
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  name="area_playfield"
-                  value="1"
-                  readonly
-                  class="w-full px-4 py-3 pr-12 bg-[#0F1116] border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
-                />
-                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-                  m²
-                </span>
-              </div>
-            </div>
+          <div>
+            <label class="block text-gray-300 mb-2">{{ t('crop_plants') }}</label>
+            <select
+              name="plant_name"
+              class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-white
+                     focus:outline-none focus:border-[#34C759] focus:ring-2 focus:ring-[#34C759]/20 transition-all
+                     appearance-none cursor-pointer"
+            >
+              <option value="">-- {{ t('select_a_crop') }} --</option>
+              {% for plant in plants %}
+                <option value="{{ plant.plant_name }}">{{ t(plant.display_name) }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-            <!-- Crop / plants dropdown -->
-            <div>
-              <label class="block text-gray-300 mb-2">
-                {{ t('crop_plants') }}
-              </label>
-              <select
-                name="plant_name"
-                class="w-full px-4 py-3 bg-[#0F1116] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#34C759] focus:ring-2 focus:ring-[#34C759]/20 transition-all appearance-none cursor-pointer"
-              >
-                <option value="">-- {{ t('select_a_crop') }} --</option>
-                {% for plant in plants %}
-                  <option value="{{ plant.plant_name }}">{{ t(plant.display_name) }}</option>
-                {% endfor %}
-              </select>
-              
-            </div>
+          <div class="flex items-center gap-4 mt-8">
+            <a
+              href="{{ url_for('playfield.playfield_selection', garden_id=garden.garden_id) }}"
+              class="flex-1 text-center bg-transparent border border-gray-700 text-gray-300
+                     hover:border-gray-600 hover:bg-gray-800/50 px-6 h-11 rounded-xl
+                     flex items-center justify-center text-sm transition-all"
+            >
+              {{ t('cancel') }}
+            </a>
+            <button
+              type="submit"
+              class="flex-1 bg-[#34C759] hover:brightness-110 text-white px-6 h-11
+                     rounded-xl text-sm font-semibold transition-all"
+            >
+              {{ t('save_playfield') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
 
-            <!-- Button row -->
-            <div class="flex items-center gap-4 mt-8">
-              <a
-                href="{{ url_for('playfield.playfield_selection', garden_id=garden.garden_id) }}"
-                class="flex-1 text-center bg-transparent border border-gray-700 text-gray-300 hover:border-gray-600 hover:bg-gray-800/50 px-6 h-11 rounded-xl flex items-center justify-center text-sm transition-all"
-              >
-                {{ t('cancel') }}
-              </a>
-              <button
-                type="submit"
-                class="flex-1 bg-[#34C759] hover:brightness-110 text-white px-6 h-11 rounded-xl text-sm font-semibold transition-all"
-              >
-                {{ t('save_playfield') }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </main>
-    </div>
-  </body>
-</html>
+  </div>
+{% endblock %}

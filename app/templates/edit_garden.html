@@ -1,10 +1,13 @@
-<!doctype html>
-<html lang="{{ lang or 'en' }}">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>{{ t('edit_garden') }} – Capenta</title>
+{% extends "base.html" %}
 
+{% set title = t('edit_garden') %}
+{% set back_url = url_for('garden.garden_selection') %}
+{% set show_add_garden = False %}
+{% set show_logout = True %}
+
+{% block title %}{{ t('edit_garden') }} – Capenta{% endblock %}
+
+{% block content %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,42 +15,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/edit_garden.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/language_switcher.css') }}">
-</head>
 
-<body class="min-h-screen text-white">
   <div class="max-w-7xl mx-auto px-6 py-6">
-
-    <!-- Top bar -->
-    <header class="grid grid-cols-[1fr_auto_1fr] items-center mb-8">
-      <!-- Left: Back -->
-      <div class="flex items-center">
-        <a href="{{ url_for('garden.garden_selection') }}"
-           class="w-10 h-10 rounded-full bg-[#1E1E1E] border border-gray-700
-                  flex items-center justify-center hover:border-[#34C759] transition-all">
-          <span class="text-gray-400 text-xl">&lsaquo;</span>
-        </a>
-      </div>
-
-      <!-- Center: Title (always centered) -->
-      <h1 class="text-white text-2xl font-semibold text-center">
-        {{ t('edit_garden') }}
-      </h1>
-
-      <!-- Right: Logout + Language switcher -->
-      <div class="flex items-center justify-end gap-3">
-        <a href="{{ url_for('auth.logout') }}"
-           class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E]
-                  border border-gray-700 hover:border-[#34C759] transition-all group whitespace-nowrap">
-          <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
-          <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-            {{ t('logout') }}
-          </span>
-        </a>
-
-        {% include '_language_switcher.html' %}
-      </div>
-    </header>
 
     <!-- Card -->
     <main class="max-w-xl mx-auto">
@@ -116,5 +85,4 @@
     </main>
 
   </div>
-</body>
-</html>
+{% endblock %}
