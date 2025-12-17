@@ -34,14 +34,3 @@
       background: #30B24F;
       border-color: #30B24F;
     }
-
-    @media (max-width: 576px) {
-      .language-switcher {
-        top: 12px;
-        right: 12px;
-      }
-      .lang-btn {
-        padding: 6px 10px;
-        font-size: 11px;
-      }
-    }
