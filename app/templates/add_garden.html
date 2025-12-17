@@ -37,14 +37,7 @@
 
       <!-- Right: Logout + Language switcher -->
       <div class="flex items-center justify-end gap-3">
-        <a href="{{ url_for('auth.logout') }}"
-           class="flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1E1E1E]
-                  border border-gray-700 hover:border-[#34C759] transition-all group whitespace-nowrap">
-          <span class="text-gray-400 group-hover:text-[#34C759] transition-colors text-sm">⇥</span>
-          <span class="text-gray-300 text-sm group-hover:text-white transition-colors">
-            {{ t('logout') }}
-          </span>
-        </a>
+
 
         {% include '_language_switcher.html' %}
       </div>
