@@ -34,7 +34,7 @@ body{
   margin:0 auto;
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  align-items:flex-start;
 }
 
 /* LOGO LINKS */
@@ -63,6 +63,19 @@ body{
   display:flex;
   align-items:center;
   gap:16px;
+}
+
+/* ✅ Language switcher in topbar-right: nooit fixed, altijd inline */
+.topbar-right .language-switcher{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  z-index:auto !important;
+  display:flex !important;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+  flex:0 0 auto;
 }
 
 /* LOGOUT BUTTON */

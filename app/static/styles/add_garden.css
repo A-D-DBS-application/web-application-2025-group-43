@@ -25,3 +25,43 @@ body{
     display: none !important;
   }
 }
+/* ===== Top right actions: Language + Logout samen ===== */
+.top-actions{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Logout knop (zelfde look als jullie buttons) */
+.logout-btn{
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover{
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Mobile: wrapper blijft rechtsboven, language-switcher blijft hidden (zoals jij al hebt) */
+@media (max-width: 640px){
+  .top-actions{
+    top: 12px;
+    right: 12px;
+  }
+}
