@@ -421,14 +421,4 @@ body{
 .cap-brand-img{
   height:150px !important;
 }
-/* ✅ only on this page: zet de knoppen rechts hoger zoals Add Playfield */
-.cap-topbar .cap-topbar-right{
-  transform: translateY(-14px);
-}
 
-/* op gsm niet omhoog duwen (vermijdt overlap) */
-@media (max-width: 768px){
-  .cap-topbar .cap-topbar-right{
-    transform: none;
-  }
-}
