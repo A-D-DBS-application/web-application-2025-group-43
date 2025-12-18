@@ -956,7 +956,7 @@
 
     // Health trend chart
     let healthTrendChart = null;
-    makeHealthTrendChart(HEALTH_TREND_LABELS, HEALTH_TREND_VALUES, 'month');
+  makeHealthTrendChart(HEALTH_TREND_LABELS, HEALTH_TREND_VALUES, '{{ trend_period if trend_period else "month" }}');
     applyTrendMeta(TREND_DATA_INITIAL, 'month');
 
     // Period selector for health trend
@@ -964,27 +964,16 @@
     const periodButtons = document.querySelectorAll('.period-btn');
 
     periodButtons.forEach(btn => {
-      btn.addEventListener('click', async function() {
+      btn.addEventListener('click', function() {
         const period = this.getAttribute('data-period');
 
         // Update active button
         periodButtons.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
 
-        try {
-          const response = await fetch(`/dashboard/${serialNumber}/health-trend-api?period=${period}`);
-          const data = await response.json();
-
-          if (!response.ok) throw new Error(data.error);
-
-          document.getElementById('trend-period-label').textContent = data.period_label;
-          applyTrendMeta(data, period);
-
-          const ctx = document.getElementById('chart-health-trend');
-          buildHealthTrendChart(ctx.getContext('2d'), data.labels, data.values, period);
-        } catch (error) {
-          console.error('Error loading trend data:', error);
-        }
+        // Navigate to server-rendered dashboard with requested period (no JSON API required)
+        const path = window.location.pathname;
+        window.location.href = `${path}?trend_period=${encodeURIComponent(period)}`;
       });
     });
 

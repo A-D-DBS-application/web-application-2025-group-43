@@ -162,6 +162,13 @@ TRANSLATIONS = {
         "playfield": "Playfield", # Added as a general term
         "unknown": "Unknown", # Added for unknown plant profile
         "ideal_values": "Ideal Values", # Added for target values section
+    "not_applicable": "n/a",
+    "total": "Total",
+    # Period labels for health trend
+    "period_label_week": "Last 7 days",
+    "period_label_month": "Last 30 days",
+    "period_label_quarter": "Last 3 months",
+    "period_label_year": "Last year",
         
         # Crops
         "Beans": "Beans",
@@ -379,6 +386,13 @@ TRANSLATIONS = {
         "playfield": "Speelveld", # Added as a general term
         "unknown": "Onbekend", # Added for unknown plant profile
         "ideal_values": "Ideale waarden", # Added for target values section
+    "not_applicable": "n.v.t.",
+    "total": "Totaal",
+    # Period labels for health trend
+    "period_label_week": "Laatste 7 dagen",
+    "period_label_month": "Laatste 30 dagen",
+    "period_label_quarter": "Laatste 3 maanden",
+    "period_label_year": "Afgelopen jaar",
 
         # Crops
         "Beans": "Bonen",

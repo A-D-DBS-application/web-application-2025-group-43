@@ -126,6 +126,12 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Global base rules (moved from base.css) */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    background-color: #020817; /* fallback for older browsers */
+    color: #e2e8f0d4; /* fallback text color */
+    margin: 0;
   }
 }
 

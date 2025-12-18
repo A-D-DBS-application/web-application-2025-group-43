@@ -234,9 +234,18 @@
     const canvas = document.getElementById('chart-sensor');
     if (canvas) {
       const ctx = canvas.getContext('2d');
-      const chartValues = {{ chart_values | tojson }};
-      const chartLabels = {{ chart_labels | tojson }};
-      const targetMean = {{ target_mean | tojson if target_mean else 'null' }};
+      // Chart data rendered via Jinja loops (no JSON fetch or request.json usage)
+      const chartValues = [
+        {% for v in chart_values %}
+          {% if v is none %}null{% else %}{{ v }}{% endif %}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      ];
+      const chartLabels = [
+        {% for l in chart_labels %}
+          "{{ l | replace('"', '\\"') }}"{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      ];
+      const targetMean = {% if target_mean is none %}null{% else %}{{ target_mean }}{% endif %};
       const sensorType = '{{ sensor_type }}';
 
       // For rain: optimal line should be weekly optimal divided by 7

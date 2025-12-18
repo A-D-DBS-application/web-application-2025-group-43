@@ -3,7 +3,7 @@ from math import pi, ceil
 from datetime import datetime, date, timedelta
 from sqlalchemy import func
 
-from flask import Blueprint, render_template, abort, session, redirect, url_for, jsonify, request
+from flask import Blueprint, render_template, abort, session, redirect, url_for, request, render_template_string
 
 from .. import db
 from ..models import (
@@ -128,12 +128,18 @@ def _get_current_user():
     return User.query.filter_by(uemail=user_email).first()
 
 def _resolve_lang():
+    # Prefer explicit query param, then session (app stores under 'language'), then browser pref
     lang = request.args.get("lang")
-    if not lang:
-        lang = session.get("lang")
-    if not lang:
-        lang = request.accept_languages.best_match(["nl", "en"])
-    return lang or "nl"
+    if lang in ("en", "nl"):
+        session['language'] = lang
+        return lang
+
+    lang = session.get("language")
+    if lang in ("en", "nl"):
+        return lang
+
+    best = request.accept_languages.best_match(["en", "nl"])
+    return best or "en"
 
 
 def _get_or_create_daily_health_score(robot, sensor_data):
@@ -229,7 +235,7 @@ def _get_or_create_daily_health_score(robot, sensor_data):
         
         return existing_score
 
-def _classify_status(value, mean, std, lang="nl"):
+def _classify_status(value, mean, std, lang="en"):
     """
     Geeft (severity, status_text, z-score) terug.
     severity: 'ok', 'warning', 'critical', 'unknown'
@@ -344,7 +350,7 @@ def _calculate_daily_health_score(robot, sensor_data):
     return score
 
 
-def _get_health_trend_data(serial_number, period='month'):
+def _get_health_trend_data(serial_number, period='month', lang='en'):
     """
     Haalt gezondheid trend data op voor de opgegeven periode.
     
@@ -363,27 +369,27 @@ def _get_health_trend_data(serial_number, period='month'):
     # Bepaal date range en label format
     if period == 'week':
         days = 7
-        period_label = "Laatste 7 dagen"
+        period_label = get_translation('period_label_week', lang)
         fmt = "%d/%m"  # Day/Month
         desired_ticks = 7
     elif period == 'month':
         days = 30
-        period_label = "Laatste 30 dagen"
+        period_label = get_translation('period_label_month', lang)
         fmt = "%d/%m"  # Day/Month
         desired_ticks = 5  # ongeveer elke 6 dagen
     elif period == 'quarter':
         days = 90
-        period_label = "Laatste 3 maanden"
+        period_label = get_translation('period_label_quarter', lang)
         fmt = "%d %b"  # Dag + maandkort
         desired_ticks = 3  # 1 per maand
     elif period == 'year':
         days = 365
-        period_label = "Afgelopen jaar"
+        period_label = get_translation('period_label_year', lang)
         fmt = "%b %y"  # Wordt overschreven voor labeling met dag (1 May 25)
         desired_ticks = 4  # 1 per kwartaal
     else:
         days = 30
-        period_label = "Laatste 30 dagen"
+        period_label = get_translation('period_label_month', lang)
         fmt = "%d/%m"
         desired_ticks = 7
     
@@ -410,7 +416,7 @@ def _get_health_trend_data(serial_number, period='month'):
             add_label = False
 
             if period == 'week':
-                add_label = True  # alle 7 dagen tonen
+                add_label = True
             elif period == 'month':
                 add_label = ((dt - first_date).days % 7 == 0) or (i == last_idx)
             elif period == 'quarter':
@@ -493,11 +499,12 @@ def dashboard(serial_number):
     # Get plant profile early for use in sensor loop
     plant_profile = robot.plant_profile  # kan None zijn
 
+    # Prefetch all sensors for this robot to avoid N+1 queries
+    sensors = Sensor.query.filter_by(serial_number=serial_number).all()
+    sensors_map = {s.sensor_type: s for s in sensors}
+
     for key in SENSOR_KEYS:
-        sensor = (
-            Sensor.query.filter_by(serial_number=serial_number, sensor_type=key)
-            .first()
-        )
+        sensor = sensors_map.get(key)
 
         measurement = None
         series = []
@@ -569,21 +576,11 @@ def dashboard(serial_number):
     for key in SENSOR_KEYS:
         cfg = ALERT_CONFIG.get(key)
         meas = sensor_data[key]["measurement"]
-        
-        # For rain: use sum of last 7 daily measurements (weekly total)
+        # For rain: use sum of last 7 measurements we already fetched (avoids extra DB query)
         if key == "rain":
-            sensor = (
-                Sensor.query.filter_by(serial_number=serial_number, sensor_type=key)
-                .first()
-            )
-            if sensor:
-                rain_measurements = (
-                    Measurement.query.filter_by(srnr_sensor=sensor.srnr_sensor)
-                    .order_by(Measurement.time_m.desc())
-                    .limit(7)
-                    .all()
-                )
-                value = sum(float(m.value) if m.value else 0 for m in rain_measurements) if rain_measurements else None
+            values_list = sensor_data.get('rain', {}).get('values', [])
+            if values_list:
+                value = sum(float(v) if v is not None else 0 for v in values_list)
             else:
                 value = None
         else:
@@ -645,7 +642,7 @@ def dashboard(serial_number):
                     "target": (
                         f"{mean:.1f} ± {std:.1f} {cfg['unit']}"
                         if mean is not None and std is not None
-                        else "n.v.t."
+                        else get_translation('not_applicable', lang)
                     ),
                     "message": msg,
                     "sensor_type": key,
@@ -704,8 +701,16 @@ def dashboard(serial_number):
         for row in trend_rows
     ]
 
-    # 7.5) Trend data voor standaard periode (month)
-    trend_data = _get_health_trend_data(serial_number, period='month')
+    # 7.5) Trend data voor standaard periode - respect optional ?trend_period=
+    req_period = request.args.get('trend_period', 'month')
+    if req_period not in ('week', 'month', 'quarter', 'year'):
+        req_period = 'month'
+    trend_data = _get_health_trend_data(serial_number, period=req_period, lang=lang)
+
+    # Override the default 30-day series with the requested server-side trend data
+    if trend_data:
+        health_trend_values = trend_data.get('values', health_trend_values)
+        health_trend_labels = trend_data.get('labels', health_trend_labels)
 
     # 8) Plant recommendations - from database PlantProfile
     plant_recommendations = []
@@ -775,6 +780,7 @@ def dashboard(serial_number):
         health_trend_values=health_trend_values,
         health_trend_labels=health_trend_labels,
         trend_data=trend_data,
+        trend_period=req_period,
         user_name=current_user.uname if current_user else "",
         alerts=alerts,
         factor_states=factor_states,
@@ -782,36 +788,8 @@ def dashboard(serial_number):
     )
 
 
-@dashboard_bp.route("/<serial_number>/health-trend-api", methods=["GET"])
-def health_trend_api(serial_number):
-    """
-    API endpoint voor dynamische trend data.
-    Query parameter: ?period=week|month|quarter|year
-    """
-    # User check
-    current_user = _get_current_user()
-    if current_user is None:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    # Robot check
-    robot = RobotZone.query.filter_by(serial_number=serial_number).first()
-    if robot is None:
-        return jsonify({"error": "Robot not found"}), 404
-
-    # Permissions check
-    garden = robot.garden
-    if garden is None or garden.user_email != current_user.uemail:
-        return jsonify({"error": "Forbidden"}), 403
-
-    # Get period from query param
-    period = request.args.get("period", "month")
-    if period not in ["week", "month", "quarter", "year"]:
-        period = "month"
-
-    # Get trend data
-    trend_data = _get_health_trend_data(serial_number, period=period)
-
-    return jsonify(trend_data)
+# Note: health-trend API removed from routes to avoid JSON usage in route handlers.
+# The dashboard now requests server-rendered pages with ?trend_period=... instead.
 
 
 @dashboard_bp.route("/<serial_number>/sensor/<sensor_type>")
@@ -953,13 +931,13 @@ def sensor_detail(serial_number, sensor_type):
 
         alerts.append({
             "severity": severity,
-            "variable": cfg["label"],
+            "variable": get_translation(cfg["label"], lang),
             "unit": cfg["unit"],
             "value": round(current_value, 2) if current_value is not None else None,
             "target": (
                 f"{target_mean:.1f} ± {target_std:.1f} {cfg['unit']}"
                 if target_mean is not None and target_std is not None
-                else "n.v.t."
+                else get_translation('not_applicable', lang)
             ),
             "message": msg,
             "z_score": z_score,
@@ -1073,34 +1051,31 @@ def plant_recommendation_api(serial_number):
     # User authentication
     current_user = _get_current_user()
     if current_user is None:
-        return jsonify({"error": "Unauthorized"}), 401
-    
+        return "Unauthorized", 401
+
     # Playfield validation
     robot = RobotZone.query.filter_by(serial_number=serial_number).first()
     if not robot:
-        return jsonify({"error": "Playfield not found"}), 404
-    
+        return "Playfield not found", 404
+
     # Permission check using centralized function
     if not validate_playfield_access(serial_number, current_user.uemail):
-        return jsonify({"error": "Forbidden"}), 403
-    
+        return "Forbidden", 403
+
     # Get analysis period
     days = request.args.get("days", 5, type=int)
     days = max(1, min(days, 30))  # Clamp between 1-30
-    
+
     # Get plant rankings using centralized engine
     plant_rankings = calculate_plant_rankings(serial_number, days)
-    
+
     if not plant_rankings:
-        return jsonify({
-            "error": "No recommendations",
-            "message": f"Insufficient measurement data for the last {days} days"
-        }), 400
-    
+        return (f"No recommendations: Insufficient measurement data for the last {days} days", 400)
+
     # Get average measurements for the response
     avg_measurements = get_average_measurements(serial_number, days)
-    
-    # Build response with rankings
+
+    # Build data for template rendering
     recommendation = {
         "period_days": days,
         "average_measurements": avg_measurements,
@@ -1111,7 +1086,7 @@ def plant_recommendation_api(serial_number):
                 "display_name": plant["name"],
                 "icon": plant["icon"],
                 "score": plant["score"],
-                "compatibility": plant["compatibility"]
+                "compatibility": plant.get("compatibility")
             }
             for idx, plant in enumerate(plant_rankings)
         ],
@@ -1121,8 +1096,23 @@ def plant_recommendation_api(serial_number):
             "display_name": plant_rankings[0]["name"],
             "icon": plant_rankings[0]["icon"],
             "score": plant_rankings[0]["score"],
-            "compatibility": plant_rankings[0]["compatibility"]
+            "compatibility": plant_rankings[0].get("compatibility")
         }
     }
-    
-    return jsonify(recommendation)
+
+    # Render a small HTML fragment (no JSON). The front-end can load this via normal navigation
+    # or via fetch(...).then(res => res.text()) if desired.
+    template = """
+    <div class="recommendation-fragment">
+      <h3>Recommendations (last {{ days }} days)</h3>
+      <ul>
+      {% for p in plant_rankings %}
+        <li>
+          <strong>#{{ p.rank }} {{ p.display_name }}</strong> — score: {{ p.score }}
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+    """
+
+    return render_template_string(template, days=days, plant_rankings=recommendation["plant_rankings"])
