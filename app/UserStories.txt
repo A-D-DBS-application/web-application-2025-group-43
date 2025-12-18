@@ -1,0 +1,221 @@
+User Stories - Capenta Web Application (available for both PC and mobile devices) 
+
+As User: 
+
+Login 
+
+As a user, I want to log in with my unique email address so that I can securely access my personalized gardens. 
+
+To ensure my account is protected and uniquely identified. 
+
+Details: 
+
+Enter email address. 
+
+After login, I am redirected to the Garden page. 
+
+Language option (Eng/Ned) is visible at the top to switch between English and Dutch. 
+
+Create Account 
+
+As a user, I want to create a new account with my details so that I can start using the app if I don't have one yet. 
+
+To easily begin with the app. 
+
+Details: 
+
+Click on 'Create Account'. 
+
+Fill in details and return to login to sign in. 
+
+Manage Gardens 
+
+As a user, I want to view my list of gardens after logging in, including the logo and slogan, so that I can select which garden to manage. 
+
+To have an overview of my gardens in different locations, such as one in Spain and one in Belgium. 
+
+Details: 
+
+Gardens are displayed side by side as boxes if there are multiple. 
+
+For each garden, I see the number of linked playfields. 
+
+Tap on a garden to navigate to its playfields page. 
+
+Logout button redirects me back to the login page. 
+
+Add Garden 
+
+As a user, I want to add a new garden by tapping 'Add Garden' and entering details so that I can manage multiple gardens. 
+
+To add gardens in various locations. 
+
+Details: 
+
+The process takes just a few seconds. 
+
+The new garden appears in the list. 
+
+Delete Garden 
+
+As a user, I want to delete a garden using the cross icon so that I can remove gardens I no longer need. 
+
+To keep my list organized. 
+
+Details: 
+
+Immediately deletable after adding. 
+
+Edit Garden 
+
+As a user, I want to edit a garden's details using the pencil icon so that I can update names or other information. 
+
+To make adjustments to existing gardens. 
+
+Manage Playfields 
+
+As a user, I want to view the playfields page with a consistent layout to the garden page so that navigation feels familiar. 
+
+To manage cultivation beds within a garden. 
+
+Details: 
+
+Tap on a playfield or plant image to go to the dashboard. 
+
+Plant image appears on the playfield (coming soon). 
+
+Add Playfield 
+
+As a user, I want to add a new playfield by tapping 'Add Playfield', with a fixed 1m² size for now, so that I can expand my garden in a standardized way. 
+
+To add standard playfields, with adjustability for upscaling in the future. 
+
+Details: 
+
+View a list of possible plants and vegetables to choose from. 
+
+Delete Playfield 
+
+As a user, I want to delete a playfield using the cross icon so that I can remove unnecessary cultivation beds. 
+
+Edit Playfield 
+
+As a user, I want to edit a playfield's details using the pencil icon so that I can update information as needed. 
+
+View Dashboard 
+
+As a user, I want to view the health score of my playfield on the dashboard, based on variables like soil moisture, temperature, and light, so that I can assess overall plant health. 
+
+To get daily insights. 
+
+Details: 
+
+Score is recalculated daily. 
+
+Graph shows health evolution over time, switchable between week, month, 3 months, or year views. 
+
+Variable Warnings 
+
+As a user, I want small warnings for each variable if it's far from optimal (e.g., too dry or too cold) so that I can quickly identify issues. 
+
+Recommend Alternative Plants 
+
+As a user, I want recommendations for alternative plants based on measured variables and plant-specific optimal values, starting with top 3 and expandable to top 10, so that I can switch to better-suited crops. 
+
+To make informed decisions. 
+
+Details: 
+
+See current crop (e.g., Tomatoes) and specific recommendations (e.g., switch to paprika due to warmer climate). 
+
+Alerts Section 
+
+As a user, I want an alerts section based on measurements, with actionable tips, so that I know what to do to improve plant growth. 
+
+Details: 
+
+Click on an alert or variable graph to go to a detail page with statistics, warnings, and tips (e.g., 'give more water'). 
+
+Explain Measurement Intervals 
+
+As a user, I want explanations for measurement intervals (e.g., daily for rainfall and light) so that I understand the data context. 
+
+View Profile 
+
+As a user, I want to tap on my profile at the bottom left to view or adjust personal info so that I can manage my account details. 
+
+Navigation Column 
+
+As a user, I want a left navigation column for quick access to variables so that I can efficiently check specific conditions, like after heavy rain. 
+
+Details: 
+
+Switch to other playfields in the same or different gardens using the sidebar. 
+
+Robot Icon for Upscaling 
+
+As a user, I want a robot icon in the bottom right for upscaling features like automatic irrigation or weed removal services so that I can integrate with the physical robot. 
+
+Mobile View 
+
+As a user, I want the app to be fully responsive and viewable on my phone (e.g., adapting to iPhone SE screen) so that I can manage my gardens on the go, such as while traveling or in the garden. 
+
+Preserve Historical Data 
+
+As a user, I want historical health scores to remain tied to the original plant when switching crops so that past data is preserved accurately. 
+
+As System: 
+
+Prevent Data Loss on Crop Change 
+
+As a system, I want to ensure that when a user switches crops, the health score from previous data remains specific to the original plant's requirements. 
+
+To maintain accurate historical records. 
+
+Details: 
+
+Historical calculations are not retroactively adjusted for the new crop. 
+
+Recalculate Health Score Daily 
+
+As a system, I want to recalculate the health score daily based on current variables so that users receive up-to-date insights. 
+
+To provide timely and relevant data. 
+
+Details: 
+
+Use variables like soil moisture, temperature, light, etc., for computation. 
+
+Generate Alerts Automatically 
+
+As a system, I want to generate alerts based on measurements so that users are notified of actions to improve plant growth. 
+
+To proactively support gardening decisions. 
+
+Details: 
+
+Alerts trigger warnings and tips automatically. 
+
+Enforce Fixed Playfield Size 
+
+As a system, I want to enforce a fixed 1m² size for playfields during addition so that standardization is maintained until upscaling features are implemented. 
+
+To ensure consistency in the current version. 
+
+Apply Measurement Intervals 
+
+As a system, I want to apply specific measurement intervals (e.g., daily for rainfall and light) so that data is relevant and not overly fluctuating. 
+
+To optimize data processing and relevance. 
+
+Details: 
+
+Avoid hourly data for variables like light to prevent irrelevant up-and-down patterns. 
+
+Ensure Responsiveness 
+
+As a system, I want to make the app fully responsive across devices so that it adapts seamlessly to screens like iPhone SE. 
+
+To provide a consistent user experience on mobile and PC. 
+
+ 
