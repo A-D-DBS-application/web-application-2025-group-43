@@ -366,10 +366,10 @@
 
                 <!-- Period selector -->
                 <div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 12px;">
-                  <button class="period-btn" data-period="week">{{ t('7d') }}</button>
-                  <button class="period-btn active" data-period="month">{{ t('30d') }}</button>
-                  <button class="period-btn" data-period="quarter">{{ t('3m') }}</button>
-                  <button class="period-btn" data-period="year">{{ t('1y') }}</button>
+                  <button class="period-btn {% if trend_period == 'week' %}active{% endif %}" data-period="week">{{ t('7d') }}</button>
+                  <button class="period-btn {% if trend_period == 'month' %}active{% endif %}" data-period="month">{{ t('30d') }}</button>
+                  <button class="period-btn {% if trend_period == 'quarter' %}active{% endif %}" data-period="quarter">{{ t('3m') }}</button>
+                  <button class="period-btn {% if trend_period == 'year' %}active{% endif %}" data-period="year">{{ t('1y') }}</button>
                 </div>
 
                 <div class="trend-chart">
@@ -389,7 +389,7 @@
                       <span id="trend-current-avg">{{ t('now') }}: {{ trend_data.end_score }}</span>
                     </div>
                   </div>
-                  <span id="trend-duration">30d</span>
+                  <span id="trend-duration">{{ trend_data.period_label }}</span>
                 </div>
               </div>
             </div>

@@ -394,14 +394,25 @@ def _get_health_trend_data(serial_number, period='month', lang='en'):
         desired_ticks = 7
     
     # Haal huidige periode op
-    start_date = today - timedelta(days=days)
-    current_scores = (
-        HealthScore.query.filter_by(serial_number=serial_number)
-        .filter(HealthScore.calculated_at >= datetime.combine(start_date, datetime.min.time()))
-        .filter(HealthScore.calculated_at <= datetime.combine(today, datetime.max.time()))
-        .order_by(HealthScore.calculated_at.asc())
-        .all()
-    )
+    if period == 'week':
+        # For 'week' simply take the last 7 HealthScore measurements (most recent 7 rows)
+        current_scores = (
+            HealthScore.query.filter_by(serial_number=serial_number)
+            .order_by(HealthScore.calculated_at.desc())
+            .limit(7)
+            .all()
+        )
+        # reverse to chronological order
+        current_scores = list(reversed(current_scores))
+    else:
+        start_date = today - timedelta(days=days)
+        current_scores = (
+            HealthScore.query.filter_by(serial_number=serial_number)
+            .filter(HealthScore.calculated_at >= datetime.combine(start_date, datetime.min.time()))
+            .filter(HealthScore.calculated_at <= datetime.combine(today, datetime.max.time()))
+            .order_by(HealthScore.calculated_at.asc())
+            .all()
+        )
     
     # Formatteer data voor grafiek met intelligente label spacing
     values = [float(s.score) for s in current_scores]
