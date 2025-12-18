@@ -14,6 +14,12 @@ A structured Flask application for monitoring and managing plant growth in garde
 
 ---
 
+## Database
+
+The models (ERD & DDL) and database dump can be found in the 'db' folder
+
+---
+
 ## 📁 Project Structure
 
 ```
