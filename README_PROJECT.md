@@ -7,6 +7,12 @@ A structured Flask application for monitoring and managing plant growth in garde
 ### Project Resources
 - **UI Prototype**: https://www.figma.com/make/F485MUBTo7iPmAxZP5K8IE/Dark-Mode-Garden-Robot-UI--Copy-?t=mpQSq4EU5akJkubI-1
 
+Screenshots can be find in the folder 'screenshots'
+
+--------------------------------
+
+Presentation + Demo: https://1drv.ms/p/c/ab63c4fd72dee8ef/IQBET73JRICzTqQN_s7iRLInAd06wJPahVbdVkSlM6QbFe0?e=TMU62p
+
 ### Feedback Sessions
 #### Audio/Video Recordings with Partner (Please Click on the link and download)
 - **Session 1**: https://1drv.ms/v/c/ab63c4fd72dee8ef/IQBgn0CorPyxS58X28CgcdtGAYq4jb-BkcTRxufID3lEtlc?e=l1rPpO
