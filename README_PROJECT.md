@@ -11,8 +11,7 @@ Screenshots can be find in the folder 'UI prototype'
 
 --------------------------------
 
-Presentation + Demo: https://1drv.ms/p/c/ab63c4fd72dee8ef/IQBET73JRICzTqQN_s7iRLInAd06wJPahVbdVkSlM6QbFe0?e=TMU62p
-
+Presentation + Demo: https://ugentbe-my.sharepoint.com/:p:/g/personal/marthe_fruyt_ugent_be/IQA6VEFsIFcCS4RlA7MSO2uwATNtkp72NzY3WUnHaufySXQ?e=cZFgUs
 ### Feedback Sessions
 #### Audio/Video Recordings with Partner (Please Click on the link and download)
 - **Session 1**: https://1drv.ms/v/c/ab63c4fd72dee8ef/IQBgn0CorPyxS58X28CgcdtGAYq4jb-BkcTRxufID3lEtlc?e=l1rPpO
